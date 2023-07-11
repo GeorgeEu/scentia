@@ -1,10 +1,11 @@
+import 'package:card_test/components/calendar/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../components/home_work/full_hw/home_work.dart';
-import '../components/home_work/hw_for_tmr/homework_for_tmr.dart';
+import '../components/home_work/week_homework/week_homework.dart';
 import '../data/home_work_data/home_work_data.dart';
-import '../data/home_work_data/tmr_hw_data.dart';
+import '../data/home_work_data/week_howework_data.dart';
 
 class Homework_Page extends StatefulWidget {
   const Homework_Page({Key? key}) : super(key: key);
@@ -12,12 +13,12 @@ class Homework_Page extends StatefulWidget {
   @override
   State<Homework_Page> createState() => _Homework_PageState();
 }
-enum Content { dueTomorrow, theRemaining }
+enum Content { week, month }
 
 class _Homework_PageState extends State<Homework_Page> {
   var tasks = HomeWorkData();
-  var tmr_task = TmrHomeWorkData();
-  Content selectedContent = Content.dueTomorrow;
+  var tmr_task = WeekHomeworkData();
+  Content selectedContent = Content.week;
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +48,12 @@ class _Homework_PageState extends State<Homework_Page> {
                     ),
                     segments: const <ButtonSegment<Content>>[
                       ButtonSegment<Content>(
-                          value: Content.dueTomorrow,
-                          label: Text('Due Tomorrow')
+                          value: Content.week,
+                          label: Text('week')
                       ),
                       ButtonSegment<Content>(
-                        value: Content.theRemaining,
-                        label: Text('The Remaining'),
+                        value: Content.month,
+                        label: Text('month'),
                       ),
                     ],
                     selected: <Content>{selectedContent},
@@ -81,10 +82,10 @@ class _Homework_PageState extends State<Homework_Page> {
               ),
               child: Column(
                 children: [
-                  if (selectedContent == Content.dueTomorrow)
-                    TmrHomeWork(tmr_task.getTmrHomeWork()),
-                  if (selectedContent == Content.theRemaining)
-                    HomeWork(tasks.getHomeWork()),
+                  if (selectedContent == Content.week)
+                    WeekHomework(tmr_task.getWeekHomework()),
+                  if (selectedContent == Content.month)
+                    const Calendar(),
                 ],
               ),
             ),

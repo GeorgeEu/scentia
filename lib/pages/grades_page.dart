@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../components/grades/grades/grades.dart';
 import '../components/grades/td_grades/todays_grades.dart';
-import '../components/home_work/hw_for_tmr/homework_for_tmr.dart';
 import '../data/grades_data/grades_data.dart';
 import '../data/grades_data/td_grades_data.dart';
-import '../data/home_work_data/home_work_data.dart';
-import '../data/home_work_data/tmr_hw_data.dart';
 
 class Grades_Page extends StatefulWidget {
   const Grades_Page({Key? key}) : super(key: key);
@@ -23,7 +20,7 @@ class _Grades_PageState extends State<Grades_Page> {
   var td_grades = TdGradesData();
   Content selectedContent = Content.today;
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

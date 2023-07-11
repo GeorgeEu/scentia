@@ -24,17 +24,6 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            Text(
-              'Schedule',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 24,
-              ),
-            ),
-          ],
-        ),
         Container(
           decoration: BoxDecoration(
               color: Colors.white,
