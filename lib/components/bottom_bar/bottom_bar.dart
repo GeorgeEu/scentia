@@ -15,7 +15,6 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
-      showDragHandle: true,
         context: context,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
@@ -25,19 +24,26 @@ class _BottomBarState extends State<BottomBar> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
-                      child: Text(
+                Padding(
+                  padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16, top: 16),
+                  child: Row(
+                    children: [
+                      Text(
                         'Create',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 22
+                          fontSize: 22,
                         ),
                       ),
-                    )
-                  ],
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 ListTile(
                   leading: Icon(Icons.backpack_rounded),
