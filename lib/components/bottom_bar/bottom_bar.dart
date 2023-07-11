@@ -37,7 +37,7 @@ class _BottomBarState extends State<BottomBar> {
                       ),
                       Spacer(),
                       IconButton(
-                        icon: Icon(Icons.close),
+                        icon: Icon(Icons.close_rounded, size: 28,),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },

@@ -5,23 +5,23 @@ class WeekHomeworkData {
       "Schedule": [
         {
           "Name": "American History",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Page 130-142"
         },
         {
           "Name": "Chemistry",
-          "Task": "Lorem ipsum dolor sit"
+          "Task": "Alkanes (1-15)"
         },
         {
           "Name": "Biology",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Make a presentation"
         },
         {
           "Name": "Geography",
-          "Task": "Lorem ipsum"
+          "Task": "Brain-drain"
         },
         {
           "Name": "SAT",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Check Khan Academy"
         }
       ]
     },
@@ -30,23 +30,23 @@ class WeekHomeworkData {
       "Schedule": [
         {
           "Name": "Chemistry",
-          "Task": "Lorem ipsum dolor sit"
+          "Task": "Alkanes (15-20)"
         },
         {
           "Name": "Biology",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Natural Selection"
         },
         {
           "Name": "Geography",
-          "Task": "Lorem ipsum"
+          "Task": "Learn stuff u know..."
         },
         {
           "Name": "IELTS",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Part number 7"
         },
         {
           "Name": "SAT",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Check Khan Academy"
         }
       ]
     },
@@ -55,19 +55,19 @@ class WeekHomeworkData {
       "Schedule": [
         {
           "Name": "Biology",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Presentation"
         },
         {
           "Name": "Geography",
-          "Task": "Lorem ipsum"
+          "Task": "bla-bla-bla"
         },
         {
           "Name": "IELTS",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Modal Verbs"
         },
         {
           "Name": "Math",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Make a project about math"
         },
         {
           "Name": "SAT",
@@ -80,19 +80,19 @@ class WeekHomeworkData {
       "Schedule": [
         {
           "Name": "American History",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Slavery"
         },
         {
           "Name": "Chemistry",
-          "Task": "Lorem ipsum dolor sit"
+          "Task": "Revision of all alkanes"
         },
         {
           "Name": "Math",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Page (110 - 120)"
         },
         {
           "Name": "SAT",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Finish ex. homework"
         }
       ]
     },
@@ -101,19 +101,19 @@ class WeekHomeworkData {
       "Schedule": [
         {
           "Name": "American History",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Industrial Revolution"
         },
         {
           "Name": "Chemistry",
-          "Task": "Lorem ipsum dolor sit"
+          "Task": "Revision"
         },
         {
           "Name": "Biology",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Make presentation about Natural Selection"
         },
         {
           "Name": "Geography",
-          "Task": "Lorem ipsum"
+          "Task": "Kill me"
         },
         {
           "Name": "IELTS",
@@ -121,11 +121,11 @@ class WeekHomeworkData {
         },
         {
           "Name": "Math",
-          "Task": "Lorem ipsum dolor"
+          "Task": "Presentation about Smt"
         },
         {
           "Name": "SAT",
-          "Task": "Lorem ipsum dolor sit amet"
+          "Task": "Lorem"
         }
       ]
     },
