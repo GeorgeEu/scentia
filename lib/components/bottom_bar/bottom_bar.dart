@@ -80,6 +80,7 @@ class _BottomBarState extends State<BottomBar> {
     return Scaffold(
       body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: NavigationBar(
+        height: 64,
         destinations: [
           NavigationDestination(
             icon: Icon(Icons.home_rounded),

@@ -1,10 +1,8 @@
 import 'package:card_test/components/events/events.dart';
-import 'package:card_test/components/home_work/full_hw/home_work.dart';
 import 'package:card_test/components/schedule/weakly_schedule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:card_test/data/events_data/events_data.dart';
-import 'package:card_test/data/home_work_data/home_work_data.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({Key? key}) : super(key: key);
@@ -19,6 +17,7 @@ class _MainPageState extends State<Main_Page> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: const Color(0xffefeff4),
           title: const Text("11A, American International School Progress"),
         ),
