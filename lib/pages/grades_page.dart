@@ -44,8 +44,6 @@ class _Grades_PageState extends State<Grades_Page> {
                       1: buildSegment('All'),
                     },
                     onValueChanged: (groupValue) {
-                      print(groupValue);
-
                       setState(() {
                         this.groupValue = groupValue;
                       });
@@ -70,10 +68,7 @@ class _Grades_PageState extends State<Grades_Page> {
               ),
               child: Column(
                 children: [
-                  if (groupValue == 0)
-                    TdGrades(td_grades.getTdGrades()),
-                  if (groupValue == 1)
-                    Grades(grades.getGrades()),
+                  _buildGradesWidget(),
                 ],
               ),
             ),
@@ -82,10 +77,22 @@ class _Grades_PageState extends State<Grades_Page> {
       ),
     );
   }
-  Widget buildSegment(String text) => Container(
-    padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
-    child: Text(
-      text,
-    ),
-  );
+  Widget _buildGradesWidget() {
+    switch (groupValue) {
+      case 0:
+        return TdGrades(td_grades.getTdGrades());
+      case 1:
+        return Grades(grades.getGrades());
+      default:
+        return Container();
+    }
+  }
+
+  Widget buildSegment(String text) =>
+      Container(
+        padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
+        child: Text(
+          text,
+        ),
+      );
 }

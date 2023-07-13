@@ -27,7 +27,7 @@ class _Homework_PageState extends State<Homework_Page> {
           Expanded(
             child: Container(
               padding: EdgeInsets.only(bottom: 4, top: 4),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   border: Border(
                       bottom: BorderSide(color: Colors.grey, width: 0.5))),
               child: Row(
@@ -43,8 +43,6 @@ class _Homework_PageState extends State<Homework_Page> {
                       1: buildSegment('Month'),
                     },
                     onValueChanged: (groupValue) {
-                      print(groupValue);
-
                       setState(() {
                         this.groupValue = groupValue;
                       });
@@ -69,8 +67,7 @@ class _Homework_PageState extends State<Homework_Page> {
               ),
               child: Column(
                 children: [
-                  if (groupValue == 0) WeekHomework(tmr_task.getWeekHomework()),
-                  if (groupValue == 1) const Calendar(),
+                  _buildHomeworkWidget()
                 ],
               ),
             ),
@@ -79,6 +76,17 @@ class _Homework_PageState extends State<Homework_Page> {
       ),
     );
   }
+  Widget _buildHomeworkWidget() {
+    switch (groupValue) {
+      case 0:
+        return WeekHomework(tmr_task.getWeekHomework());
+      case 1:
+        return const Calendar();
+      default:
+        return Container();
+    }
+  }
+
   Widget buildSegment(String text) => Container(
     padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
     child: Text(
