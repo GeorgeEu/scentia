@@ -13,12 +13,11 @@ class Grades_Page extends StatefulWidget {
   State<Grades_Page> createState() => _Grades_PageState();
 }
 
-enum Content { today, all }
 
 class _Grades_PageState extends State<Grades_Page> {
   var grades = GradesData();
   var td_grades = TdGradesData();
-  Content selectedContent = Content.today;
+  int? groupValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -36,27 +35,22 @@ class _Grades_PageState extends State<Grades_Page> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SegmentedButton<Content>(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                          EdgeInsets.only(left: 12, right: 12)),
-                    ),
-                    segments: const <ButtonSegment<Content>>[
-                      ButtonSegment<Content>(
-                          value: Content.today, label: Text('Recent')),
-                      ButtonSegment<Content>(
-                        value: Content.all,
-                        label: Text('All'),
-                      ),
-                    ],
-                    selected: <Content>{selectedContent},
-                    onSelectionChanged: (Set<Content> newSelection) {
+                  CupertinoSlidingSegmentedControl<int>(
+                    backgroundColor: CupertinoColors.tertiarySystemFill,
+                    thumbColor: CupertinoColors.white,
+                    groupValue: groupValue,
+                    children: {
+                      0: buildSegment('Recent'),
+                      1: buildSegment('All'),
+                    },
+                    onValueChanged: (groupValue) {
+                      print(groupValue);
+
                       setState(() {
-                        selectedContent = newSelection.first;
+                        this.groupValue = groupValue;
                       });
                     },
-                  ),
+                  )
                 ],
               ),
             ),
@@ -76,9 +70,9 @@ class _Grades_PageState extends State<Grades_Page> {
               ),
               child: Column(
                 children: [
-                  if (selectedContent == Content.today)
+                  if (groupValue == 0)
                     TdGrades(td_grades.getTdGrades()),
-                  if (selectedContent == Content.all)
+                  if (groupValue == 1)
                     Grades(grades.getGrades()),
                 ],
               ),
@@ -88,4 +82,10 @@ class _Grades_PageState extends State<Grades_Page> {
       ),
     );
   }
+  Widget buildSegment(String text) => Container(
+    padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
+    child: Text(
+      text,
+    ),
+  );
 }

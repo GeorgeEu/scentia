@@ -2,10 +2,9 @@ import 'package:card_test/components/calendar/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../components/home_work/full_hw/home_work.dart';
 import '../components/home_work/week_homework/week_homework.dart';
 import '../data/home_work_data/home_work_data.dart';
-import '../data/home_work_data/week_howework_data.dart';
+import '../data/home_work_data/week_homework_data.dart';
 
 class Homework_Page extends StatefulWidget {
   const Homework_Page({Key? key}) : super(key: key);
@@ -13,12 +12,11 @@ class Homework_Page extends StatefulWidget {
   @override
   State<Homework_Page> createState() => _Homework_PageState();
 }
-enum Content { week, month }
 
 class _Homework_PageState extends State<Homework_Page> {
   var tasks = HomeWorkData();
   var tmr_task = WeekHomeworkData();
-  Content selectedContent = Content.week;
+  int? groupValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -30,39 +28,28 @@ class _Homework_PageState extends State<Homework_Page> {
             child: Container(
               padding: EdgeInsets.only(bottom: 4, top: 4),
               decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey,
-                    width: 0.5
-                  )
-                )
-              ),
+                  border: Border(
+                      bottom: BorderSide(color: Colors.grey, width: 0.5))),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SegmentedButton<Content>(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.only(left: 12,right: 12))
-                    ),
-                    segments: const <ButtonSegment<Content>>[
-                      ButtonSegment<Content>(
-                          value: Content.week,
-                          label: Text('week')
-                      ),
-                      ButtonSegment<Content>(
-                        value: Content.month,
-                        label: Text('month'),
-                      ),
-                    ],
-                    selected: <Content>{selectedContent},
-                    onSelectionChanged: (Set<Content> newSelection) {
+                  CupertinoSlidingSegmentedControl<int>(
+                    backgroundColor: CupertinoColors.tertiarySystemFill,
+                    thumbColor: CupertinoColors.white,
+                    groupValue: groupValue,
+                    children: {
+                      0: buildSegment('Week'),
+                      1: buildSegment('Month'),
+                    },
+                    onValueChanged: (groupValue) {
+                      print(groupValue);
+
                       setState(() {
-                        selectedContent = newSelection.first;
+                        this.groupValue = groupValue;
                       });
                     },
-                  ),
+                  )
                 ],
               ),
             ),
@@ -82,10 +69,8 @@ class _Homework_PageState extends State<Homework_Page> {
               ),
               child: Column(
                 children: [
-                  if (selectedContent == Content.week)
-                    WeekHomework(tmr_task.getWeekHomework()),
-                  if (selectedContent == Content.month)
-                    const Calendar(),
+                  if (groupValue == 0) WeekHomework(tmr_task.getWeekHomework()),
+                  if (groupValue == 1) const Calendar(),
                 ],
               ),
             ),
@@ -94,4 +79,10 @@ class _Homework_PageState extends State<Homework_Page> {
       ),
     );
   }
+  Widget buildSegment(String text) => Container(
+    padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
+    child: Text(
+      text,
+    ),
+  );
 }
