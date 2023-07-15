@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class WeekSegmentHomework extends StatefulWidget {
+class HomeworkSegment extends StatefulWidget {
   final Map<String, dynamic> _homework;
 
-  WeekSegmentHomework(this._homework);
+  HomeworkSegment(this._homework);
 
   @override
-  State<WeekSegmentHomework> createState() => _WeekSegmentHomeworkState();
+  State<HomeworkSegment> createState() => _HomeworkSegmentState();
 }
 
-class _WeekSegmentHomeworkState extends State<WeekSegmentHomework> {
+class _HomeworkSegmentState extends State<HomeworkSegment> {
   String formatDate(int timestamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     return '${dateTime.day}-${dateTime.month}-${dateTime.year}';

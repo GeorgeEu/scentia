@@ -2,7 +2,7 @@ import 'package:card_test/components/calendar/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../components/home_work/week_homework/week_homework.dart';
+import '../components/home_work/homework/homework.dart';
 import '../data/home_work_data/home_work_data.dart';
 import '../data/home_work_data/week_homework_data.dart';
 
@@ -58,19 +58,10 @@ class _Homework_PageState extends State<Homework_Page> {
         height: double.infinity,
         color: const Color(0xffefeff4),
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8, right: 16, left: 16),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  _buildHomeworkWidget()
-                ],
-              ),
-            ),
+          child: Column(
+            children: [
+              _buildHomeworkWidget()
+            ],
           ),
         ),
       ),
@@ -79,7 +70,7 @@ class _Homework_PageState extends State<Homework_Page> {
   Widget _buildHomeworkWidget() {
     switch (groupValue) {
       case 0:
-        return WeekHomework(tmr_task.getWeekHomework());
+        return Homework(tmr_task.getWeekHomework());
       case 1:
         return const Calendar();
       default:
