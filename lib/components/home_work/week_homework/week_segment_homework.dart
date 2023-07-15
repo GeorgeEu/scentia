@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 class WeekSegmentHomework extends StatefulWidget {
-  final Map<String, dynamic> _week_homework;
+  final Map<String, dynamic> _homework;
 
-  WeekSegmentHomework(this._week_homework);
+  WeekSegmentHomework(this._homework);
 
   @override
   State<WeekSegmentHomework> createState() => _WeekSegmentHomeworkState();
 }
 
 class _WeekSegmentHomeworkState extends State<WeekSegmentHomework> {
+  String formatDate(int timestamp) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    return '${dateTime.day}-${dateTime.month}-${dateTime.year}';
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -18,28 +22,26 @@ class _WeekSegmentHomeworkState extends State<WeekSegmentHomework> {
       textBaseline: TextBaseline.ideographic,
       children: [
         Text(
-          widget._week_homework['Day'].toString(),
+          formatDate(widget._homework['Date']),
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 22,
           ),
         ),
-        for (var segment in widget._week_homework["Schedule"])
         Row(
           children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Text(
-                  segment['Name'],
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: Colors.grey)
-                ),
-              ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Text(
+                  widget._homework['Name'].toString(),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.grey)),
+            ),
             Expanded(
               child: Text(
-                segment['Task'],
+                widget._homework['Task'].toString(),
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 23),
               ),

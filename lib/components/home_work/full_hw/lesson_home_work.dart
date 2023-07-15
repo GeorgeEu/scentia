@@ -26,26 +26,7 @@ class _LessonHWState extends State<LessonHW> {
                 fontSize: 22,
               ),
             ),
-            Text(
-              widget._task['Task'].toString(),
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
           ],
-        ),
-        Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: Text(
-            widget._task['Date'].toString(),
-            style: TextStyle(
-              fontWeight: FontWeight.normal,
-              color: Colors.grey,
-              fontSize: 16,
-            ),
-          ),
         ),
       ],
     );
