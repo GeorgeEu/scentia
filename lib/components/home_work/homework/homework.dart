@@ -22,14 +22,14 @@ class _HomeworkState extends State<Homework> {
             padding: EdgeInsets.only(left: 16,right: 16,top: 8, bottom: 8),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16)
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16)
             ),
             child: Text(
               "Monday",
               style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 21
+                  fontWeight: FontWeight.w600,
+                  fontSize: 21
               ),
             ),
           ),
