@@ -81,6 +81,19 @@ class HomeworkData {
       "Task": "Revision"
     },
   ];
+  Map<int, List<Map<String, dynamic>>> groupHomeworkByDate() {
+    Map<int, List<Map<String, dynamic>>> groupedHomework = {};
+
+    for (var homework in _homework) {
+      int date = (homework['Date'] as int); // Convert to int explicitly
+      if (!groupedHomework.containsKey(date)) {
+        groupedHomework[date] = [];
+      }
+      groupedHomework[date]!.add(homework); // Add the non-nullable assertion
+    }
+
+    return groupedHomework;
+  }
   List getHomework() {
     return _homework;
   }
