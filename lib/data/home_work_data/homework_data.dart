@@ -1,4 +1,4 @@
-class WeekHomeworkData {
+class HomeworkData {
   final _homework = [
     {
       "Date": 1693830993,
@@ -81,7 +81,7 @@ class WeekHomeworkData {
       "Task": "Revision"
     },
   ];
-  List getWeekHomework() {
+  List getHomework() {
     return _homework;
   }
 }

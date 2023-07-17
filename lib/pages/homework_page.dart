@@ -2,9 +2,8 @@ import 'package:card_test/components/calendar/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../components/home_work/homework/homework.dart';
-import '../data/home_work_data/home_work_data.dart';
-import '../data/home_work_data/week_homework_data.dart';
+import '../components/homework/homework.dart';
+import '../data/home_work_data/homework_data.dart';
 
 class Homework_Page extends StatefulWidget {
   const Homework_Page({Key? key}) : super(key: key);
@@ -14,8 +13,7 @@ class Homework_Page extends StatefulWidget {
 }
 
 class _Homework_PageState extends State<Homework_Page> {
-  var tasks = HomeWorkData();
-  var tmr_task = WeekHomeworkData();
+  var _homework = HomeworkData();
   int? groupValue = 0;
 
   @override
@@ -26,7 +24,7 @@ class _Homework_PageState extends State<Homework_Page> {
         actions: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(bottom: 4, top: 4),
+              height: double.infinity,
               decoration: const BoxDecoration(
                   border: Border(
                       bottom: BorderSide(color: Colors.grey, width: 0.5))),
@@ -70,7 +68,7 @@ class _Homework_PageState extends State<Homework_Page> {
   Widget _buildHomeworkWidget() {
     switch (groupValue) {
       case 0:
-        return Homework(tmr_task.getWeekHomework());
+        return Homework(_homework.getHomework());
       case 1:
         return const Calendar();
       default:
