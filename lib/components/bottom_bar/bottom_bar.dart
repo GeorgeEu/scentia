@@ -1,9 +1,9 @@
 import 'package:card_test/pages/main_page.dart';
 import 'package:card_test/pages/schedule_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../pages/grades_page.dart';
 import '../../pages/homework_page.dart';
+import 'homework_function.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _BottomBarState extends State<BottomBar> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16, top: 16),
+                  padding: const EdgeInsets.only(right: 16, left: 16, top: 8),
                   child: Row(
                     children: [
                       Text(
@@ -37,7 +37,10 @@ class _BottomBarState extends State<BottomBar> {
                       ),
                       Spacer(),
                       IconButton(
-                        icon: Icon(Icons.close_rounded, size: 28,),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          size: 28,
+                        ),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -48,7 +51,9 @@ class _BottomBarState extends State<BottomBar> {
                 ListTile(
                   leading: Icon(Icons.backpack_rounded),
                   title: Text('Create a homework'),
-                  onTap: () {},
+                  onTap: () {
+                    showHomeworkBottomSheet(context);
+                  },
                 ),
                 ListTile(
                   leading: Icon(Icons.mail_rounded),
@@ -68,9 +73,9 @@ class _BottomBarState extends State<BottomBar> {
               ],
             ),
           );
-        }
-    );
+        });
   }
+
   int _selectedIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
     const Main_Page(),
@@ -79,7 +84,6 @@ class _BottomBarState extends State<BottomBar> {
     const Homework_Page(),
     const Grades_Page(),
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +103,9 @@ class _BottomBarState extends State<BottomBar> {
           Padding(
             padding: const EdgeInsets.only(left: 4, right: 4),
             child: FloatingActionButton(
-                onPressed: (){
-                  _showBottomSheet(context);
-                },
+              onPressed: () {
+                _showBottomSheet(context);
+              },
               elevation: 0,
               child: Icon(Icons.add),
             ),
