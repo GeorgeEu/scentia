@@ -11,8 +11,8 @@ class HomeworkSegment extends StatefulWidget {
 
 class _HomeworkSegmentState extends State<HomeworkSegment> {
   String formatDate(int timestamp) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    return '${dateTime.day}-${dateTime.month}-${dateTime.year}';
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    return '${dateTime.day}-${dateTime.month}';
   }
   @override
   Widget build(BuildContext context) {

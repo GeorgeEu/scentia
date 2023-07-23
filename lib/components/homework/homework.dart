@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'homework_segment.dart';
+
 class Homework extends StatefulWidget {
   final List _homework;
 
@@ -15,25 +17,24 @@ class _HomeworkState extends State<Homework> {
     var homeworkCount = widget._homework.length;
     return Column(
       children: [
-
+        Container(
+          height: homeworkCount * 80,
+          padding: const EdgeInsets.only(top: 8),
+          child: ListView.separated(
+            primary: false,
+            shrinkWrap: true,
+            itemCount: homeworkCount,
+            itemBuilder: (context, index) {
+              return HomeworkSegment(widget._homework[index]);
+            },
+            separatorBuilder: (context, index) {
+              return const Divider(
+                thickness: 0.5,
+              );
+            },
+          ),
+        ),
       ],
     );
-    // Container(
-    //   height: homeworkCount * 80,
-    //   padding: const EdgeInsets.only(top: 8),
-    //   child: ListView.separated(
-    //     primary: false,
-    //     shrinkWrap: true,
-    //     itemCount: homeworkCount,
-    //     itemBuilder: (context, index) {
-    //       return HomeworkSegment(widget._homework[index]);
-    //     },
-    //     separatorBuilder: (context, index) {
-    //       return const Divider(
-    //           thickness: 0.5,
-    //       );
-    //     },
-    //   ),
-    // ),
   }
 }

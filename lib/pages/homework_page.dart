@@ -66,9 +66,10 @@ class _Homework_PageState extends State<Homework_Page> {
     );
   }
   Widget _buildHomeworkWidget() {
+    final homework =_homework.getDailyHomework(1693917393000 + 1);
     switch (groupValue) {
       case 0:
-        return Homework(_homework.getHomework());
+        return Homework(homework);
       case 1:
         return const Calendar();
       default:
