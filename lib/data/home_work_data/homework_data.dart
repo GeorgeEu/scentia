@@ -83,7 +83,7 @@ class HomeworkData {
   ];
 
   List getHomework() {
-    //  we get hoemworks from server here
+    //  we get homeworks from server here
     return _homework;
   }
 
@@ -100,5 +100,21 @@ class HomeworkData {
       homework.add(rawHomework[i]);
     }
     return homework;
+  }
+  // FROM ABOVE We get daily homework FROM BELOW We get weekly homework
+  List getWeeklyHomework(int timestamp) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateTime day = DateTime(date.year, date.month, date.day);
+    final beginOfDay = day.millisecondsSinceEpoch;
+    final endOfDay = beginOfDay + 24 * 60 * 60 * 1000 - 1;
+    final endOfWeek = endOfDay + 7 * 24 * 60 * 60 * 1000;
+    List rawHomework = getHomework();
+    List weeklyHomework = [];
+    for (var i = 0; i < rawHomework.length; i++) {
+      if (rawHomework[i]['Date'] < beginOfDay) continue;
+      if (rawHomework[i]['Date'] > endOfWeek) continue;
+      weeklyHomework.add(rawHomework[i]);
+    }
+    return weeklyHomework;
   }
 }
