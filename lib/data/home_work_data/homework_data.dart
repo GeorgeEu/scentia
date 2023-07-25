@@ -41,14 +41,14 @@ class HomeworkData {
       "Task": "Modal Verbs"
     },
     {
-      "Date": 1694003793000,
-      "Name": "Math",
-      "Task": "Make a project about math"
-    },
-    {
       "Date": 1694090193000,
       "Name": "SAT",
       "Task": "Lorem ipsum dolor sit"
+    },
+    {
+      "Date": 1694003793000,
+      "Name": "Math",
+      "Task": "Make a project about math"
     },
     {
       "Date": 1694090193000,
@@ -56,14 +56,14 @@ class HomeworkData {
       "Task": "Slavery"
     },
     {
-      "Date": 1694090193000,
-      "Name": "Chemistry",
-      "Task": "Revision of all alkanes"
-    },
-    {
       "Date": 1694176593000,
       "Name": "Math",
       "Task": "Page (110 - 120)"
+    },
+    {
+      "Date": 1694090193000,
+      "Name": "Chemistry",
+      "Task": "Revision of all alkanes"
     },
     {
       "Date": 1694176593000,
@@ -108,13 +108,30 @@ class HomeworkData {
     final beginOfDay = day.millisecondsSinceEpoch;
     final endOfDay = beginOfDay + 24 * 60 * 60 * 1000 - 1;
     final endOfWeek = endOfDay + 7 * 24 * 60 * 60 * 1000;
+
     List rawHomework = getHomework();
-    List weeklyHomework = [];
+    Map<int, List> groupedHomework = {}; // Use a Map to store grouped homework items
+
     for (var i = 0; i < rawHomework.length; i++) {
       if (rawHomework[i]['Date'] < beginOfDay) continue;
       if (rawHomework[i]['Date'] > endOfWeek) continue;
-      weeklyHomework.add(rawHomework[i]);
+
+      // Get the date of the current homework item and use it as the key in the Map
+      DateTime homeworkDate = DateTime.fromMillisecondsSinceEpoch(rawHomework[i]['Date']);
+      int homeworkDateKey = DateTime(homeworkDate.year, homeworkDate.month, homeworkDate.day).millisecondsSinceEpoch;
+
+      if (groupedHomework.containsKey(homeworkDateKey)) {
+        groupedHomework[homeworkDateKey]?.add(rawHomework[i]);
+      } else {
+        groupedHomework[homeworkDateKey] = [rawHomework[i]];
+      }
     }
+
+    // Convert the Map values into a flat List
+    List weeklyHomework = groupedHomework.values.expand((homeworkList) => homeworkList).toList();
+
     return weeklyHomework;
   }
+
+  //Here we get a combined a homework by timestamp
 }

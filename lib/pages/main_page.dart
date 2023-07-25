@@ -16,6 +16,7 @@ class _MainPageState extends State<Main_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: const Color(0xffefeff4),

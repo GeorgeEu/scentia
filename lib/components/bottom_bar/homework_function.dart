@@ -4,16 +4,18 @@ import 'package:flutter/material.dart';
 void showHomeworkBottomSheet(BuildContext context) {
   showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       builder: (BuildContext context) {
-        return Container(
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 16, left: 16, top: 8),
+                padding: const EdgeInsets.only(left: 16, top: 8),
                 child: Row(
                   children: [
                     Text(
