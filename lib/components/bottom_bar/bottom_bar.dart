@@ -1,8 +1,8 @@
-import 'package:card_test/pages/main_page.dart';
-import 'package:card_test/pages/schedule_page.dart';
+import 'package:card_test/pages/bottom_bar_pages/main_page.dart';
+import 'package:card_test/pages/bottom_bar_pages/schedule_page.dart';
 import 'package:flutter/material.dart';
-import '../../pages/grades_page.dart';
-import '../../pages/homework_page.dart';
+import '../../pages/bottom_bar_pages/grades_page.dart';
+import '../../pages/bottom_bar_pages/homework_page.dart';
 import 'homework_function.dart';
 
 class BottomBar extends StatefulWidget {

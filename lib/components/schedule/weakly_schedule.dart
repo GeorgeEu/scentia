@@ -1,6 +1,5 @@
 import 'package:card_test/components/schedule/day_item.dart';
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:card_test/data/schedule_data/schedule_data.dart';
 

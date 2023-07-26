@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../components/grades/grades/grades.dart';
-import '../components/grades/td_grades/todays_grades.dart';
-import '../data/grades_data/grades_data.dart';
-import '../data/grades_data/td_grades_data.dart';
+import '../../components/grades/grades/grades.dart';
+import '../../components/grades/td_grades/todays_grades.dart';
+import '../../data/grades_data/grades_data.dart';
+import '../../data/grades_data/td_grades_data.dart';
 
 class Grades_Page extends StatefulWidget {
   const Grades_Page({Key? key}) : super(key: key);

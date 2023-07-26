@@ -65,6 +65,7 @@ flutter:
     - assets/picnic_in_c_p.jpg
     - assets/jazz_fest.jpg
     - assets/st_patrick's_day.jpg
+    - assets/avatar.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
