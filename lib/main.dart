@@ -21,7 +21,6 @@ class Scentia extends StatelessWidget {
       title: 'Card Test',
       theme: ThemeData(
         useMaterial3: true,
-        primarySwatch: Colors.green,
       ),
       home: const BottomBar()
     );

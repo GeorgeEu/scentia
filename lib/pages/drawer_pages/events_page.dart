@@ -1,4 +1,7 @@
+import 'package:card_test/components/events/full_events.dart';
 import 'package:flutter/material.dart';
+
+import '../../data/events_data/events_data.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
@@ -8,20 +11,43 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
+  var events = EventsData();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search_rounded),
+            onPressed: () {
+              // showSearch(context: context, delegate: );
+            },
+          )
+        ],
         leading: IconButton(
             icon: Icon(Icons.arrow_back_rounded),
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Events'),
+        title: Text(
+          'Events',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        // titleSpacing: 0,
       ),
-      body: Center(
-        child: Icon(Icons.event_rounded),
-      ),
+      body: Container(
+        color: const Color(0xffefeff4),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              FullEvents(events.getEvents()),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
+

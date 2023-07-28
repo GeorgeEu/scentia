@@ -57,7 +57,12 @@ class _MyDrawerState extends State<MyDrawer> {
               )),
           ListTile(
             leading: Icon(Icons.event_rounded),
-            title: Text('Events'),
+            title: Text(
+              'Events',
+              style: TextStyle(
+                fontWeight: FontWeight.w500
+              ),
+            ),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => EventsPage()
@@ -66,7 +71,12 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           ListTile(
             leading: Icon(Icons.school_rounded),
-            title: Text('Exams'),
+            title: Text(
+              'Exams',
+              style: TextStyle(
+                  fontWeight: FontWeight.w500
+              ),
+            ),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ExamsPage()
@@ -75,7 +85,12 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           ListTile(
             leading: Icon(Icons.grading_rounded),
-            title: Text('Attendance'),
+            title: Text(
+              'Attendance',
+              style: TextStyle(
+                  fontWeight: FontWeight.w500
+              ),
+            ),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => AttendancePage()
@@ -84,7 +99,12 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           ListTile(
             leading: Icon(Icons.settings_rounded),
-            title: Text('Settings'),
+            title: Text(
+              'Settings',
+              style: TextStyle(
+                  fontWeight: FontWeight.w500
+              ),
+            ),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => SettingsPage()

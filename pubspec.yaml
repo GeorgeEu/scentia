@@ -66,7 +66,11 @@ flutter:
     - assets/jazz_fest.jpg
     - assets/st_patrick's_day.jpg
     - assets/avatar.jpg
-
+    - assets/art_lab_for_kids.jpg
+    - assets/nyc_pride.jpg
+    - assets/zoning_board_meeting.jpg
+    - assets/tribeca_mov.jpg
+    - assets/museum_mile.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

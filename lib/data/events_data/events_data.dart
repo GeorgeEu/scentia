@@ -3,7 +3,7 @@ class EventsData {
     {
       "Date": "April 7, 2023",
       "Name": "Picnic in Central Park",
-      "Desc": "Lorem ipsum dolor sit amet",
+      "Desc": "Lorem ipsum dolor sit",
       "ImagePath": "assets/picnic_in_c_p.jpg"
     },
     {
@@ -15,38 +15,38 @@ class EventsData {
     {
       "Date": "May 19, 2023",
       "Name": "St. Patrick's Day Parade",
-      "Desc": "Lorem ipsum dolor sit amet",
+      "Desc": "Lorem ipsum dolor",
       "ImagePath": "assets/st_patrick's_day.jpg"
     },
     {
       "Date": "April 7, 2023",
       "Name": "NYC Pride",
       "Desc": "Lorem ipsum dolor sit amet",
-      "ImagePath": "assets/red.png"
+      "ImagePath": "assets/nyc_pride.jpg"
     },
     {
       "Date": "May 19, 2023",
       "Name": "Tribeca Movie Festival",
-      "Desc": "Lorem ipsum dolor sit amet",
-      "ImagePath": "assets/blue.png"
+      "Desc": "Lorem ipsum dolor sit",
+      "ImagePath": "assets/tribeca_mov.jpg"
     },
     {
       "Date": "February 9, 2024",
       "Name": "Museum Mile Festival",
-      "Desc": "Lorem ipsum dolor sit amet",
-      "ImagePath": "assets/blue.png"
+      "Desc": "Lorem ipsum",
+      "ImagePath": "assets/museum_mile.jpg"
     },
     {
-      "Date": "February , 2024",
-      "Name": "Museum Mile Festival",
-      "Desc": "Lorem ipsum dolor sit amet",
-      "ImagePath": "assets/blue.png"
+      "Date": " July 27, 2024",
+      "Name": "Art Lab for Kids",
+      "Desc": "Make Your Own Emoji",
+      "ImagePath": "assets/art_lab_for_kids.jpg"
     },
     {
-      "Date": "February 9, 2024",
-      "Name": "Museum Mile Festival",
-      "Desc": "Lorem ipsum dolor sit amet",
-      "ImagePath": "assets/blue.png"
+      "Date": " July 27, 2024",
+      "Name": "Zoning board meeting",
+      "Desc": "Lorem ipsum dolor sit",
+      "ImagePath": "assets/zoning_board_meeting.jpg"
     },
   ];
 

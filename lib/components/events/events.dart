@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'event.dart';
+import '../../pages/drawer_pages/events_page.dart';
+import 'package:card_test/components/events/event.dart';
 
 class Events extends StatelessWidget {
   final List _events;
@@ -28,7 +29,9 @@ class Events extends StatelessWidget {
               if (_events.length > 4) // Check if there are more than 3 events
                 TextButton(
                   onPressed: () {
-                    // Handle button click to open events page
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => EventsPage()
+                    ));
                   },
                   child: Row(
                     children: const [
