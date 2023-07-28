@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'homework_segment.dart';
 
@@ -13,8 +14,9 @@ class Homework extends StatefulWidget {
 
 class _HomeworkState extends State<Homework> {
   String formatDate(int timestamp) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    return '${dateTime.day}-${dateTime.month}';
+    DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    String fdatetime = DateFormat('MMMM dd, yyyy').format(tsdate); // Corrected the format string to 'yyyy'
+    return fdatetime;
   }
   @override
   Widget build(BuildContext context) {
