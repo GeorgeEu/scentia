@@ -14,7 +14,10 @@ class _AttendancePageState extends State<AttendancePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Attendance'
+            'Attendance',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded),

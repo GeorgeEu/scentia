@@ -17,7 +17,10 @@ class _ExamsPageState extends State<ExamsPage> {
             onPressed: () {Navigator.pop(context);}
         ),
         title: Text(
-            'Exams'
+            'Exams',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
       body: Center(

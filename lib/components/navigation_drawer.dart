@@ -4,6 +4,8 @@ import 'package:card_test/pages/drawer_pages/exams_page.dart';
 import 'package:card_test/pages/drawer_pages/settings_page.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/drawer_pages/substitutions_page.dart';
+
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
 
@@ -56,20 +58,6 @@ class _MyDrawerState extends State<MyDrawer> {
                 ],
               )),
           ListTile(
-            leading: Icon(Icons.event_rounded),
-            title: Text(
-              'Events',
-              style: TextStyle(
-                fontWeight: FontWeight.w500
-              ),
-            ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => EventsPage()
-              ));
-            },
-          ),
-          ListTile(
             leading: Icon(Icons.school_rounded),
             title: Text(
               'Exams',
@@ -94,6 +82,34 @@ class _MyDrawerState extends State<MyDrawer> {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => AttendancePage()
+              ));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.change_circle_rounded),
+            title: Text(
+              'Substitutions',
+              style: TextStyle(
+                  fontWeight: FontWeight.w500
+              ),
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => SubstitutionsPage()
+              ));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.event_rounded),
+            title: Text(
+              'Events',
+              style: TextStyle(
+                  fontWeight: FontWeight.w500
+              ),
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EventsPage()
               ));
             },
           ),

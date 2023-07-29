@@ -13,7 +13,10 @@ class _SettingsState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Settings'
+            'Settings',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
         ),
         leading: IconButton(
             icon: Icon(Icons.arrow_back_rounded),
