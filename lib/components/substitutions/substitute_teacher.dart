@@ -36,7 +36,7 @@ class SubstituteTeacher extends StatelessWidget {
                       _substitutions['Guru'].toString(),
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           fontSize: 22
                       ),
                     ),
@@ -44,7 +44,6 @@ class SubstituteTeacher extends StatelessWidget {
                       _substitutions['SubstituteGuru'].toString(),
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
-                          decoration: TextDecoration.lineThrough,
                           fontSize: 16,
                       ),
                     ),

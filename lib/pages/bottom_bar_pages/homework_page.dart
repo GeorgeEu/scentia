@@ -66,7 +66,7 @@ class _Homework_PageState extends State<Homework_Page> {
     );
   }
   Widget _buildHomeworkWidget() {
-    final homework =_homework.getDailyHomework(1693917393000 + 1);
+    // final homework =_homework.getDailyHomework(1693917393000 + 1);
     final weeklyHomework = _homework.getWeeklyHomework(1693917393000 + 1);
     switch (groupValue) {
       case 0:

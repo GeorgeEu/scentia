@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class HomeworkData {
   final _homework = [
     {
@@ -82,8 +84,13 @@ class HomeworkData {
     },
   ];
 
+  String convertTimestampToDayOfWeek(int timestamp) {
+    DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    String fdatetime = DateFormat('EEEE').format(tsdate); // Corrected the format string to 'yyyy'
+    return fdatetime;
+  }
+
   List getHomework() {
-    //  we get homeworks from server here
     return _homework;
   }
 
@@ -105,33 +112,15 @@ class HomeworkData {
   List getWeeklyHomework(int timestamp) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     DateTime day = DateTime(date.year, date.month, date.day);
-    final beginOfDay = day.millisecondsSinceEpoch;
-    final endOfDay = beginOfDay + 24 * 60 * 60 * 1000 - 1;
-    final endOfWeek = endOfDay + 7 * 24 * 60 * 60 * 1000;
-
-    List rawHomework = getHomework();
-    Map<int, List> groupedHomework = {}; // Use a Map to store grouped homework items
-
-    for (var i = 0; i < rawHomework.length; i++) {
-      if (rawHomework[i]['Date'] < beginOfDay) continue;
-      if (rawHomework[i]['Date'] > endOfWeek) continue;
-
-      // Get the date of the current homework item and use it as the key in the Map
-      DateTime homeworkDate = DateTime.fromMillisecondsSinceEpoch(rawHomework[i]['Date']);
-      int homeworkDateKey = DateTime(homeworkDate.year, homeworkDate.month, homeworkDate.day).millisecondsSinceEpoch;
-
-      if (groupedHomework.containsKey(homeworkDateKey)) {
-        groupedHomework[homeworkDateKey]?.add(rawHomework[i]);
-      } else {
-        groupedHomework[homeworkDateKey] = [rawHomework[i]];
-      }
+    final beginOfWeek = day.millisecondsSinceEpoch;
+    final endOfWeek = beginOfWeek + 7 * 24 * 60 * 60 * 1000;
+    List weeklyHomework = [];
+    for (var t = beginOfWeek; t < endOfWeek; t = t + 24 * 60 * 60 * 1000) {
+      weeklyHomework.add({
+        "day": convertTimestampToDayOfWeek(t),
+        "homework": getDailyHomework(t)
+      });
     }
-
-    // Convert the Map values into a flat List
-    List weeklyHomework = groupedHomework.values.expand((homeworkList) => homeworkList).toList();
-
     return weeklyHomework;
   }
-
-  //Here we get a combined a homework by timestamp
 }

@@ -115,7 +115,7 @@ class _BottomBarState extends State<BottomBar> {
             label: "Homework",
           ),
           NavigationDestination(
-            icon: Icon(Icons.grade_rounded),
+            icon: Icon(Icons.text_increase_rounded),
             label: "Grades",
           ),
         ],

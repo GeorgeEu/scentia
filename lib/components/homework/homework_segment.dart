@@ -13,9 +13,11 @@ class HomeworkSegment extends StatefulWidget {
 class _HomeworkSegmentState extends State<HomeworkSegment> {
   String formatDate(int timestamp) {
     DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    String fdatetime = DateFormat('MMM dd, yyyy').format(tsdate); // Corrected the format string to 'yyyy'
+    String fdatetime = DateFormat('EEEE')
+        .format(tsdate); // Corrected the format string to 'yyyy'
     return fdatetime;
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -24,31 +26,16 @@ class _HomeworkSegmentState extends State<HomeworkSegment> {
       textBaseline: TextBaseline.ideographic,
       children: [
         Text(
-          formatDate(widget._homework['Date']),
+          widget._homework['Name'].toString(),
           style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 22,
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
           ),
         ),
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Text(
-                  widget._homework['Name'].toString(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: Colors.grey)),
-            ),
-            Expanded(
-              child: Text(
-                widget._homework['Task'].toString(),
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 23),
-              ),
-            ),
-          ],
+        Text(
+          widget._homework['Task'].toString(),
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 18, color: Colors.grey),
         )
       ],
     );
