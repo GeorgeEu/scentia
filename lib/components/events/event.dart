@@ -9,12 +9,12 @@ class Event extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String formatDate(int timestamp) {
-      DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
-      String fdatetime = DateFormat('MMMM dd, yyyy').format(tsdate); // Corrected the format string to 'yyyy'
+      DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true);
+      String fdatetime = DateFormat('MMMM dd • hh:mm a').format(tsdate);
       return fdatetime;
     }
     return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+      padding: EdgeInsets.only(left: 16, right: 8),
       child: InkWell(
         onTap: () {
           showEventBottomSheet(context);
@@ -57,7 +57,7 @@ class Event extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      _event['Desc'].toString(),
+                      _event['Address'].toString(),
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontSize: 16
@@ -74,8 +74,8 @@ class Event extends StatelessWidget {
   }
   void showEventBottomSheet(BuildContext context) {
     String formatDate(int timestamp) {
-      DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
-      String fdatetime = DateFormat('MMMM dd, yyyy').format(tsdate); // Corrected the format string to 'yyyy'
+      DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true);
+      String fdatetime = DateFormat('MMMM dd • hh:mm a').format(tsdate);
       return fdatetime;
     }
     showModalBottomSheet(
@@ -97,8 +97,8 @@ class Event extends StatelessWidget {
                 children: [
                   Center(
                     child: SizedBox(
-                      width: 300,
-                      height: 250,
+                      width: 350,
+                      height: 216,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.asset(
@@ -125,6 +125,16 @@ class Event extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 30
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      _event['Address'].toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16
+                      ),
                     ),
                   ),
                   Text(

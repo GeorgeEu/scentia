@@ -45,8 +45,8 @@ class Events extends StatelessWidget {
             ],
           ),
           Container(
-            padding: EdgeInsets.only(top: 8, bottom: 8),
-            height: eventsCount * 97 + 16,
+            padding: EdgeInsets.only(top: 16, bottom: 16),
+            height: eventsCount * 102,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.white,
@@ -61,7 +61,7 @@ class Events extends StatelessWidget {
               separatorBuilder: (context, index) {
                 return const Divider(
                     thickness: 0.5,
-                    height: 1,
+                    height: 16,
                     indent: 112.0,
                 );
               },

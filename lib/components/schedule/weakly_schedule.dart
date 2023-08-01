@@ -40,8 +40,8 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
 
     return Column(
       children: [
-        Container(
-          height: 430,
+        SizedBox(
+          height: 431,
           child: PageView.builder(
             padEnds: false,
             controller: pageController,

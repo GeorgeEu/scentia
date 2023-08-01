@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/grades/grades/grades.dart';
-import '../../components/grades/td_grades/todays_grades.dart';
+import '../../components/calendar/calendar.dart';
+import '../../components/grades/grades.dart';
+import '../../components/homework/homework.dart';
 import '../../data/grades_data/grades_data.dart';
-import '../../data/grades_data/td_grades_data.dart';
 
 class Grades_Page extends StatefulWidget {
   const Grades_Page({Key? key}) : super(key: key);
@@ -15,8 +15,7 @@ class Grades_Page extends StatefulWidget {
 
 
 class _Grades_PageState extends State<Grades_Page> {
-  var grades = GradesData();
-  var td_grades = TdGradesData();
+  var _grades = GradesData();
   int? groupValue = 0;
 
   @override
@@ -27,8 +26,8 @@ class _Grades_PageState extends State<Grades_Page> {
         actions: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(bottom: 4, top: 4),
-              decoration: BoxDecoration(
+              height: double.infinity,
+              decoration: const BoxDecoration(
                   border: Border(
                       bottom: BorderSide(color: Colors.grey, width: 0.5))),
               child: Row(
@@ -40,8 +39,9 @@ class _Grades_PageState extends State<Grades_Page> {
                     thumbColor: CupertinoColors.white,
                     groupValue: groupValue,
                     children: {
-                      0: buildSegment('Recent'),
-                      1: buildSegment('All'),
+                      0: buildSegment('Week'),
+                      1: buildSegment('Month'),
+                      2: buildSegment('All')
                     },
                     onValueChanged: (groupValue) {
                       setState(() {
@@ -59,30 +59,24 @@ class _Grades_PageState extends State<Grades_Page> {
         height: double.infinity,
         color: const Color(0xffefeff4),
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8, right: 16, left: 16),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  _buildGradesWidget(),
-                ],
-              ),
-            ),
+          child: Column(
+            children: [
+              _buildGradesWidget()
+            ],
           ),
         ),
       ),
     );
   }
   Widget _buildGradesWidget() {
+    final weeklyGrades = _grades.getWeeklyGrades(1693917393000 + 1);
     switch (groupValue) {
       case 0:
-        return TdGrades(td_grades.getTdGrades());
+        return Grades(weeklyGrades);
       case 1:
-        return Grades(grades.getGrades());
+        return const Calendar();
+      case 2:
+        return const Calendar();
       default:
         return Container();
     }

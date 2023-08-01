@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class HomeworkSegment extends StatefulWidget {
-  final Map<String, dynamic> _homework;
+class GradeSegment extends StatefulWidget {
+  final Map<String, dynamic> _grades;
 
-  HomeworkSegment(this._homework);
+  GradeSegment(this._grades);
 
   @override
-  State<HomeworkSegment> createState() => _HomeworkSegmentState();
+  State<GradeSegment> createState() => _GradeSegmentState();
 }
 
-class _HomeworkSegmentState extends State<HomeworkSegment> {
+class _GradeSegmentState extends State<GradeSegment> {
   String formatDate(int timestamp) {
     DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
     String fdatetime = DateFormat('EEEE')
@@ -26,14 +26,14 @@ class _HomeworkSegmentState extends State<HomeworkSegment> {
       textBaseline: TextBaseline.ideographic,
       children: [
         Text(
-          widget._homework['Name'].toString(),
+          widget._grades['Lesson'].toString(),
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 20,
           ),
         ),
-          Text(
-          widget._homework['Task'].toString(),
+        Text(
+          widget._grades['Grade'].toString(),
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontSize: 18, color: Colors.grey),
         ),

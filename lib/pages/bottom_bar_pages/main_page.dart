@@ -33,6 +33,7 @@ class _MainPageState extends State<Main_Page> {
         drawer: MyDrawer(),
         body: Container(
           color: const Color(0xffefeff4),
+          height: double.infinity,
           child: SingleChildScrollView(
             child: Column(children: [
               const WeeklySchedule(),

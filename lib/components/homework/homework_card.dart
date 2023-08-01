@@ -25,9 +25,7 @@ class _HomeworkCardState extends State<HomeworkCard> {
           child: Container(
             padding: EdgeInsets.only(left: 16, right: 8, top: 8),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.white
-            ),
+                borderRadius: BorderRadius.circular(16), color: Colors.white),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -41,21 +39,30 @@ class _HomeworkCardState extends State<HomeworkCard> {
                     ),
                   ),
                 ),
-                ListView.separated(
-                  padding: EdgeInsets.only(bottom: 8),
-                  primary: false,
-                  shrinkWrap: true,
-                  itemCount: widget._homework[day]['homework'].length,
-                  itemBuilder: (context, index) {
-                    return HomeworkSegment(widget._homework[day]['homework'][index]);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const Divider(
-                      thickness: 0.5,
-                      height: 6,
-                    );
-                  },
-                )
+                (widget._homework[day]['homework'].length > 0)
+                    ? ListView.separated(
+                        padding: EdgeInsets.only(bottom: 8),
+                        primary: false,
+                        shrinkWrap: true,
+                        itemCount: widget._homework[day]['homework'].length,
+                        itemBuilder: (context, index) {
+                          return HomeworkSegment(
+                              widget._homework[day]['homework'][index]);
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider(
+                            thickness: 0.5,
+                            height: 6,
+                          );
+                        },
+                      )
+                    : Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: const Text(
+                        'There is no homework',
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                    ),
               ],
             ),
           ),
@@ -64,4 +71,3 @@ class _HomeworkCardState extends State<HomeworkCard> {
     );
   }
 }
-

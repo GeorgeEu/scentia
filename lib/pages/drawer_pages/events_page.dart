@@ -39,6 +39,7 @@ class _EventsPageState extends State<EventsPage> {
       ),
       body: Container(
         color: const Color(0xffefeff4),
+        height: double.infinity,
         child: SingleChildScrollView(
           child: Column(
             children: [
