@@ -1,4 +1,5 @@
 import 'package:card_test/components/bottom_bar/homework_text_field.dart';
+import 'package:card_test/pages/bottom_bar_pages/create_group_page.dart';
 import 'package:flutter/material.dart';
 
 void showHomeworkBottomSheet(BuildContext context) {
@@ -40,9 +41,13 @@ void showHomeworkBottomSheet(BuildContext context) {
               ),
               HomeworkTextField(),
               ListTile(
-                leading: Icon(Icons.backpack_rounded),
-                title: Text('Create a homework'),
-                onTap: () {},
+                leading: Icon(Icons.people_alt_rounded),
+                title: Text('Create a group'),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CreateGroupPage()
+                  ));
+                },
               ),
             ],
           ),

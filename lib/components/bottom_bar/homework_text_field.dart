@@ -13,6 +13,7 @@ class _HomeworkTextFieldState extends State<HomeworkTextField> {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: TextField(
+        autofocus: true,
         expands: false,
         maxLines: null,
         controller: _controller,

@@ -86,7 +86,8 @@ class GradesData {
 
   String convertTimestampToDayOfWeek(int timestamp) {
     DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    String fdatetime = DateFormat('EEEE').format(tsdate); // Corrected the format string to 'yyyy'
+    String fdatetime = DateFormat('EEEE').format(
+        tsdate); // Corrected the format string to 'yyyy'
     return fdatetime;
   }
 
@@ -108,6 +109,7 @@ class GradesData {
     }
     return grades;
   }
+
   // FROM ABOVE We get daily homework FROM BELOW We get weekly homework
   List getWeeklyGrades(int timestamp) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
@@ -123,5 +125,4 @@ class GradesData {
     }
     return weeklyGrades;
   }
-
 }
