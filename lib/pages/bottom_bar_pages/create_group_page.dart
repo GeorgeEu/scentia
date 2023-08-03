@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../components/create_group_text_field.dart';
+import '../../components/search_people_text_field.dart';
+
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({Key? key}) : super(key: key);
 
@@ -31,7 +34,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           padding: const EdgeInsets.only(left: 16, right: 16, top: 24),
           child: Column(
             children: [
-              TextField()
+              CreateGroupTextField(),
+              SearchPeopleTextField()
             ],
           ),
         ),
