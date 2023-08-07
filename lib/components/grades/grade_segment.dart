@@ -29,13 +29,13 @@ class _GradeSegmentState extends State<GradeSegment> {
           widget._grades['Lesson'].toString(),
           style: TextStyle(
             fontWeight: FontWeight.w500,
-            fontSize: 20,
+            fontSize: 22,
           ),
         ),
         Text(
           widget._grades['Grade'].toString(),
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 18, color: Colors.grey),
+          style: const TextStyle(fontSize: 20, color: Colors.grey),
         ),
       ],
     );

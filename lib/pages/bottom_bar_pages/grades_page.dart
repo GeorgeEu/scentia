@@ -16,9 +16,8 @@ class Grades_Page extends StatefulWidget {
 
 
 class _Grades_PageState extends State<Grades_Page> {
-  var _grades = GradesData();
+  final _grades = GradesData();
   int? groupValue = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,13 +70,14 @@ class _Grades_PageState extends State<Grades_Page> {
   }
   Widget _buildGradesWidget() {
     final weeklyGrades = _grades.getWeeklyGrades(1693917393000 + 1);
+    final grades = _grades.getSubjectGrades();
     switch (groupValue) {
       case 0:
         return Grades(weeklyGrades);
       case 1:
         return const Calendar();
       case 2:
-        return Calendar();
+        return LessonGrades(grades);
       default:
         return Container();
     }

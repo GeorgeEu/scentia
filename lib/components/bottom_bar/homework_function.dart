@@ -20,7 +20,7 @@ void showHomeworkBottomSheet(BuildContext context) {
                 child: Row(
                   children: [
                     Text(
-                      'Create',
+                      'Create homework',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 22,

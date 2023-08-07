@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../components/create_group_text_field.dart';
-import '../../components/search_people_text_field.dart';
+import '../../components/text_fields/create_group_text_field.dart';
+import '../../components/text_fields/search_people_text_field.dart';
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({Key? key}) : super(key: key);

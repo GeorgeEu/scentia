@@ -1,9 +1,5 @@
-import 'package:card_test/components/grades/grade_segment.dart';
-import 'package:card_test/components/homework/homework_card.dart';
+import 'package:card_test/components/grades/lesson_grades_segment.dart';
 import 'package:flutter/material.dart';
-
-import 'grade_card.dart';
-
 
 class LessonGrades extends StatefulWidget {
   final List _grades;
@@ -17,13 +13,16 @@ class LessonGrades extends StatefulWidget {
 class _LessonGradesState extends State<LessonGrades> {
   @override
   Widget build(BuildContext context) {
-    var gradesCount = widget._grades.length; //fix it later
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-      child: Column(
-        children: [
-          GradeCard(widget._grades)
-        ],
+      child: ListView.builder(
+        primary: false,
+        shrinkWrap: true,
+        itemCount: widget._grades.length,
+        itemBuilder: (context, index) {
+          var grades = widget._grades[index];
+          return LessonGradesSegment(grades);
+        },
       ),
     );
   }

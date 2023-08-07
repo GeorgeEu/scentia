@@ -5,7 +5,7 @@ class GradesData {
     {
       "Date": 1693830993000,
       "Lesson": "Chemistry",
-      "Grade": "10"
+      "Grade": "11"
     },
     {
       "Date": 1693830993000,
@@ -20,12 +20,17 @@ class GradesData {
     {
       "Date": 1693917393000,
       "Lesson": "IELTS",
-      "Grade": "10"
+      "Grade": "11"
     },
     {
       "Date": 1693917393000,
       "Lesson": "SAT",
       "Grade": "10"
+    },
+    {
+      "Date": 1693917393000,
+      "Lesson": "SAT",
+      "Grade": "9"
     },
     {
       "Date": 1693917393000,
@@ -36,6 +41,11 @@ class GradesData {
       "Date": 1693917393000,
       "Lesson": "Geography",
       "Grade": "10"
+    },
+    {
+      "Date": 1693917393000,
+      "Lesson": "Geography",
+      "Grade": "9"
     },
     {
       "Date": 1694003793000,
@@ -124,5 +134,23 @@ class GradesData {
       });
     }
     return weeklyGrades;
+  }
+
+  List getSubjectGrades() {
+    final grades = getGrades();
+    var subjects = Set<String>();
+    grades.forEach((grade) => subjects.add(grade['Lesson']));
+    List allSubjectGrades = [];
+    subjects.forEach((subject) {
+      List subjectGrades = [];
+      List marks = [];
+      marks = grades.where((grade) => grade['Lesson'] == subject).toList();
+      subjectGrades.add({
+        "Lesson": subject,
+        "Grades": marks
+      });
+      allSubjectGrades.add(subjectGrades);
+    });
+    return allSubjectGrades;
   }
 }

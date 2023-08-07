@@ -14,8 +14,8 @@ class _HomeworkTextFieldState extends State<HomeworkTextField> {
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: TextField(
         autofocus: true,
-        expands: false,
-        maxLines: null,
+        minLines: 1,
+        maxLines: 6,
         controller: _controller,
         decoration: InputDecoration(
           labelText: null,

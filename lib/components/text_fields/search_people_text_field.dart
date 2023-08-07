@@ -15,7 +15,7 @@ class _SearchPeopleTextFieldState extends State<SearchPeopleTextField> {
       child: TextField(
         expands: false,
         controller: _controller,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.grey), // Change the color for focused state
             ),

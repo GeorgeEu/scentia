@@ -36,7 +36,7 @@ class _GradeCardState extends State<GradeCard> {
                     widget._grades[day]['day'].toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 26,
+                      fontSize: 28,
                     ),
                   ),
                 ),

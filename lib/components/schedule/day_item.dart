@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 class DayItem extends StatelessWidget {
   final Map<String, dynamic> _day;
 
-  DayItem(
-    this._day,
-  );
+  DayItem (this._day,);
 
   @override
   Widget build(BuildContext context) {
