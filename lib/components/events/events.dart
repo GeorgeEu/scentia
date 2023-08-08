@@ -10,7 +10,7 @@ class Events extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var eventsCount = _events.length > 3 ? 3 : _events.length;
+    var eventsCount = 3;
     return Container(
       // width: double.infinity,
       padding: const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 32),
@@ -45,8 +45,8 @@ class Events extends StatelessWidget {
             ],
           ),
           Container(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-            height: eventsCount * 102,
+            height: eventsCount * 100,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.white,

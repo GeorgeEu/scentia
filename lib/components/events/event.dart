@@ -89,7 +89,7 @@ class Event extends StatelessWidget {
           return SizedBox(
             width: double.infinity,
             child: Padding(
-              padding: EdgeInsets.only(bottom: 8, left: 16, right: 16),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,16 +108,13 @@ class Event extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Text(
-                      formatDate(_event['Date']),
-                      style: TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.grey,
-                          fontSize: 16
-                      ),
+                  Text(
+                    formatDate(_event['Date']),
+                    style: TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.grey,
+                        fontSize: 16
                     ),
                   ),
                   Text(

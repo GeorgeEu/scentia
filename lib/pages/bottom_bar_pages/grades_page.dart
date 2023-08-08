@@ -40,8 +40,7 @@ class _Grades_PageState extends State<Grades_Page> {
                     groupValue: groupValue,
                     children: {
                       0: buildSegment('Week'),
-                      1: buildSegment('Month'),
-                      2: buildSegment('All')
+                      1: buildSegment('All')
                     },
                     onValueChanged: (groupValue) {
                       setState(() {
@@ -75,8 +74,6 @@ class _Grades_PageState extends State<Grades_Page> {
       case 0:
         return Grades(weeklyGrades);
       case 1:
-        return const Calendar();
-      case 2:
         return LessonGrades(grades);
       default:
         return Container();

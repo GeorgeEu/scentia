@@ -10,13 +10,13 @@ class DayItem extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 16, left: 16),
+          padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(16)),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(top: 11, bottom: 11, left: 16, right: 8),
               child: Column(
                 children: [
                   SizedBox(

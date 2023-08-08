@@ -41,7 +41,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     return Column(
       children: [
         SizedBox(
-          height: 431,
+          height: 400,
           child: PageView.builder(
             padEnds: false,
             controller: pageController,
