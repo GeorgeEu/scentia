@@ -1,7 +1,7 @@
-import 'package:card_test/pages/drawer_pages/attendance_page.dart';
-import 'package:card_test/pages/drawer_pages/events_page.dart';
-import 'package:card_test/pages/drawer_pages/exams_page.dart';
-import 'package:card_test/pages/drawer_pages/settings_page.dart';
+import 'package:scientia/pages/drawer_pages/attendance_page.dart';
+import 'package:scientia/pages/drawer_pages/events_page.dart';
+import 'package:scientia/pages/drawer_pages/exams_page.dart';
+import 'package:scientia/pages/drawer_pages/settings_page.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/drawer_pages/substitutions_page.dart';

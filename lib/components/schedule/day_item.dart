@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DayItem extends StatelessWidget {
-  final Map<String, dynamic> _day;
+  final day;
 
-  DayItem (this._day,);
+  DayItem (this.day);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+          padding: const EdgeInsets.only(bottom: 16, left: 16),
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -26,22 +27,17 @@ class DayItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            _day['Date'],
+                            day['day'],
                             style: const TextStyle(
-                                color: Colors.grey, fontSize: 16),
-                          ),
-                          Text(
-                            _day['Day'],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 32,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 30,
                             ),
                           )
                         ]),
                   ),
                   Column(
                     children: [
-                      for (var lesson in _day['Schedule'])
+                      for (var lesson in day['schedule'])
                         Container(
                           padding: const EdgeInsets.only(top: 8),
                           child: Row(

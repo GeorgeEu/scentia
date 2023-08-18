@@ -1,4 +1,4 @@
-import 'package:card_test/components/calendar/calendar.dart';
+import 'package:scientia/components/calendar/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -66,7 +66,6 @@ class _Homework_PageState extends State<Homework_Page> {
     );
   }
   Widget _buildHomeworkWidget() {
-    // final homework =_homework.getDailyHomework(1693917393000 + 1);
     final weeklyHomework = _homework.getWeeklyHomework(1693917393000 + 1);
     switch (groupValue) {
       case 0:

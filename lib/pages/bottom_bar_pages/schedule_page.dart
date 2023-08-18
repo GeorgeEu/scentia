@@ -1,7 +1,9 @@
-import 'package:card_test/components/calendar/calendar.dart';
+import 'package:scientia/components/calendar/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../components/schedule/first_week_schedule.dart';
+//import '../../data/schedule_data/schedule_data.dart';
+import "package:scientia/data/schedule_data/schedule_data.dart";
 
 class Schedule_Page extends StatefulWidget {
   const Schedule_Page({Key? key}) : super(key: key);
@@ -13,7 +15,7 @@ class Schedule_Page extends StatefulWidget {
 class _Schedule_PageState extends State<Schedule_Page> {
   late Map<String, dynamic> _day;
   int? groupValue = 0;
-
+  final schedule = ScheduleData();
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +67,19 @@ class _Schedule_PageState extends State<Schedule_Page> {
     );
   }
   Widget _buildScheduleWidget() {
+    final firstWeekSchedule = schedule.getWeeklySchedule(1678723200000);
+    final secondWeekSchedule = schedule.getSecondWeekSchedule(1678723200000);
     switch (groupValue) {
       case 0:
-        return const Padding(
-          padding: EdgeInsets.only(top: 16),
-          child: FirstWeekSchedule(),
+        return Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: FirstWeekSchedule(firstWeekSchedule),
         );
       case 1:
-        return Calendar();
+        return Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: FirstWeekSchedule(secondWeekSchedule),
+        );
       default:
         return Container();
     }

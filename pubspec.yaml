@@ -1,4 +1,4 @@
-name: card_test
+name: scientia
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -33,6 +33,7 @@ dependencies:
     sdk: flutter
   dots_indicator: ^2.1.0
   intl: ^0.18.1
+  google_sign_in: ^6.1.4
 
 
   # The following adds the Cupertino Icons font to your application.

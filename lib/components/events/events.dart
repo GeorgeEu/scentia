@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../pages/drawer_pages/events_page.dart';
-import 'package:card_test/components/events/event.dart';
+import 'package:scientia/components/events/event.dart';
 
 class Events extends StatelessWidget {
   final List _events;
@@ -12,34 +12,36 @@ class Events extends StatelessWidget {
   Widget build(BuildContext context) {
     var eventsCount = 3;
     return Container(
-      // width: double.infinity,
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 32),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
       child: Column(
         children: [
           Row(
             children: [
               const Text(
-                'Among Weekly Events',
+                'Events',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 24,
+                  fontSize: 22,
                 ),
               ),
               const Spacer(),
               if (_events.length > 4) // Check if there are more than 3 events
                 TextButton(
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => EventsPage()
                     ));
                   },
-                  child: Row(
-                    children: const [
-                      Text(
-                        'More',
-                      ),
-                      Icon(Icons.chevron_right_rounded),
-                    ],
+                  child: Text(
+                    'Show More',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400
+                    ),
                   ),
                 ),
             ],

@@ -1,3 +1,6 @@
+import 'package:scientia/components/attendance/full_absence_segment.dart';
+import 'package:scientia/components/attendance/full_attendance.dart';
+import 'package:scientia/data/attendance_data/attendance_data.dart';
 import 'package:flutter/material.dart';
 
 class AttendancePage extends StatefulWidget {
@@ -8,9 +11,11 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    final attendance = AttendanceData();
+    final semesterAttendance = attendance.getSemesterAttendance();
+    // print(monthlyAttendance);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -24,9 +29,18 @@ class _AttendancePageState extends State<AttendancePage> {
           onPressed: () {Navigator.pop(context);}
         ),
       ),
-      body: Center(
-        child: Icon(Icons.event_rounded),
-      ),
+      body: Container(
+        color: const Color(0xffefeff4),
+        height: double.infinity,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              FullAttendance(semesterAttendance)
+            ],
+          ),
+        ),
+      )
     );
   }
 }
+

@@ -1,5 +1,5 @@
-import 'package:card_test/components/substitutions/substitute_teachers.dart';
-import 'package:card_test/data/substitute_data/substitutions_data.dart';
+import 'package:scientia/components/substitutions/substitute_teachers.dart';
+import 'package:scientia/data/substitute_data/substitutions_data.dart';
 import 'package:flutter/material.dart';
 
 

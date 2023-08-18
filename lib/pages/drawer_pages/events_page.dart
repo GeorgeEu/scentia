@@ -1,4 +1,4 @@
-import 'package:card_test/components/events/full_events.dart';
+import 'package:scientia/components/events/full_events.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/events_data/events_data.dart';

@@ -1,18 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../pages/drawer_pages/events_page.dart';
-import 'package:scientia/components/events/event.dart';
 
-import 'full_event.dart';
+import 'exams_segment.dart';
 
-class FullEvents extends StatelessWidget {
-  final List _events;
+class Exams extends StatelessWidget {
+  final List _exams;
 
-  const FullEvents(this._events);
+  Exams(this._exams);
 
   @override
   Widget build(BuildContext context) {
-    var eventsCount = _events.length;
+    var examsCount = _exams.length;
     return Container(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
       child: Column(
@@ -20,9 +17,9 @@ class FullEvents extends StatelessWidget {
           ListView.builder(
             primary: false,
             shrinkWrap: true,
-            itemCount: eventsCount,
+            itemCount: examsCount,
             itemBuilder: (context, index) {
-              return FullEvent(_events[index]);
+              return ExamsSegment(_exams[index]);
             },
           ),
         ],

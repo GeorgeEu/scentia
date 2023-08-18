@@ -1,5 +1,5 @@
-import 'package:card_test/components/bottom_bar/homework_text_field.dart';
-import 'package:card_test/pages/bottom_bar_pages/create_group_page.dart';
+import 'package:scientia/components/bottom_bar/homework_text_field.dart';
+import 'package:scientia/pages/bottom_bar_pages/create_group_page.dart';
 import 'package:flutter/material.dart';
 
 void showHomeworkBottomSheet(BuildContext context) {

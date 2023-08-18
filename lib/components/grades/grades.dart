@@ -1,4 +1,4 @@
-import 'package:card_test/components/homework/homework_card.dart';
+import 'package:scientia/components/homework/homework_card.dart';
 import 'package:flutter/material.dart';
 
 import 'grade_card.dart';

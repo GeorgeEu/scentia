@@ -1,11 +1,12 @@
-import 'package:card_test/components/schedule/day_item.dart';
+import 'package:scientia/components/schedule/day_item.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:card_test/data/schedule_data/schedule_data.dart';
+import 'package:scientia/data/schedule_data/schedule_data.dart';
 
 
 class WeeklySchedule extends StatefulWidget {
-  const WeeklySchedule({Key? key}) : super(key: key);
+  List firstWeekSchedule;
+  WeeklySchedule(this.firstWeekSchedule, {super.key});
 
   @override
   State<WeeklySchedule> createState() => _WeeklyScheduleState();
@@ -36,36 +37,31 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
 
   @override
   Widget build(BuildContext context) {
+    var days = widget.firstWeekSchedule;
+    // print(days);
     const int pageCount = 5;
 
     return Column(
       children: [
-        SizedBox(
-          height: 400,
-          child: PageView.builder(
-            padEnds: false,
-            controller: pageController,
-            itemCount: pageCount,
-            itemBuilder: (context, position) {
-              // Check if it's the last index
-              bool isLastPage = position == pageCount - 1;
-
-              return IndexedStack(
-                index: isLastPage ? 1 : 0,
-                children: [
-                  // Page content with safe area
-                  _buildScheduleItem(position),
-                  // Last page with padding
-                  if (isLastPage)
-                    Container(
-                      padding: EdgeInsets.only(right: 16),
-                      child: SafeArea(
-                        child: _buildScheduleItem(position),
-                      ),
-                    ),
-                ],
-              );
-            },
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: SizedBox(
+            height: 370,
+            child: PageView.builder(
+              padEnds: false,
+              controller: pageController,
+              itemCount: pageCount,
+              itemBuilder: (context, index) {
+                bool isLastPage = index == pageCount - 1;
+                EdgeInsets itemPadding = isLastPage
+                    ? const EdgeInsets.only(right: 16) // Adjust the padding value as needed
+                    : EdgeInsets.zero;
+                return Padding(
+                  padding: itemPadding,
+                  child: DayItem(days[index]),
+                );
+              },
+            ),
           ),
         ),
         DotsIndicator(
@@ -80,10 +76,5 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
         ),
       ],
     );
-  }
-  Widget _buildScheduleItem(int index){
-    var lessons = ScheduleData();
-    var days = lessons.getSchedule();
-    return DayItem(days[index]);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:card_test/components/substitutions/substitute_teacher.dart';
+import 'package:scientia/components/substitutions/substitute_teacher.dart';
 
 class SubstituteTeachers extends StatelessWidget {
   final List _substitutions;

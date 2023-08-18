@@ -1,8 +1,9 @@
+import 'package:intl/intl.dart';
+
 class ScheduleData {
   final _schedule = [
     {
-      "Day": "Monday",
-      "Date": "April 10,2023",
+      "Date": 1678723200000,
       "Schedule": [
         {
           "Name": "American History",
@@ -35,8 +36,7 @@ class ScheduleData {
       ]
     },
     {
-      "Day": "Tuesday",
-      "Date": "April 11,2023",
+      "Date": 1678809600000,
       "Schedule": [
         {
           "Name": "English",
@@ -69,8 +69,7 @@ class ScheduleData {
       ]
     },
     {
-      "Day": "Wednesday",
-      "Date": "April 12,2023",
+      "Date": 1678896000000,
       "Schedule": [
         {
           "Name": "History",
@@ -103,8 +102,7 @@ class ScheduleData {
       ]
     },
     {
-      "Day": "Thursday",
-      "Date": "April 13,2023",
+      "Date": 1678982400000,
       "Schedule": [
         {
           "Name": "SAT",
@@ -137,8 +135,7 @@ class ScheduleData {
       ]
     },
     {
-      "Day": "Friday",
-      "Date": "April 14,2023",
+      "Date": 1679068800000,
       "Schedule": [
         {
           "Name": "Physics",
@@ -165,9 +162,210 @@ class ScheduleData {
           "Time": "13:30"
         }
       ]
-    }
+    },
+    {
+      "Date": 1679328000000,
+      "Schedule": [
+        {
+          "Name": "Physics",
+          "Time": "09:00"
+        },
+        {
+          "Name": "Biology",
+          "Time": "09:55"
+        },
+        {
+          "Name": "Chemistry",
+          "Time": "10:45"
+        },
+        {
+          "Name": "English",
+          "Time": "11:40"
+        },
+        {
+          "Name": "Math",
+          "Time": "12:35"
+        },
+        {
+          "Name": "Georgian",
+          "Time": "13:30"
+        }
+      ]
+    },
+    {
+      "Date": 1679414400000,
+      "Schedule": [
+        {
+          "Name": "Physics",
+          "Time": "09:00"
+        },
+        {
+          "Name": "11",
+          "Time": "09:55"
+        },
+        {
+          "Name": "22",
+          "Time": "10:45"
+        },
+        {
+          "Name": "33",
+          "Time": "11:40"
+        },
+        {
+          "Name": "Math",
+          "Time": "12:35"
+        },
+        {
+          "Name": "Georgian",
+          "Time": "13:30"
+        }
+      ]
+    },
+    {
+      "Date": 1679500800000,
+      "Schedule": [
+        {
+          "Name": "Physics",
+          "Time": "09:00"
+        },
+        {
+          "Name": "Biology",
+          "Time": "09:55"
+        },
+        {
+          "Name": "Chemistry",
+          "Time": "10:45"
+        },
+        {
+          "Name": "English",
+          "Time": "11:40"
+        },
+        {
+          "Name": "Math",
+          "Time": "12:35"
+        },
+        {
+          "Name": "Georgian",
+          "Time": "13:30"
+        }
+      ]
+    },
+    {
+      "Date": 1679587200000,
+      "Schedule": [
+        {
+          "Name": "Physics",
+          "Time": "09:00"
+        },
+        {
+          "Name": "Biology",
+          "Time": "09:55"
+        },
+        {
+          "Name": "Chemistry",
+          "Time": "10:45"
+        },
+        {
+          "Name": "English",
+          "Time": "11:40"
+        },
+        {
+          "Name": "Math",
+          "Time": "12:35"
+        },
+        {
+          "Name": "Georgian",
+          "Time": "13:30"
+        }
+      ]
+    },
+    {
+      "Date": 1679673600000,
+      "Schedule": [
+        {
+          "Name": "Physics",
+          "Time": "09:00"
+        },
+        {
+          "Name": "Biology",
+          "Time": "09:55"
+        },
+        {
+          "Name": "Chemistry",
+          "Time": "10:45"
+        },
+        {
+          "Name": "English",
+          "Time": "11:40"
+        },
+        {
+          "Name": "Math",
+          "Time": "12:35"
+        },
+        {
+          "Name": "Georgian",
+          "Time": "13:30"
+        }
+      ]
+    },
   ];
+
+
+  String convertTimestampToDayOfWeek(int timestamp) {
+    DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    String fdatetime = DateFormat('EEEE').format(tsdate); // Corrected the format string to 'yyyy'
+    return fdatetime;
+  }
+
   List getSchedule() {
     return _schedule;
+  }
+
+
+  List getDailySchedule(int timestamp) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateTime day = DateTime(date.year, date.month, date.day);
+    final beginOftDay = day.millisecondsSinceEpoch;
+    final endOfDay = beginOftDay + 24 * 60 * 60 * 1000 - 1;
+    List rawDaySchedule = getSchedule();
+    List schedule = [];
+    for (var i = 0; i < rawDaySchedule.length; i++) {
+      if (rawDaySchedule[i]['Date'] < beginOftDay) continue;
+      if (rawDaySchedule[i]['Date'] > endOfDay) continue;
+      schedule = rawDaySchedule[i]["Schedule"];
+    }
+    return schedule;
+  }
+
+  List getWeeklySchedule(int timestamp) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateTime day = DateTime(date.year, date.month, date.day);
+    final beginOfWeek = day.millisecondsSinceEpoch;
+    final endOfWeek = beginOfWeek + 7 * 24 * 60 * 60 * 1000;
+    List weeklySchedule = [];
+    for (var t = beginOfWeek; t < endOfWeek; t = t + 24 * 60 * 60 * 1000) {
+      weeklySchedule.add({
+        'day': convertTimestampToDayOfWeek(t),
+        "schedule": getDailySchedule(t),
+      });
+    }
+    return weeklySchedule;
+  }
+
+  List getSecondWeekSchedule(int timestamp) {
+    final secondWeekBegin = timestamp + 7 * 24 * 60 * 60 * 1000 + 1;
+    final secondWeekSchedule = getWeeklySchedule(secondWeekBegin);
+    /*DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateTime day = DateTime(date.year, date.month, date.day);
+    final beginOfWeek = day.millisecondsSinceEpoch  + 7 * 24 * 60 * 60 * 1000 + 1;
+    final endOfWeek = beginOfWeek + 14 * 24 * 60 * 60 * 1000;
+    List weeklySchedule = [];
+    for (var t = beginOfWeek; t < endOfWeek; t = t + 24 * 60 * 60 * 1000) {
+      weeklySchedule.add({
+        'day': convertTimestampToDayOfWeek(t),
+        "schedule": getDailySchedule(t),
+      });
+    }*/
+    return secondWeekSchedule;
   }
 }

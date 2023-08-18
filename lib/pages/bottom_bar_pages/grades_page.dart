@@ -1,4 +1,4 @@
-import 'package:card_test/components/grades/lesson_grades.dart';
+import 'package:scientia/components/grades/lesson_grades.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

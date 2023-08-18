@@ -1,5 +1,5 @@
 
-import 'package:card_test/components/bottom_bar/bottom_bar.dart';
+import 'package:scientia/components/bottom_bar/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

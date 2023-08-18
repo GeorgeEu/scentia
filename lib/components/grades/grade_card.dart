@@ -42,28 +42,28 @@ class _GradeCardState extends State<GradeCard> {
                 ),
                 (widget._grades[day]['grades'].length > 0)
                     ? ListView.separated(
-                  padding: EdgeInsets.only(bottom: 8),
-                  primary: false,
-                  shrinkWrap: true,
-                  itemCount: widget._grades[day]['grades'].length,
-                  itemBuilder: (context, index) {
-                    return GradeSegment(
-                        widget._grades[day]['grades'][index]);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const Divider(
-                      thickness: 0.5,
-                      height: 6,
-                    );
-                  },
-                )
+                        padding: EdgeInsets.only(bottom: 8),
+                        primary: false,
+                        shrinkWrap: true,
+                        itemCount: widget._grades[day]['grades'].length,
+                        itemBuilder: (context, index) {
+                          return GradeSegment(
+                              widget._grades[day]['grades'][index]);
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider(
+                            thickness: 0.5,
+                            height: 6,
+                          );
+                        },
+                      )
                     : Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: const Text(
-                    "There aren't any grades",
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
-                  ),
-                ),
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: const Text(
+                          "There aren't any grades",
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
+                      ),
               ],
             ),
           ),

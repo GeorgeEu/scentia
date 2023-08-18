@@ -1,8 +1,11 @@
-import 'package:card_test/components/events/events.dart';
-import 'package:card_test/components/schedule/weakly_schedule.dart';
+import 'package:scientia/components/attendance/summary_attendance/attendace.dart';
+import 'package:scientia/components/events/events.dart';
+import 'package:scientia/components/schedule/weakly_schedule.dart';
 import 'package:flutter/material.dart';
-import 'package:card_test/data/events_data/events_data.dart';
-import 'package:card_test/components/navigation_drawer.dart';
+import 'package:scientia/data/events_data/events_data.dart';
+import 'package:scientia/components/navigation_drawer.dart';
+import 'package:scientia/data/schedule_data/schedule_data.dart';
+import 'package:scientia/data/attendance_data/attendance_data.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({Key? key}) : super(key: key);
@@ -13,10 +16,13 @@ class Main_Page extends StatefulWidget {
 
 class _MainPageState extends State<Main_Page> {
   var events = EventsData();
+  final weeklySchedule = ScheduleData();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    final attendance = AttendanceData();
+    final allAttendance = attendance.getAllAttendance(1630453200000);
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
@@ -36,8 +42,9 @@ class _MainPageState extends State<Main_Page> {
           height: double.infinity,
           child: SingleChildScrollView(
             child: Column(children: [
-              const WeeklySchedule(),
+              WeeklySchedule(weeklySchedule.getWeeklySchedule(1678723200000)),
               Events(events.getEvents()),
+              Attendace(allAttendance),
             ]),
           ),
         ));

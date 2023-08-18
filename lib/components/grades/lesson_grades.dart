@@ -1,4 +1,4 @@
-import 'package:card_test/components/grades/lesson_grades_segment.dart';
+import 'package:scientia/components/grades/lesson_grades_segment.dart';
 import 'package:flutter/material.dart';
 
 class LessonGrades extends StatefulWidget {
