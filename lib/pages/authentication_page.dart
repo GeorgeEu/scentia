@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scientia/components/api/google_signin_api.dart';
 import 'package:scientia/components/bottom_bar/bottom_bar.dart';
 import 'package:flutter_emoji/flutter_emoji.dart';
+import 'package:scientia/services/auth_services.dart';
 
 class AuthenticationPage extends StatelessWidget {
   const AuthenticationPage({Key? key}) : super(key: key);
@@ -32,10 +32,8 @@ class AuthenticationPage extends StatelessWidget {
                   children: [
                     Text(
                       'Welcome to Scientia!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18
-                      ),
+                      style:
+                          TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                     ),
                   ],
                 ),
@@ -70,26 +68,29 @@ class AuthenticationPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  var user = await GoogleSignInApi.login();
-                  if (user != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomBar(user: user),
-                      ),
-                    );
-                  }
+                  await AuthService().signInwithGoogle(); // Wait for sign-in to complete
+                  Navigator.pushReplacement(
+                    // Use pushReplacement to replace the current route
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BottomBar()), // Replace with your BottomBar widget
+                  );
                 },
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.grey.shade300),
-                  backgroundColor: MaterialStateProperty.all(Colors.white), // Change background color to grey
+                  backgroundColor: MaterialStateProperty.all(Colors.white),
+                  // Change background color to grey
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: Colors.grey.shade300),// Set border radius to 8
+                      side: BorderSide(
+                          color:
+                              Colors.grey.shade300), // Set border radius to 8
                     ),
                   ),
-                  alignment: Alignment.center, // Align the content to the center
+                  alignment: Alignment.center,
+                  // Align the content to the center
                   elevation: MaterialStateProperty.all(0.1),
                 ),
                 child: Row(
@@ -104,9 +105,7 @@ class AuthenticationPage extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         'Continue with Google',
-                        style: TextStyle(
-                            color: Colors.black
-                        ),
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ],
@@ -117,15 +116,20 @@ class AuthenticationPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(Colors.grey.shade300),
-                    backgroundColor: MaterialStateProperty.all(Colors.white), // Change background color to grey
+                    overlayColor:
+                        MaterialStateProperty.all(Colors.grey.shade300),
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    // Change background color to grey
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Colors.grey.shade300),// Set border radius to 8
+                        side: BorderSide(
+                            color:
+                                Colors.grey.shade300), // Set border radius to 8
                       ),
                     ),
-                    alignment: Alignment.center, // Align the content to the center
+                    alignment: Alignment.center,
+                    // Align the content to the center
                     elevation: MaterialStateProperty.all(0.1),
                   ),
                   child: Row(
@@ -140,9 +144,7 @@ class AuthenticationPage extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 8),
                         child: Text(
                           'Continue with Apple',
-                          style: TextStyle(
-                              color: Colors.black
-                          ),
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ],
@@ -156,9 +158,7 @@ class AuthenticationPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 16),
                 child: Text(
                   "If you don't have a Google or Apple account, you'll have to create one",
-                  style: TextStyle(
-                    color: Colors.grey.shade700
-                  ),
+                  style: TextStyle(color: Colors.grey.shade700),
                 ),
               )
             ],

@@ -7,14 +7,22 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:541209528339:android:004cd0484418a0087a97e6",
+        "mobilesdk_app_id": "1:541209528339:android:8940d1617e040ffb7a97e6",
         "android_client_info": {
           "package_name": "com.example.scientia"
         }
       },
       "oauth_client": [
         {
-          "client_id": "541209528339-vo9lvf241spfpf53trvmn133cjsiecgt.apps.googleusercontent.com",
+          "client_id": "541209528339-a31h3ldiuregvkoir700efkue0mfn82o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scientia",
+            "certificate_hash": "406568bcde358322572312805b1e97ac61f1c7a7"
+          }
+        },
+        {
+          "client_id": "541209528339-sprqrtp651ccfu9fa2scskqraqr0d3ad.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "541209528339-vo9lvf241spfpf53trvmn133cjsiecgt.apps.googleusercontent.com",
+              "client_id": "541209528339-sprqrtp651ccfu9fa2scskqraqr0d3ad.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -1,17 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scientia/pages/authentication_page.dart';
 import 'package:scientia/pages/drawer_pages/attendance_page.dart';
 import 'package:scientia/pages/drawer_pages/events_page.dart';
 import 'package:scientia/pages/drawer_pages/exams_page.dart';
 import 'package:scientia/pages/drawer_pages/settings_page.dart';
-import 'package:flutter/material.dart';
-import 'package:scientia/components/api/google_signin_api.dart'; // Make sure this is the correct path to your GoogleSignInApi
+import 'package:flutter/material.dart'; // Make sure this is the correct path to your GoogleSignInApi
+import 'package:scientia/services/auth_services.dart';
 import '../pages/drawer_pages/substitutions_page.dart';
 
 class MyDrawer extends StatefulWidget {
-  final GoogleSignInAccount user;
-
-  const MyDrawer({super.key, required this.user});
+  const MyDrawer({Key? key}) : super(key: key);
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -20,8 +19,7 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
-     // print('**************');
-     // print(widget.user);
+    final user = FirebaseAuth.instance.currentUser!;
     return Drawer(
       backgroundColor: Color(0xffefeff4),
       child: ListView(
@@ -36,24 +34,10 @@ class _MyDrawerState extends State<MyDrawer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  widget.user.photoUrl != null
-                      ? CircleAvatar(
-                          radius: 40,
-                          backgroundImage: NetworkImage(widget.user.photoUrl!),
-                        )
-                      : CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Colors.green.shade500,
-                          // You can set any color you want
-                          child: Text(
-                            widget.user.displayName![0].toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(user.photoURL!),
+                  ),
                   Spacer(),
                   Row(
                     children: [
@@ -62,12 +46,12 @@ class _MyDrawerState extends State<MyDrawer> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            widget.user.displayName!,
+                            user.displayName!,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            widget.user.email,
+                            user.email!,
                             style: TextStyle(fontSize: 14, color: Colors.grey),
                           ),
                         ],
@@ -76,7 +60,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          await GoogleSignInApi.logout(); // Corrected line
+                          await AuthService().logout();
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute(
                             builder: (context) => AuthenticationPage(),

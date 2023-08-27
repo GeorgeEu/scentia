@@ -7,8 +7,8 @@ import '../../pages/bottom_bar_pages/homework_page.dart';
 import 'homework_function.dart';
 
 class BottomBar extends StatefulWidget {
-  final GoogleSignInAccount user;
-  const BottomBar({super.key, required this.user});
+  const BottomBar({super.key});
+
 
 
   @override
@@ -81,7 +81,7 @@ class _BottomBarState extends State<BottomBar> {
 
   int _selectedIndex = 0;
   List<Widget> _widgetOptions() => [
-    Main_Page(user: widget.user),
+    Main_Page(),
     const Schedule_Page(),
     Container(),
     const Homework_Page(),
