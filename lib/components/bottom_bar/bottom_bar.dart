@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scientia/pages/bottom_bar_pages/main_page.dart';
 import 'package:scientia/pages/bottom_bar_pages/schedule_page.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,9 @@ import '../../pages/bottom_bar_pages/homework_page.dart';
 import 'homework_function.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key? key}) : super(key: key);
+  final GoogleSignInAccount user;
+  const BottomBar({super.key, required this.user});
+
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -77,8 +80,8 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   int _selectedIndex = 0;
-  static final List<Widget> _widgetOptions = <Widget>[
-    const Main_Page(),
+  List<Widget> _widgetOptions() => [
+    Main_Page(user: widget.user),
     const Schedule_Page(),
     Container(),
     const Homework_Page(),
@@ -87,8 +90,10 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
+
+    final List<Widget> widgetOptions = _widgetOptions();
     return Scaffold(
-      body: _widgetOptions[_selectedIndex],
+      body: widgetOptions[_selectedIndex],
       bottomNavigationBar: NavigationBar(
         height: 64,
         destinations: [

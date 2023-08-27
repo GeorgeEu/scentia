@@ -28,12 +28,15 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter_emoji: ^2.5.1
   table_calendar: ^3.0.9
+  shared_preferences: ^2.2.0
   flutter:
     sdk: flutter
   dots_indicator: ^2.1.0
   intl: ^0.18.1
   google_sign_in: ^6.1.4
+  cloud_firestore: ^4.9.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -73,6 +76,9 @@ flutter:
     - assets/zoning_board_meeting.jpg
     - assets/tribeca_mov.jpg
     - assets/museum_mile.jpg
+    - assets/apple_logo.png
+    - assets/google_logo.png
+    - assets/app_logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

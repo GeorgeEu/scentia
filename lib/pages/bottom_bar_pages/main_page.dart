@@ -6,9 +6,11 @@ import 'package:scientia/data/events_data/events_data.dart';
 import 'package:scientia/components/navigation_drawer.dart';
 import 'package:scientia/data/schedule_data/schedule_data.dart';
 import 'package:scientia/data/attendance_data/attendance_data.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Main_Page extends StatefulWidget {
-  const Main_Page({Key? key}) : super(key: key);
+  final GoogleSignInAccount user;
+  const Main_Page({super.key, required this.user});
 
   @override
   State<Main_Page> createState() => _MainPageState();
@@ -36,7 +38,7 @@ class _MainPageState extends State<Main_Page> {
           backgroundColor: const Color(0xffefeff4),
           title: const Text("11A, American International School Progress"),
         ),
-        drawer: MyDrawer(),
+        drawer: MyDrawer(user: widget.user),
         body: Container(
           color: const Color(0xffefeff4),
           height: double.infinity,
