@@ -1,6 +1,6 @@
 import 'package:scientia/components/attendance/summary_attendance/absence_summary_segment.dart';
 import 'package:scientia/components/attendance/summary_attendance/late_summary_segment.dart';
-import 'package:scientia/pages/drawer_pages/attendance_page.dart';
+import 'package:scientia/components/attendance/attendance_calendar.dart';
 import 'package:flutter/material.dart';
 
 class Attendace extends StatelessWidget {
@@ -31,7 +31,7 @@ class Attendace extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => AttendancePage()
+                        builder: (context) => AttendanceCalendar()
                     ));
                   },
                   child: Text(

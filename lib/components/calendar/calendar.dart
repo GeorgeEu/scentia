@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scientia/components/homework/homework_segment.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:scientia/data/home_work_data/homework_data.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key}) : super(key: key);
@@ -10,9 +12,9 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  late Map<String, dynamic> _day;
+  var _homework = HomeworkData();
   late DateTime selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.month; // Declare and initialize _calendarFormat
+  CalendarFormat _calendarFormat = CalendarFormat.month;
 
   @override
   void initState() {
@@ -20,34 +22,99 @@ class _CalendarState extends State<Calendar> {
     selectedDay = DateTime.now();
   }
 
+  // Method to show the bottom sheet with homework details
+  void _showHomeworkBottomSheet(DateTime day) {
+    final homework = _homework.getDailyHomework(day.millisecondsSinceEpoch);
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return makeDismissible(
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.70,
+            maxChildSize: 0.95,
+            minChildSize: 0.5,
+            builder: (_, controller) => Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16))
+              ),
+              child: ListView(
+                controller: controller,
+                children: homework.map((hw) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8, right: 4, left: 4),
+                    child: ListTile(
+                      title: Text(
+                        hw['Name'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
+                      ),
+                      subtitle: Text(
+                        hw['Task'],
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Widget makeDismissible({required Widget child}) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: () => Navigator.of(context).pop(),
+    child: GestureDetector(onTap: () {}, child: child),
+  );
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
+        Padding(
+          padding: const EdgeInsets.only(right: 16, left: 16, top: 16),
+          child: Container(
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16)
-          ),
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: TableCalendar(
-            calendarFormat: _calendarFormat,
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-            firstDay: DateTime.utc(2010, 10, 16),
-            lastDay: DateTime.utc(2030, 3, 14),
-            focusedDay: selectedDay,
-            selectedDayPredicate: (day) {
-              return isSameDay(selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                this.selectedDay = selectedDay;
-              });
-            },
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            child: TableCalendar(
+              eventLoader: (day) => _homework.getDailyHomework(day.millisecondsSinceEpoch),
+              calendarFormat: _calendarFormat,
+              onFormatChanged: (format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              },
+              firstDay: DateTime.utc(2010, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              focusedDay: selectedDay,
+              selectedDayPredicate: (day) {
+                return isSameDay(selectedDay, day);
+              },
+              // Inside your _CalendarState class
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  this.selectedDay = selectedDay;
+                });
+
+                final dailyHomework = _homework.getDailyHomework(selectedDay.millisecondsSinceEpoch);
+                if (dailyHomework.isNotEmpty) {
+                  _showHomeworkBottomSheet(selectedDay);
+                }
+              },
+            ),
           ),
         ),
       ],

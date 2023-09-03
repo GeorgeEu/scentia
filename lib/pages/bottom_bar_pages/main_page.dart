@@ -24,7 +24,7 @@ class _MainPageState extends State<Main_Page> {
   @override
   Widget build(BuildContext context) {
     final attendance = AttendanceData();
-    final allAttendance = attendance.getAllAttendance(1630453200000);
+    final allAttendance = attendance.getAllAttendance(1693530061000);
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,

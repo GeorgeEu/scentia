@@ -25,45 +25,7 @@ class Scentia extends StatefulWidget {
 }
 
 class _ScentiaState extends State<Scentia> {
-  //GoogleSignInAccount? currentUser; // Define a variable to hold the user object
   @override
-  // void initState() {
-  //   super.initState();
-  //   _loadSavedUser(); // Load saved user on initialization
-  // }
-
-  // Future<void> _loadSavedUser() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final String? savedUserId = prefs.getString('userId'); // Change 'userId' to a unique key
-  //
-  //   if (savedUserId != null) {
-  //     // Load user data based on the saved ID
-  //     // For example, fetch the user using GoogleSignInApi
-  //     final GoogleSignInAccount? user = await GoogleSignInApi.fetchUserData(savedUserId);
-  //
-  //     if (user != null) {
-  //       setState(() {
-  //         currentUser = user;
-  //       });
-  //     }
-  //   }
-  // }
-
-  // Function to handle login and navigation
-  // Future<void> handleLogin() async {
-  //   final GoogleSignInAccount? user = await GoogleSignInApi.login();
-  //   if (user != null) {
-  //     setState(() {
-  //       currentUser = user; // Set the currentUser when logged in
-  //     });
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //         builder: (context) => BottomBar(user: user), // Passing the user object
-  //       ),
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -73,27 +35,33 @@ class _ScentiaState extends State<Scentia> {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: AuthenticationPage()
+      home: AuthenticationWrapper()
     );
   }
 }
 
+class AuthenticationWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final user = snapshot.data;
 
+          if (user == null) {
+            // User is not signed in, show authentication page
+            return AuthenticationPage();
+          } else {
+            // User is signed in, show your main content
+            return BottomBar(); // You can replace this with your desired content
+          }
+        } else {
+          // Still connecting to the authentication state, show loading or splash screen
+          return CircularProgressIndicator();
+        }
+      },
+    );
+  }
+}
 
-
-
-
-
-// Future<void> _handleSignIn() async {
-//   try {
-//     user = await GoogleSignInApi.login();
-//
-//     GoogleSignInAuthentication? googleSignInAuthentication = await user?.authentication;
-//
-//     setState(() {
-//       accessToken = googleSignInAuthentication?.accessToken;
-//     });
-//   } catch (error) {
-//     print(error);
-//   }
-// }

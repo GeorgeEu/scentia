@@ -3,55 +3,150 @@ import 'package:intl/intl.dart';
 class AttendanceData {
   final _attendance = [
     {
-      "Date": 1630453200000, // September 1, 2021
+      "Date": 1693530061000, // September 1, 2023
       "Absence": 1,
       "Late": 1
     },
     {
-      "Date": 1633131600000, // October 1, 2021
-      "Late": 2,
-      'Absence': 0
+      "Date": 1693616461000, // September 2, 2023
+      "Absence": 0,
+      "Late": 2
     },
     {
-      "Date": 1635723600000, // November 1, 2021
+      "Date": 1693702861000, // September 3, 2023
       "Absence": 2,
-      'Late': 0
+      "Late": 0
     },
     {
-      "Date": 1638402000000, // December 1, 2021
-      "Absence": 1,
-      "Late": 3
+      "Date": 1696122061000, // October 1, 2023
+      "Late": 2,
+      "Absence": 1
     },
     {
-      "Date": 1641080400000, // January 1, 2022
+      "Date": 1696208461000, // October 2, 2023
+      "Late": 0,
+      "Absence": 1
+    },
+    {
+      "Date": 1696294861000, // October 3, 2023
       "Late": 1,
       "Absence": 0
     },
     {
-      "Date": 1643758800000, // February 1, 2022
+      "Date": 1698800461000, // November 1, 2023
       "Absence": 1,
       "Late": 0
     },
     {
-      "Date": 1646178000000, // March 1, 2022
-      "Absence": 40,
+      "Date": 1698886861000, // November 2, 2023
+      "Absence": 0,
+      "Late": 1
+    },
+    {
+      "Date": 1698973261000, // November 3, 2023
+      "Absence": 2,
       "Late": 2
     },
     {
-      "Date": 1648856400000, // April 1, 2022
-      "Late": 1,
-      "Absence": 2
+      "Date": 1701392461000, // December 1, 2023
+      "Late": 3,
+      "Absence": 0
     },
     {
-      "Date": 1651448400000, // May 1, 2022
+      "Date": 1701478861000, // December 2, 2023
+      "Late": 1,
+      "Absence": 1
+    },
+    {
+      "Date": 1701565261000, // December 3, 2023
+      "Late": 2,
+      "Absence": 0
+    },
+    {
+      "Date": 1704070861000, // January 1, 2024
+      "Absence": 0,
+      "Late": 2
+    },
+    {
+      "Date": 1704157261000, // January 2, 2024
+      "Absence": 1,
+      "Late": 0
+    },
+    {
+      "Date": 1704243661000, // January 3, 2024
+      "Absence": 0,
+      "Late": 1
+    },
+    {
+      "Date": 1706749261000, // February 1, 2024
       "Absence": 1,
       "Late": 1
     },
     {
-      "Date": 1654126800000, // June 1, 2022
+      "Date": 1706922061000, // February 3, 2024
+      "Absence": 2,
+      "Late": 2
+    },
+    {
+      "Date": 1688223600000, // March 1, 2024
+      "Absence": 1,
+      "Late": 0
+    },
+    {
+      "Date": 1709341261000, // March 2, 2024
+      "Absence": 0,
+      "Late": 1
+    },
+    {
+      "Date": 1709427661000, // March 3, 2024
+      "Absence": 3,
+      "Late": 3
+    },
+    {
+      "Date": 1711933261000, // April 1, 2024
+      "Absence": 2,
+      "Late": 2
+    },
+    {
+      "Date": 1712019661000, // April 2, 2024
+      "Absence": 0,
+      "Late": 1
+    },
+    {
+      "Date": 1712106061000, // April 3, 2024
+      "Absence": 1,
+      "Late": 0
+    },
+    {
+      "Date": 1714525261000, // May 1, 2024
+      "Absence": 1,
+      "Late": 1
+    },
+    {
+      "Date": 1714611661000, // May 2, 2024
+      "Absence": 0,
+      "Late": 2
+    },
+    {
+      "Date": 1714698061000, // May 3, 2024
+      "Absence": 1,
+      "Late": 0
+    },
+    {
+      "Date": 1717203661000, // June 1, 2024
       "Absence": 2,
       "Late": 0
     },
+    {
+      "Date": 1717290061000, // June 2, 2024
+      "Absence": 0,
+      "Late": 1
+    },
+    {
+      "Date": 1717376461000, // June 3, 2024
+      "Absence": 1,
+      "Late": 2
+    }
   ];
 
 
@@ -110,7 +205,7 @@ class AttendanceData {
   }
 
   List getSemesterAttendance() {
-    final startingTimestamp = 1630453200000;
+    final startingTimestamp = 1693530061000;
     DateTime date = DateTime.fromMillisecondsSinceEpoch(startingTimestamp);
     DateTime day = DateTime(date.year, date.month, date.day);
     final beginOfSemester = day.millisecondsSinceEpoch;

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:scientia/components/attendance/attendance_calendar.dart';
 import 'package:scientia/pages/authentication_page.dart';
-import 'package:scientia/pages/drawer_pages/attendance_page.dart';
 import 'package:scientia/pages/drawer_pages/events_page.dart';
 import 'package:scientia/pages/drawer_pages/exams_page.dart';
 import 'package:scientia/pages/drawer_pages/settings_page.dart';
@@ -91,7 +91,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AttendancePage()));
+                  MaterialPageRoute(builder: (context) => AttendanceCalendar()));
             },
           ),
           ListTile(
