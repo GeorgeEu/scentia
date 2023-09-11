@@ -36,8 +36,9 @@ dependencies:
   dots_indicator: ^2.1.0
   intl: ^0.18.1
   google_sign_in: ^6.1.4
-  cloud_firestore: ^4.9.0
+  cloud_firestore: ^4.9.1
   firebase_database: ^10.2.5
+  firebase_core: ^2.15.1
   firebase_auth: ^4.8.0
 
 
