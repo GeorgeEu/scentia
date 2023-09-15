@@ -22,6 +22,67 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     selectedDay = DateTime.now();
   }
 
+  void _showAttendanceBottomSheet(DateTime day) {
+    final attendance = _attendance.getDailyAttendance(day.millisecondsSinceEpoch);
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return makeDismissible(
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.70,
+            maxChildSize: 0.95,
+            minChildSize: 0.5,
+            builder: (_, controller) => Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16))
+              ),
+              child: ListView(
+                controller: controller,
+                children: attendance.map((att) {
+                  String displayText;
+
+                  if (att['Absence'] == 0) {
+                    displayText = 'Late: ${att['Late']}';
+                  } else {
+                    displayText = 'Absence: ${att['Absence']}';
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8, right: 4, left: 4),
+                    child: ListTile(
+                      title: Text(
+                        att['Lesson'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
+                      ),
+                      subtitle: Text(
+                        displayText,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Widget makeDismissible({required Widget child}) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: () => Navigator.of(context).pop(),
+    child: GestureDetector(onTap: () {}, child: child),
+  );
+
   // Method to show the bottom sheet with homework details
   @override
   Widget build(BuildContext context) {
@@ -64,6 +125,11 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
                   setState(() {
                     this.selectedDay = selectedDay;
                   });
+
+                  final dailyAttendance = _attendance.getDailyAttendance(selectedDay.millisecondsSinceEpoch);
+                  if (dailyAttendance.isNotEmpty) {
+                    _showAttendanceBottomSheet(selectedDay);
+                  }
                 },
               ),
             ),
