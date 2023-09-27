@@ -35,7 +35,7 @@ class _HomeworkCardState extends State<HomeworkCard> {
                     widget._homework[day]['day'].toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 26,
+                      fontSize: 24,
                     ),
                   ),
                 ),

@@ -45,7 +45,7 @@ class Event extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.normal,
                           color: Colors.grey,
-                          fontSize: 16
+                          fontSize: 15
                       ),
                     ),
                     Text(
@@ -53,14 +53,14 @@ class Event extends StatelessWidget {
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.w600,
-                          fontSize: 22
+                          fontSize: 24
                       ),
                     ),
                     Text(
                       _event['Address'].toString(),
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
-                          fontSize: 16
+                          fontSize: 18
                       ),
                     ),
                   ],
@@ -108,20 +108,23 @@ class Event extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
-                    formatDate(_event['Date']),
-                    style: TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.grey,
-                        fontSize: 16
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      formatDate(_event['Date']),
+                      style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.grey,
+                          fontSize: 15
+                      ),
                     ),
                   ),
                   Text(
                     _event['Name'].toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 30
+                        fontSize: 24
                     ),
                   ),
                   Padding(
@@ -130,14 +133,17 @@ class Event extends StatelessWidget {
                       _event['Address'].toString(),
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 16
+                          fontSize: 18
                       ),
                     ),
                   ),
-                  Text(
-                    _event['Desc'].toString(),
-                    style: TextStyle(
-                        fontSize: 16
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      _event['Desc'].toString(),
+                      style: TextStyle(
+                          fontSize: 16
+                      ),
                     ),
                   ),
                 ],

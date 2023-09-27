@@ -29,13 +29,13 @@ class _HomeworkSegmentState extends State<HomeworkSegment> {
           widget._homework['Name'].toString(),
           style: TextStyle(
             fontWeight: FontWeight.w500,
-            fontSize: 20,
+            fontSize: 18,
           ),
         ),
           Text(
           widget._homework['Task'].toString(),
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 18, color: Colors.grey),
+          style: const TextStyle(fontSize: 15, color: Colors.grey),
         ),
       ],
     );

@@ -30,43 +30,39 @@ class DayItem extends StatelessWidget {
                             day['day'],
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 30,
+                              fontSize: 24,
                             ),
                           )
                         ]),
                   ),
-                  Column(
-                    children: [
-                      for (var lesson in day['schedule'])
-                        Container(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 16),
-                                child: Text(
-                                  lesson['Time'],
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Colors.grey),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  lesson['Name'],
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(fontSize: 23),
-                                ),
-                              )
-                            ],
+                  for (var lesson in day['schedule'])
+                    Container(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.ideographic,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: Text(
+                              lesson['Time'],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15,
+                                  color: Colors.grey),
+                            ),
                           ),
-                        )
-                    ],
-                  ),
+                          Expanded(
+                            child: Text(
+                              lesson['Name'],
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),

@@ -47,7 +47,7 @@ class LessonGradesSegment extends StatelessWidget {
                       child: Text(
                         grades['Grade'],
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                         ),
                       ),
                     )

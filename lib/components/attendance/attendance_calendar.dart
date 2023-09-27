@@ -39,37 +39,65 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16))
               ),
-              child: ListView(
-                controller: controller,
-                children: attendance.map((att) {
-                  String displayText;
-
-                  if (att['Absence'] == 0) {
-                    displayText = 'Late: ${att['Late']}';
-                  } else {
-                    displayText = 'Absence: ${att['Absence']}';
-                  }
-
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8, right: 4, left: 4),
-                    child: ListTile(
-                      title: Text(
-                        att['Lesson'],
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: Colors.grey.shade300
+                            )
+                        )
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 24, bottom: 8),
+                      child: Text(
+                        'Attendance',
                         style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                        ),
-                      ),
-                      subtitle: Text(
-                        displayText,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.normal,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14
                         ),
                       ),
                     ),
-                  );
-                }).toList(),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      controller: controller,
+                      children: attendance.map((att) {
+                        String displayText;
+
+                        if (att['Absence'] == 0) {
+                          displayText = 'Late: ${att['Late']}';
+                        } else {
+                          displayText = 'Absence: ${att['Absence']}';
+                        }
+
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8, right: 4, left: 4),
+                          child: ListTile(
+                            title: Text(
+                              att['Lesson'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                              ),
+                            ),
+                            subtitle: Text(
+                              displayText,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -93,7 +121,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Lorem Ipsum'),
+        title: Text('Attendance'),
       ),
       backgroundColor: const Color(0xffefeff4),
       body: Column(

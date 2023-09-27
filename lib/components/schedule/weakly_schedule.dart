@@ -46,7 +46,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
         Padding(
           padding: const EdgeInsets.only(top: 8),
           child: SizedBox(
-            height: 370,
+            height: 320,
             child: PageView.builder(
               padEnds: false,
               controller: pageController,
