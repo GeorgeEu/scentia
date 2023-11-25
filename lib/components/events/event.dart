@@ -53,7 +53,7 @@ class Event extends StatelessWidget {
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.w600,
-                          fontSize: 24
+                          fontSize: 22
                       ),
                     ),
                     Text(
