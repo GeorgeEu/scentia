@@ -1,35 +1,94 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:scientia/components/substitutions/substitute_teacher.dart';
+import 'package:intl/intl.dart';
 
-class SubstituteTeachers extends StatelessWidget {
-  final List _substitutions;
+class SubstituteTeachers extends StatefulWidget {
+  final CollectionReference substitutions;
 
-  const SubstituteTeachers(this._substitutions);
+  SubstituteTeachers(this.substitutions);
 
   @override
+  _SubstituteTeachersState createState() => _SubstituteTeachersState();
+}
+
+class _SubstituteTeachersState extends State<SubstituteTeachers> {
+  @override
   Widget build(BuildContext context) {
-    var eventsCount = _substitutions.length;
-    return Container(
-      padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
-      child: Column(
-        children: [
-          ListView.separated(
+    return StreamBuilder(
+      stream: widget.substitutions.snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+        if (streamSnapshot.hasData) {
+          return ListView.separated(
             primary: false,
             shrinkWrap: true,
-            itemCount: eventsCount,
+            itemCount: streamSnapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              return SubstituteTeacher(_substitutions[index]);
-            },
-            separatorBuilder: (context, index) {
-              return const Divider(
-                thickness: 0.5,
-                height: 1,
-                // indent: 8.0,
+              final DocumentSnapshot documentSnapshot =
+              streamSnapshot.data!.docs[index];
+
+              // Convert Timestamp to DateTime
+              DateTime date = (documentSnapshot['date'] as Timestamp).toDate();
+
+              // Format DateTime to String
+              String formattedDate = DateFormat('EEEE – kk:mm').format(date);
+
+
+              return Padding(
+                padding: EdgeInsets.only(left: 16,right: 16, top: 8, bottom: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              documentSnapshot['subject'],
+                              style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.grey,
+                                  fontSize: 16
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot['substituted'],
+                              style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot['substituter'],
+                              style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        )
+                    ),
+                    Text(
+                      formattedDate,
+                      style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.grey,
+                          fontSize: 15
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
-          ),
-        ],
-      ),
+            separatorBuilder: (context, index) {
+              return const SizedBox(height: 8);
+            },
+          );
+        } return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }
+

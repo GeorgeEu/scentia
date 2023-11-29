@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ExamsSegment extends StatelessWidget {
-  final Map<String, dynamic> _exam;
-
-  ExamsSegment(this._exam);
-
   @override
   Widget build(BuildContext context) {
     String formatDate(int timestamp) {
@@ -28,27 +24,31 @@ class ExamsSegment extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                formatDate(_exam['Date']),
+                /*The date of the exam from firestore*/
+                '',
                 style: TextStyle(
                   color: Colors.grey,
                 ),
               ),
               Text(
-                _exam['Name'].toString(),
+                /*The name of the exam from firestore*/
+                '',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600
                 ),
               ),
               Text(
-                _exam['Room'].toString(),
+                /*The room of the exam from firestore*/
+                '',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500
                 ),
               ),
               Text(
-                _exam['Desc'],
+                /*The desc of the exam from firestore*/
+                '',
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 16

@@ -53,14 +53,14 @@ class Event extends StatelessWidget {
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.w600,
-                          fontSize: 22
+                          fontSize: 18
                       ),
                     ),
                     Text(
                       _event['Address'].toString(),
                       style: TextStyle(
                           overflow: TextOverflow.ellipsis,
-                          fontSize: 18
+                          fontSize: 16
                       ),
                     ),
                   ],

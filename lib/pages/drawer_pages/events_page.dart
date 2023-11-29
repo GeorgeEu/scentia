@@ -1,5 +1,6 @@
 import 'package:scientia/components/events/full_events.dart';
 import 'package:flutter/material.dart';
+import 'package:scientia/data/firestore_data.dart';
 
 import '../../data/events_data/events_data.dart';
 
@@ -11,10 +12,11 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
-  var events = EventsData();
+  var data = FirestoreData();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffefeff4),
       appBar: AppBar(
         actions: [
           IconButton(
@@ -37,16 +39,8 @@ class _EventsPageState extends State<EventsPage> {
         ),
         // titleSpacing: 0,
       ),
-      body: Container(
-        color: const Color(0xffefeff4),
-        height: double.infinity,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              FullEvents(events.getEvents()),
-            ],
-          ),
-        ),
+      body: SingleChildScrollView(
+        child: FullEvents(data.getEvents()),
       )
     );
   }

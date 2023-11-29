@@ -31,6 +31,7 @@ dependencies:
   flutter_emoji: ^2.5.1
   table_calendar: ^3.0.9
   shared_preferences: ^2.2.0
+  firebase_storage: ^11.5.2
   flutter:
     sdk: flutter
   dots_indicator: ^2.1.0

@@ -1,29 +1,84 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';  // Import intl package
 
-import 'exams_segment.dart';
+class Exams extends StatefulWidget {
+  final CollectionReference exams;
+  Exams(this.exams);
 
-class Exams extends StatelessWidget {
-  final List _exams;
+  @override
+  _ExamsState createState() => _ExamsState();
+}
 
-  Exams(this._exams);
+class _ExamsState extends State<Exams> {
 
   @override
   Widget build(BuildContext context) {
-    var examsCount = _exams.length;
-    return Container(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-      child: Column(
-        children: [
-          ListView.builder(
-            primary: false,
-            shrinkWrap: true,
-            itemCount: examsCount,
-            itemBuilder: (context, index) {
-              return ExamsSegment(_exams[index]);
-            },
-          ),
-        ],
-      ),
+    return StreamBuilder(
+      stream: widget.exams.snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+        if (streamSnapshot.hasData) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            child: ListView.builder(
+              primary: false,
+              shrinkWrap: true,
+              itemCount: streamSnapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                final DocumentSnapshot documentSnapshot =
+                streamSnapshot.data!.docs[index];
+
+                // Convert Timestamp to DateTime
+                DateTime date = (documentSnapshot['date'] as Timestamp).toDate();
+
+                // Format DateTime to String
+                String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(date);
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            formattedDate,  // Use formatted date here
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            documentSnapshot['name'],
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            documentSnapshot['room'],
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            documentSnapshot['desc'],
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 16),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 }

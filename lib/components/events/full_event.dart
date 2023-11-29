@@ -14,70 +14,61 @@ class FullEvent extends StatelessWidget {
       return fdatetime;
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: InkWell(
-        onTap: () {
-          showEventBottomSheet(context);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Colors.white
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(left: 16,top: 8, bottom: 8, right: 8),
-            child: Row(
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.asset(
-                      _event['ImagePath'].toString(),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+    return InkWell(
+      onTap: () {
+        showEventBottomSheet(context);
+      },
+      child: Padding(
+        padding: EdgeInsets.only(right: 8, top: 4),
+        child: Row(
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  _event['ImagePath'].toString(),
+                  fit: BoxFit.cover,
                 ),
-                Expanded(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            formatDate(_event['Date']),
-                            style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.normal,
-                                color: Colors.grey,
-                                fontSize: 15
-                            ),
-                          ),
-                          Text(
-                            _event['Name'].toString(),
-                            style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 24
-                            ),
-                          ),
-                          Text(
-                            _event['Address'].toString(),
-                            style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 18
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                ),
-              ],
+              ),
             ),
-          ),
+            Expanded(
+                child: Container(
+                  padding: EdgeInsets.only(left: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        formatDate(_event['Date']),
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.grey,
+                            fontSize: 15
+                        ),
+                      ),
+                      Text(
+                        _event['Name'].toString(),
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18
+                        ),
+                      ),
+                      Text(
+                        _event['Address'].toString(),
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+            ),
+          ],
         ),
       ),
     );

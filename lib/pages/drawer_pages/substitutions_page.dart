@@ -1,4 +1,5 @@
 import 'package:scientia/components/substitutions/substitute_teachers.dart';
+import 'package:scientia/data/firestore_data.dart';
 import 'package:scientia/data/substitute_data/substitutions_data.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class SubstitutionsPage extends StatefulWidget {
 }
 
 class _SubstitutionsPageState extends State<SubstitutionsPage> {
-  var substitutions = SubstitutionsData();
+  var data = FirestoreData();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +44,7 @@ class _SubstitutionsPageState extends State<SubstitutionsPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SubstituteTeachers(substitutions.getSubstitutions()),
+                SubstituteTeachers(data.getSubstitutions()),
               ],
             ),
           ),

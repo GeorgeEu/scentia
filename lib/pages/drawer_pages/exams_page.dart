@@ -1,5 +1,6 @@
-import 'package:scientia/data/exams_data/exams_data.dart';
+import 'package:scientia/data/firestore_data.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/components/exams/exams.dart';
 
 class ExamsPage extends StatefulWidget {
@@ -10,15 +11,18 @@ class ExamsPage extends StatefulWidget {
 }
 
 class _ExamsPageState extends State<ExamsPage> {
+  var exams = FirestoreData();
+
   @override
   Widget build(BuildContext context) {
-    var exams = ExamsData();
     return Scaffold(
+      backgroundColor: Color(0xffefeff4),
         appBar: AppBar(
           leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded),
-              onPressed: () {Navigator.pop(context);}
-          ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
           title: Text(
             'Exams',
             style: TextStyle(
@@ -26,17 +30,10 @@ class _ExamsPageState extends State<ExamsPage> {
             ),
           ),
         ),
-        body: Container(
-          color: const Color(0xffefeff4),
-          height: double.infinity,
+        body: Center(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Exams(exams.getExams()),
-              ],
-            ),
+            child: Exams(exams.getExams()),
           ),
-        )
-    );
+        ));
   }
 }

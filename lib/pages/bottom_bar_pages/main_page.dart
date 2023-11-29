@@ -7,6 +7,7 @@ import 'package:scientia/components/navigation_drawer.dart';
 import 'package:scientia/data/schedule_data/schedule_data.dart';
 import 'package:scientia/data/attendance_data/attendance_data.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:scientia/data/firestore_data.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class Main_Page extends StatefulWidget {
 }
 
 class _MainPageState extends State<Main_Page> {
-  var events = EventsData();
+  var data = FirestoreData();
   final weeklySchedule = ScheduleData();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -45,7 +46,7 @@ class _MainPageState extends State<Main_Page> {
           child: SingleChildScrollView(
             child: Column(children: [
               WeeklySchedule(weeklySchedule.getWeeklySchedule(1678723200000)),
-              Events(events.getEvents()),
+              Events(data.getEvents()),
               Attendace(allAttendance),
             ]),
           ),
