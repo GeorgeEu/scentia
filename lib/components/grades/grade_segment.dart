@@ -11,13 +11,6 @@ class GradeSegment extends StatefulWidget {
 }
 
 class _GradeSegmentState extends State<GradeSegment> {
-  String formatDate(int timestamp) {
-    DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    String fdatetime = DateFormat('EEEE')
-        .format(tsdate); // Corrected the format string to 'yyyy'
-    return fdatetime;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(

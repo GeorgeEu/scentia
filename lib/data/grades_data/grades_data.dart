@@ -113,8 +113,8 @@ class GradesData {
     List rawGrades = getGrades();
     List grades = [];
     for (var i = 0; i < rawGrades.length; i++) {
-      if (rawGrades[i]['Date'] < beginOftDay) continue;
-      if (rawGrades[i]['Date'] > endOfDay) continue;
+      if (rawGrades[i]['Date'] <= beginOftDay) continue;
+      if (rawGrades[i]['Date'] >= endOfDay) continue;
       grades.add(rawGrades[i]);
     }
     return grades;

@@ -1,3 +1,4 @@
+import 'package:scientia/components/grades/grades_test.dart';
 import 'package:scientia/components/grades/lesson_grades.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class _Grades_PageState extends State<Grades_Page> {
     final grades = _grades.getSubjectGrades();
     switch (groupValue) {
       case 0:
-        return Grades(weeklyGrades);
+        return GradesTest();
       case 1:
         return LessonGrades(grades);
       default:
