@@ -1,16 +1,35 @@
-# card_test
+# **School Management App**
 
-A new Flutter project.
+Overview
+A Flutter and Firebase-based app for school management. It handles schedules, grades, attendance, events, and more.
 
-## Getting Started
+FEATURES
+Schedule Management
+Grading System
+Attendance Tracking
+Event Calendar
+Rate and Review System
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+SETUP
+Prerequisites
+Flutter (latest)
+Firebase setup for Android/iOS
+Flutter SDK IDE (e.g., VSCode, Android Studio)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+INSTALLATION
+Clone the repo: git clone https://github.com/GeorgeEu/scentia.git
+Install dependencies: flutter pub get
+
+
+RUN
+Start a device or emulator.
+Run flutter run in the project directory.
+
+
+SUPPORT
+Open an issue for support: GitHub Issues
+
+AUTHORS
+George Zanevski - g.zanevski@gmail.com
