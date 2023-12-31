@@ -11,7 +11,7 @@ class Attendace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: 16, left: 16, top: 16),
+      padding: EdgeInsets.only(right: 16, left: 16, top: 16, bottom: 62),
       child: Column(
         children: [
           Row(

@@ -19,19 +19,19 @@ class AuthenticationPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(
-                Icons.school_rounded,
-                size: 55,
-                color: Colors.grey.shade900,
+              Image.asset(
+                'assets/s_logo.png',
+                height: 48,
+                width: 44,
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 8, bottom: 16),
+                padding: EdgeInsets.only(top: 16, bottom: 16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Welcome to Scientia!',
+                      'Welcome to Scentia!',
                       style:
                           TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                     ),

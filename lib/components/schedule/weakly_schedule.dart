@@ -44,6 +44,19 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     return Column(
       children: [
         Padding(
+          padding: EdgeInsets.only(top: 32, bottom: 8, left: 16),
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              'Weekly Schedule',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        Padding(
           padding: const EdgeInsets.only(top: 8),
           child: SizedBox(
             height: 320,

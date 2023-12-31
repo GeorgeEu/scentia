@@ -13,8 +13,8 @@ Future main() async {
   );
 
   runApp(const Scentia());
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.white,
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemNavigationBarColor: Color(0xFFf2f2f2),
   ));
 }
 

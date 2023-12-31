@@ -14,7 +14,7 @@ class DayItem extends StatelessWidget {
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(16)),
+                color: Colors.grey.shade50, borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.only(top: 11, bottom: 11, left: 16, right: 8),
               child: Column(

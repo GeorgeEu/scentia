@@ -21,13 +21,13 @@ class _MyDrawerState extends State<MyDrawer> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
     return Drawer(
-      backgroundColor: Color(0xffefeff4),
+      backgroundColor: Color(0xFFF3F2F8),
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xFFf2f2f2),
               ),
               padding: EdgeInsets.fromLTRB(16, 16, 0, 8),
               child: Column(

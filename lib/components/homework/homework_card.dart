@@ -25,7 +25,7 @@ class _HomeworkCardState extends State<HomeworkCard> {
           child: Container(
             padding: EdgeInsets.only(left: 16, right: 8, top: 8),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16), color: Colors.white),
+                borderRadius: BorderRadius.circular(16), color: Colors.grey.shade50),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

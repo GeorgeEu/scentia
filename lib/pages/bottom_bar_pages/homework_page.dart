@@ -19,7 +19,9 @@ class _Homework_PageState extends State<Homework_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF3F2F8),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xffefeff4),
         actions: [
           Expanded(
@@ -52,15 +54,11 @@ class _Homework_PageState extends State<Homework_Page> {
           ),
         ],
       ),
-      body: Container(
-        height: double.infinity,
-        color: const Color(0xffefeff4),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildHomeworkWidget()
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHomeworkWidget()
+          ],
         ),
       ),
     );

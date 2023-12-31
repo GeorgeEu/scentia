@@ -1,3 +1,4 @@
+import 'package:scientia/components/grades/grade_card.dart';
 import 'package:scientia/components/grades/grades_test.dart';
 import 'package:scientia/components/grades/lesson_grades.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +23,9 @@ class _Grades_PageState extends State<Grades_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF3F2F8),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xffefeff4),
         actions: [
           Expanded(
@@ -55,15 +58,11 @@ class _Grades_PageState extends State<Grades_Page> {
           ),
         ],
       ),
-      body: Container(
-        height: double.infinity,
-        color: const Color(0xffefeff4),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildGradesWidget()
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildGradesWidget()
+          ],
         ),
       ),
     );
@@ -73,7 +72,7 @@ class _Grades_PageState extends State<Grades_Page> {
     final grades = _grades.getSubjectGrades();
     switch (groupValue) {
       case 0:
-        return GradesTest();
+        return GradeCard(weeklyGrades);
       case 1:
         return LessonGrades(grades);
       default:

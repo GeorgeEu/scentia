@@ -9,7 +9,7 @@ class AbsenceSummarySegment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(16)
       ),
       child:  Padding(

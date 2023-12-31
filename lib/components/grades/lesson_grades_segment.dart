@@ -12,7 +12,7 @@ class LessonGradesSegment extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: Colors.grey.shade50,
         ),
         child: Padding(
           padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 16),

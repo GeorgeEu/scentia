@@ -74,7 +74,7 @@ class Events extends StatefulWidget {
             padding: EdgeInsets.only(top: 16, left: 16, bottom: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: Colors.white,
+              color: Colors.grey.shade50,
             ),
             child: StreamBuilder(
                 stream: widget.events.snapshots(),
@@ -162,7 +162,10 @@ class Events extends StatefulWidget {
                         );
                       },
                       separatorBuilder: (context, index) {
-                        return Divider(); // Your separator widget
+                        return Divider(
+                          thickness: 0.5,
+                          indent: 104,
+                        ); // Your separator widget
                       },
                     );
                   }

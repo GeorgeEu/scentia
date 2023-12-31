@@ -20,7 +20,9 @@ class _Schedule_PageState extends State<Schedule_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF3F2F8),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xffefeff4),
         actions: [
           Expanded(
@@ -53,16 +55,12 @@ class _Schedule_PageState extends State<Schedule_Page> {
           ),
         ],
       ),
-      body: Container(
-        height: double.infinity,
-        color: const Color(0xffefeff4),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildScheduleWidget()
-            ],
-          ),
-        )
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildScheduleWidget()
+          ],
+        ),
       ),
     );
   }
