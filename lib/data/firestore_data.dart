@@ -21,34 +21,24 @@ class FirestoreData {
         FirebaseFirestore.instance.collection('events');
     return _events;
   }
-  Stream<List<Grade>> getGrades() async* {
-    var gradesStream = FirebaseFirestore.instance.collection("grades")
-        .where('uid', isEqualTo: _uid).snapshots();
-    var grades = <Grade>[];
-    await for (var gradesSnapshot in gradesStream) {
-      for (var gradesDoc in gradesSnapshot.docs) {
-        var grade;
-        if (gradesDoc["sid"] != null) {
-          var subjectSnapshot = await FirebaseFirestore.instance.collection("subjects")
-              .doc(gradesDoc["sid"])
-              .get();
 
-          Timestamp timestamp = gradesDoc["date"]; // Assuming date is a Timestamp
-          DateTime date = timestamp.toDate();
-          String formattedDate = DateFormat('EEEE').format(date); // Formatting date
-          grade = Grade(
-            gradesDoc["grade"],
-            subjectSnapshot["name"],
-            formattedDate);
-        }
-        else {
-          String formattedDate = DateFormat('EEEE').format(DateTime.now());
-          grade = Grade(gradesDoc["grade"], "", formattedDate);
-        }
-        grades.add(grade);
-      }
-      yield grades;
-    }
+  Future<List<DocumentSnapshot>> getGrades(String uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot grades = await firestore
+        .collection('grades') // Replace with your collection name
+        .where('uid', isEqualTo: uid) // Assuming 'uid' is the field you're querying
+        .get();
+
+    return grades.docs;
+  }
+
+  Future<List<DocumentSnapshot>> getSubjects() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot subjects = await firestore
+        .collection('subjects') // Replace with your collection name
+        .get();
+
+    return subjects.docs;
   }
 
   Stream<List<Grade>> getDailyGrades(int timestamp) async* {
@@ -75,9 +65,9 @@ class FirestoreData {
           DateTime date = timestamp.toDate();
           String formattedDate = DateFormat('EEEE').format(date); // Formatting date
           grade = Grade(
+              formattedDate,
               gradesDoc["grade"],
-              subjectSnapshot["name"],
-              formattedDate);
+              subjectSnapshot["name"]);
         }
         else {
           String formattedDate = DateFormat('EEEE').format(DateTime.now());
@@ -91,9 +81,10 @@ class FirestoreData {
 
 }
 
+
 class Grade {
-  final name;
+  final String date;
   final grade;
-  final String date; // Changed type to String
-  Grade(this.name, this.grade, this.date);
+  final name; // Changed type to String
+  Grade(this.date, this.grade, this.name);
 }

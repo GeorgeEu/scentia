@@ -1,11 +1,12 @@
 import 'package:scientia/components/grades/grade_card.dart';
-import 'package:scientia/components/grades/grades_test.dart';
+import 'package:scientia/components/grades/daily_grades_test.dart';
 import 'package:scientia/components/grades/lesson_grades.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/calendar/calendar.dart';
 import '../../components/grades/grades.dart';
+import '../../components/grades/weekly_grades_test.dart';
 import '../../components/homework/homework.dart';
 import '../../data/grades_data/grades_data.dart';
 
@@ -43,7 +44,7 @@ class _Grades_PageState extends State<Grades_Page> {
                     thumbColor: CupertinoColors.white,
                     groupValue: groupValue,
                     children: {
-                      0: buildSegment('Week'),
+                      0: buildSegment('Recent'),
                       1: buildSegment('All')
                     },
                     onValueChanged: (groupValue) {
@@ -69,10 +70,11 @@ class _Grades_PageState extends State<Grades_Page> {
   }
   Widget _buildGradesWidget() {
     final weeklyGrades = _grades.getWeeklyGrades(1693917393000 + 1);
+    final int currentDay = 1702226792000;
     final grades = _grades.getSubjectGrades();
     switch (groupValue) {
       case 0:
-        return GradeCard(weeklyGrades);
+        return DailyGradesTest();
       case 1:
         return LessonGrades(grades);
       default:
