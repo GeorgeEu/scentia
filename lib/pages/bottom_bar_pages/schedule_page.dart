@@ -22,38 +22,29 @@ class _Schedule_PageState extends State<Schedule_Page> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F2F8),
       appBar: AppBar(
+
+        centerTitle: true,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         surfaceTintColor: Colors.transparent,
-        backgroundColor: const Color(0xffefeff4),
-        actions: [
-          Expanded(
-            child: Container(
-              height: double.infinity,
-              decoration: const BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Colors.grey, width: 0.5))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CupertinoSlidingSegmentedControl<int>(
-                    backgroundColor: CupertinoColors.tertiarySystemFill,
-                    thumbColor: CupertinoColors.white,
-                    groupValue: groupValue,
-                    children: {
-                      0: buildSegment('This Week'),
-                      1: buildSegment('Next Week')
-                    },
-                    onValueChanged: (groupValue) {
-                      setState(() {
-                        this.groupValue = groupValue;
-                      });
-                    },
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
+          backgroundColor: Color(0xFFADADFF),
+        title: CupertinoSlidingSegmentedControl<int>(
+          backgroundColor: CupertinoColors.tertiarySystemFill,
+          thumbColor: CupertinoColors.white,
+          groupValue: groupValue,
+          children: {
+            0: buildSegment('Current'),
+            1: buildSegment('Upcoming')
+          },
+          onValueChanged: (groupValue) {
+            setState(() {
+              this.groupValue = groupValue;
+            });
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -82,11 +73,13 @@ class _Schedule_PageState extends State<Schedule_Page> {
         return Container();
     }
   }
-  Widget buildSegment(String text) =>
-      Container(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
-        child: Text(
-          text,
-        ),
-      );
+  Widget buildSegment(String text) => Container(
+    padding: const EdgeInsets.only(left: 8, right: 8, top: 6, bottom: 6),
+    child: Text(
+      text,
+      style: TextStyle(
+          fontSize: 16
+      ),
+    ),
+  );
 }

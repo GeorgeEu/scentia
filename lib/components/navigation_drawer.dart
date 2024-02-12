@@ -7,6 +7,9 @@ import 'package:scientia/pages/drawer_pages/exams_page.dart';
 import 'package:scientia/pages/drawer_pages/settings_page.dart';
 import 'package:flutter/material.dart'; // Make sure this is the correct path to your GoogleSignInApi
 import 'package:scientia/services/auth_services.dart';
+import '../pages/bottom_bar_pages/grades_page.dart';
+import '../pages/bottom_bar_pages/homework_page.dart';
+import '../pages/bottom_bar_pages/schedule_page.dart';
 import '../pages/drawer_pages/substitutions_page.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -25,53 +28,59 @@ class _MyDrawerState extends State<MyDrawer> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFFf2f2f2),
-              ),
-              padding: EdgeInsets.fromLTRB(16, 16, 0, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(user.photoURL!),
-                  ),
-                  Spacer(),
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            user.displayName!,
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                          Text(
-                            user.email!,
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () async {
-                          await AuthService().logout();
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                            builder: (context) => AuthenticationPage(),
-                          ));
-                        },
-                        icon: Icon(Icons.logout_rounded),
-                      )
-                    ],
-                  ),
-                ],
-              )),
+          Theme(
+            data: Theme.of(context).copyWith(
+              dividerTheme: const DividerThemeData(color: Colors.transparent),
+            ),
+            child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Color(0xFFB7B7FF),
+                ),
+                padding: EdgeInsets.fromLTRB(16, 16, 0, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(user.photoURL!),
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.displayName!,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                            ),
+                            Text(
+                              user.email!,
+                              style: TextStyle(fontSize: 14, color: Colors.white70),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            await AuthService().logout();
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                              builder: (context) => AuthenticationPage(),
+                            ));
+                          },
+                          icon: Icon(Icons.logout_rounded, color: Colors.white,),
+                        )
+                      ],
+                    ),
+                  ],
+                )
+            ),
+          ),
           ListTile(
             leading: Icon(Icons.school_rounded),
             title: Text(
@@ -127,6 +136,39 @@ class _MyDrawerState extends State<MyDrawer> {
                   MaterialPageRoute(builder: (context) => SettingsPage()));
             },
           ),
+          ListTile(
+            leading: Icon(Icons.calendar_month_rounded),
+            title: Text(
+              'Schedule',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Schedule_Page()));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.bookmark_border_rounded),
+            title: Text(
+              'Homework',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Homework_Page()));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.grade_rounded),
+            title: Text(
+              'Grades',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Grades_Page()));
+            },
+          )
           // Add more ListTiles for other navigation items.
         ],
       ),

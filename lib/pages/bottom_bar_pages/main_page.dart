@@ -29,24 +29,28 @@ class _MainPageState extends State<Main_Page> {
     final attendance = AttendanceData();
     final allAttendance = attendance.getAllAttendance(1693530061000);
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         isExtended: true,
         onPressed: () {
           _showBottomSheet(context);
         },
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: Color(0xFFB7B7FF),
         elevation: 0,
-        icon: Icon(Icons.add),
-        label: Text('Create'),
+        child: Icon(
+          Icons.add_rounded,
+          color: Colors.white,
+          size: 30,
+        ),
       ),
         backgroundColor: const Color(0xFFF3F2F8),
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
-          backgroundColor: const Color(0xFFf2f2f2),
+          backgroundColor: Color(0xFFADADFF),
           leading: IconButton(
             icon: Icon(Icons.menu_rounded),
+            color: Colors.white,
             onPressed: () => _scaffoldKey.currentState?.openDrawer(),
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           ),
@@ -55,6 +59,7 @@ class _MainPageState extends State<Main_Page> {
               "11A, American International School Progress",
             style: TextStyle(
               fontSize: 18,
+              color: Colors.white,
               fontWeight: FontWeight.w600
             ),
           ),

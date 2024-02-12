@@ -18,16 +18,17 @@ class _EventsPageState extends State<EventsPage> {
     return Scaffold(
       backgroundColor: const Color(0xffefeff4),
       appBar: AppBar(
+        backgroundColor: Color(0xFFADADFF),
         actions: [
           IconButton(
-            icon: Icon(Icons.search_rounded),
+            icon: Icon(Icons.search_rounded, color: Colors.white),
             onPressed: () {
               // showSearch(context: context, delegate: );
             },
           )
         ],
         leading: IconButton(
-            icon: Icon(Icons.arrow_back_rounded),
+            icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
             onPressed: () {
               Navigator.pop(context);
             }),
@@ -35,6 +36,7 @@ class _EventsPageState extends State<EventsPage> {
           'Events',
           style: TextStyle(
             fontWeight: FontWeight.w500,
+              color: Colors.white
           ),
         ),
         // titleSpacing: 0,

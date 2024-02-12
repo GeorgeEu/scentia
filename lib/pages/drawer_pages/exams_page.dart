@@ -19,9 +19,9 @@ class _ExamsPageState extends State<ExamsPage> {
       backgroundColor: Color(0xFFF3F2F8),
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
-          backgroundColor: Color(0xFFf2f2f2),
+            backgroundColor: Color(0xFFADADFF),
           leading: IconButton(
-              icon: Icon(Icons.arrow_back_rounded),
+              icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
               onPressed: () {
                 Navigator.pop(context);
               }),
@@ -29,6 +29,7 @@ class _ExamsPageState extends State<ExamsPage> {
             'Exams',
             style: TextStyle(
               fontWeight: FontWeight.w500,
+              color: Colors.white
             ),
           ),
         ),

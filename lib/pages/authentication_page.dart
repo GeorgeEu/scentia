@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scientia/components/bottom_bar/bottom_bar.dart';
 import 'package:flutter_emoji/flutter_emoji.dart';
+import 'package:scientia/pages/bottom_bar_pages/main_page.dart';
 import 'package:scientia/services/auth_services.dart';
 
 class AuthenticationPage extends StatelessWidget {
@@ -74,7 +75,7 @@ class AuthenticationPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            BottomBar()), // Replace with your BottomBar widget
+                            Main_Page()), // Replace with your BottomBar widget
                   );
                 },
                 style: ButtonStyle(

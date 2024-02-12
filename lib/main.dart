@@ -3,6 +3,7 @@ import 'package:scientia/components/bottom_bar/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:scientia/pages/bottom_bar_pages/main_page.dart';
 import 'firebase_options.dart';
 import 'package:scientia/pages/authentication_page.dart';
 
@@ -55,7 +56,7 @@ class AuthenticationWrapper extends StatelessWidget {
             return AuthenticationPage();
           } else {
             // User is signed in, show your main content
-            return BottomBar(); // You can replace this with your desired content
+            return Main_Page(); // You can replace this with your desired content
           }
         } else {
           // Still connecting to the authentication state, show loading or splash screen
