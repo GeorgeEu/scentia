@@ -19,7 +19,7 @@ class _ExamsPageState extends State<ExamsPage> {
       backgroundColor: Color(0xFFF3F2F8),
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
-            backgroundColor: Color(0xFFADADFF),
+            backgroundColor: Color(0xFFA4A4FF),
           leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
               onPressed: () {

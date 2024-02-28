@@ -47,7 +47,7 @@ class _MainPageState extends State<Main_Page> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
-          backgroundColor: Color(0xFFADADFF),
+          backgroundColor: Color(0xFFA4A4FF),
           leading: IconButton(
             icon: Icon(Icons.menu_rounded),
             color: Colors.white,

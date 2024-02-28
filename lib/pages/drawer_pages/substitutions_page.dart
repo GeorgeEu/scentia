@@ -17,7 +17,7 @@ class _SubstitutionsPageState extends State<SubstitutionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0xFFADADFF),
+          backgroundColor: Color(0xFFA4A4FF),
           actions: [
             IconButton(
               icon: Icon(Icons.search_rounded, color: Colors.white),

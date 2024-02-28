@@ -18,7 +18,7 @@ class _EventsPageState extends State<EventsPage> {
     return Scaffold(
       backgroundColor: const Color(0xffefeff4),
       appBar: AppBar(
-        backgroundColor: Color(0xFFADADFF),
+        backgroundColor: Color(0xFFA4A4FF),
         actions: [
           IconButton(
             icon: Icon(Icons.search_rounded, color: Colors.white),

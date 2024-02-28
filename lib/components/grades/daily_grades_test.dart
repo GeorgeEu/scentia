@@ -61,6 +61,7 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
       tempGradeItems.add({
         'grade': gradeData['grade'],
         'subject': subjectName,
+        'teacher': gradeData['teacher'],
         'date': formattedDate
       });
     }
@@ -100,22 +101,37 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
                     child: Text(
                       gradeItems[index]['date'],
                       style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 14,
                           color: Colors.grey
                       ),
                     ),
                   )
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
-                  gradeItems[index]['grade'].toString(),
-                  style: TextStyle(
-                      fontSize: 15
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      gradeItems[index]['teacher'].toString(),
+                      style: TextStyle(
+                          fontSize: 14,
+                        color: Colors.grey
+                      ),
+                    ),
                   ),
-                ),
-              )
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4, right: 16),
+                    child: Text(
+                      gradeItems[index]['grade'].toString(),
+                      style: TextStyle(
+                          fontSize: 16
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ],
           );
         },

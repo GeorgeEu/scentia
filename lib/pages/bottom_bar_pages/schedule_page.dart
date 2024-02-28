@@ -30,7 +30,7 @@ class _Schedule_PageState extends State<Schedule_Page> {
               Navigator.pop(context);
             }),
         surfaceTintColor: Colors.transparent,
-          backgroundColor: Color(0xFFADADFF),
+          backgroundColor: Color(0xFFA4A4FF),
         title: CupertinoSlidingSegmentedControl<int>(
           backgroundColor: CupertinoColors.tertiarySystemFill,
           thumbColor: CupertinoColors.white,

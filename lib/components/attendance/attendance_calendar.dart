@@ -116,7 +116,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFADADFF),
+        backgroundColor: Color(0xFFA4A4FF),
         leading: IconButton(
             icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
             onPressed: () {
