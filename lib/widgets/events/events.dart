@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../views/drawer_pages/events_page.dart';
+import '../../views/events_page.dart';
 import 'package:scientia/widgets/events/event.dart';
 
 class Events extends StatefulWidget {

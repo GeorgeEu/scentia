@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scientia/widgets/bottom_bar/bottom_bar.dart';
 import 'package:flutter_emoji/flutter_emoji.dart';
-import 'package:scientia/views/bottom_bar_pages/main_page.dart';
+import 'package:scientia/views/main_page.dart';
 import 'package:scientia/services/auth_services.dart';
 
 class AuthenticationPage extends StatelessWidget {

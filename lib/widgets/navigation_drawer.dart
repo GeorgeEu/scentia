@@ -2,15 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scientia/widgets/attendance/attendance_calendar.dart';
 import 'package:scientia/views/authentication_page.dart';
-import 'package:scientia/views/drawer_pages/events_page.dart';
-import 'package:scientia/views/drawer_pages/exams_page.dart';
-import 'package:scientia/views/drawer_pages/settings_page.dart';
+import 'package:scientia/views/events_page.dart';
+import 'package:scientia/views/exams_page.dart';
+import 'package:scientia/views/settings_page.dart';
 import 'package:flutter/material.dart'; // Make sure this is the correct path to your GoogleSignInApi
 import 'package:scientia/services/auth_services.dart';
-import '../views/bottom_bar_pages/grades_page.dart';
-import '../views/bottom_bar_pages/homework_page.dart';
-import '../views/bottom_bar_pages/schedule_page.dart';
-import '../views/drawer_pages/substitutions_page.dart';
+import '../views/grades_page.dart';
+import '../views/homework_page.dart';
+import '../views/schedule_page.dart';
+import '../views/substitutions_page.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);

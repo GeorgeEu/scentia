@@ -2,8 +2,8 @@ import 'package:scientia/widgets/calendar/calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../widgets/homework/homework.dart';
-import '../../services/home_work_data/homework_data.dart';
+import '../widgets/homework/homework.dart';
+import '../services/home_work_data/homework_data.dart';
 
 class Homework_Page extends StatefulWidget {
   const Homework_Page({Key? key}) : super(key: key);
