@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:scientia/components/bottom_bar/bottom_bar.dart';
+import 'package:scientia/widgets/bottom_bar/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:scientia/pages/bottom_bar_pages/main_page.dart';
+import 'package:scientia/views/bottom_bar_pages/main_page.dart';
 import 'firebase_options.dart';
-import 'package:scientia/pages/authentication_page.dart';
+import 'package:scientia/views/authentication_page.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
