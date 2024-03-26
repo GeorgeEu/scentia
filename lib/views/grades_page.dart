@@ -59,14 +59,11 @@ class _Grades_PageState extends State<Grades_Page> {
     );
   }
   Widget _buildGradesWidget() {
-    final weeklyGrades = _grades.getWeeklyGrades(1693917393000 + 1);
-    final int currentDay = 1702226792000;
-    final grades = _grades.getSubjectGrades();
     switch (groupValue) {
       case 0:
         return DailyGradesTest();
       case 1:
-        return LessonGrades(grades);
+        return LessonGrades();
       default:
         return Container();
     }

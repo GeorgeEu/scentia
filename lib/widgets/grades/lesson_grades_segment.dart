@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 
-class LessonGradesSegment extends StatelessWidget {
-  final List<dynamic> _grades;
+import '../../services/firestore_data.dart';
 
-  const LessonGradesSegment(this._grades);
+// The StatefulWidget
+class LessonGradesSegment extends StatefulWidget {
+  final List<dynamic> grades;
+  final data = FirestoreData();
 
+  LessonGradesSegment(this.grades, {Key? key}) : super(key: key);
+
+  @override
+  _LessonGradesSegmentState createState() => _LessonGradesSegmentState();
+}
+
+// The State class
+class _LessonGradesSegmentState extends State<LessonGradesSegment> {
+  List allSubjectGrades = [];
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,10 +34,10 @@ class LessonGradesSegment extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
-                  _grades[0]['Lesson'],
+                  widget.grades[0]['Lesson'],
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 22
+                    fontSize: 22,
                   ),
                 ),
               ),
@@ -35,7 +46,7 @@ class LessonGradesSegment extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  for (var grades in _grades[0]['Grades'])
+                  for (var grade in widget.grades[0]['Grades'])
                     Container(
                       alignment: Alignment.center,
                       height: 30,
@@ -45,7 +56,7 @@ class LessonGradesSegment extends StatelessWidget {
                         color: Colors.black12,
                       ),
                       child: Text(
-                        grades['Grade'],
+                        grade['Grade'],
                         style: TextStyle(
                           fontSize: 18,
                         ),

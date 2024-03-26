@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scientia/services/firestore_data.dart';
 
+import '../../services/subject_services.dart';
+
 class DailyGradesTest extends StatefulWidget {
   final data = FirestoreData();
 
@@ -12,34 +14,8 @@ class DailyGradesTest extends StatefulWidget {
   State<DailyGradesTest> createState() => _DailyGradesTestState();
 }
 
-class Subjects {
-  final FirestoreData data = FirestoreData();
-  static List<Map<String, dynamic>> subjects =
-      []; // Initialize as an empty list
-  void initialize() async {
-    List<DocumentSnapshot> docs = await data.getSubjects();
-    for (var doc in docs) {
-      Map<String, dynamic> subject = doc.data() as Map<String, dynamic>;
-      subject['id'] = doc.id;
-      subjects.add(subject); // No need for null check
-    }
-  }
-
-  String getSubjectById(String id) {
-    try {
-      var subject = subjects.firstWhere((subject) => subject['id'] == id);
-      return subject['name']; // Assuming 'name' is always a String
-    } catch (e) {
-      // Handle the case where no match is found or any other exception
-      return 'No subject found with id $id';
-    }
-  }
-
-// Other functions...
-}
-
 class _DailyGradesTestState extends State<DailyGradesTest> {
-  Subjects subjects = Subjects();
+  SubjectServices subjects = SubjectServices();
   List<Map<String, dynamic>> gradeItems = []; // A list to store grade details
 
   @override
@@ -50,8 +26,7 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
   }
 
   void Grades() async {
-    List<DocumentSnapshot> grades =
-        await widget.data.getGrades('Tb3HelcRbnQZcxHok9l4YI5pwwI3');
+    List<DocumentSnapshot> grades = await widget.data.getGrades('Tb3HelcRbnQZcxHok9l4YI5pwwI3');
     List<Map<String, dynamic>> tempGradeItems = [];
     for (var grade in grades) {
       var gradeData = grade.data() as Map<String, dynamic>;
@@ -62,11 +37,11 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
         'grade': gradeData['grade'],
         'subject': subjectName,
         'teacher': gradeData['teacher'],
-        'date': formattedDate
+        'date': formattedDate,
       });
     }
     setState(() {
-      gradeItems = tempGradeItems; // Update the state with the new data
+      gradeItems = tempGradeItems;
     });
   }
 
@@ -116,7 +91,7 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
                       gradeItems[index]['teacher'].toString(),
                       style: TextStyle(
                           fontSize: 14,
-                        color: Colors.grey
+                          color: Colors.grey
                       ),
                     ),
                   ),
@@ -127,14 +102,14 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        color: Colors.grey.shade400
+                          borderRadius: BorderRadius.circular(24),
+                          color: Colors.grey.shade400
                       ),
                       alignment: Alignment.center,
                       child: Text(
                         gradeItems[index]['grade'].toString(),
                         style: TextStyle(
-                          color: Colors.white,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600,
                             fontSize: 13
                         ),

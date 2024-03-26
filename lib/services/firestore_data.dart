@@ -42,24 +42,4 @@ class FirestoreData {
   }
 }
 
-// class Subjects {
-//   final List<Map<String, dynamic>> _subjects = [];
-//
-//   void initialize(VoidCallback onDone) async {
-//     FirebaseFirestore firestore = FirebaseFirestore.instance;
-//     QuerySnapshot querySnapshot = await firestore.collection('subjects').get();
-//     _subjects.addAll(querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>));
-//     onDone();
-//   }
-//
-//   String getSubjectById(String id) {
-//     try {
-//       var subject = _subjects.firstWhere((subject) => subject['id'] == id);
-//       return subject['name']; // Assuming 'name' is a key in the subject document
-//     } catch (e) {
-//       return 'No subject found with id $id';
-//     }
-//   }
-// }
-
 
