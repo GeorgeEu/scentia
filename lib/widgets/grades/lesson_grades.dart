@@ -22,28 +22,7 @@ class _LessonGradesState extends State<LessonGrades> {
   void initState() {
     super.initState();
     subjects.initialize();
-    Grades();
     getSubjectGrades();
-  }
-
-  void Grades() async {
-    List<DocumentSnapshot> grades = await widget.data.getGrades('Tb3HelcRbnQZcxHok9l4YI5pwwI3');
-    List<Map<String, dynamic>> tempGradeItems = [];
-    for (var grade in grades) {
-      var gradeData = grade.data() as Map<String, dynamic>;
-      String subjectName = subjects.getSubjectById(gradeData['sid']);
-      DateTime date = (gradeData['date'] as Timestamp).toDate();
-      String formattedDate = DateFormat('MMM d').format(date);
-      tempGradeItems.add({
-        'grade': gradeData['grade'],
-        'subject': subjectName,
-        'teacher': gradeData['teacher'],
-        'date': formattedDate,
-      });
-    }
-    setState(() {
-      gradeItems = tempGradeItems;
-    });
   }
 
   void getSubjectGrades() async {
@@ -86,9 +65,24 @@ class _LessonGradesState extends State<LessonGrades> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  subjects.getSubjectById(subjectGradesMap['SID']),
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                // Use FutureBuilder to await the async getSubjectById method
+                child: FutureBuilder<String>(
+                  future: subjects.getSubjectById(subjectGradesMap['SID']),
+                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Optionally, return a placeholder widget while waiting
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      // Handle errors, if any
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      // Display the fetched subject name
+                      return Text(
+                        snapshot.data!,
+                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                      );
+                    }
+                  },
                 ),
               ),
               Wrap(

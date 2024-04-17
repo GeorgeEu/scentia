@@ -13,15 +13,15 @@ class Events extends StatefulWidget {
   @override
   _EventsState createState() => _EventsState();
 }
-  class _EventsState extends State<Events>{
+class _EventsState extends State<Events>{
+  @override
   Widget build(BuildContext context) {
-    var eventsCount = 3;
     return Container(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
       child: Column(
         children: [
-          StreamBuilder(
-            stream: widget.events.snapshots(),
+          FutureBuilder<QuerySnapshot>(
+            future: widget.events.get(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasData && snapshot.data!.docs.length > 3) {
                 return Row(
@@ -76,17 +76,17 @@ class Events extends StatefulWidget {
               borderRadius: BorderRadius.circular(16),
               color: Colors.grey.shade50,
             ),
-            child: StreamBuilder(
-                stream: widget.events.snapshots(),
-                builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                  if (streamSnapshot.hasData) {
+            child: FutureBuilder<QuerySnapshot>(
+                future: widget.events.get(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData) {
                     return ListView.separated(
                       primary: false,
                       shrinkWrap: true,
                       itemCount: 3,
                       itemBuilder: (context, index) {
                         final DocumentSnapshot documentSnapshot =
-                        streamSnapshot.data!.docs[index];
+                        snapshot.data!.docs[index];
 
                         // Convert Timestamp to DateTime
                         DateTime date =

@@ -14,19 +14,19 @@ class _ExamsState extends State<Exams> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: widget.exams.snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-        if (streamSnapshot.hasData) {
+    return FutureBuilder(
+      future: widget.exams.get(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData) {
           return Container(
             padding: const EdgeInsets.all(16),
             child: ListView.builder(
               primary: false,
               shrinkWrap: true,
-              itemCount: streamSnapshot.data!.docs.length,
+              itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 final DocumentSnapshot documentSnapshot =
-                streamSnapshot.data!.docs[index];
+                snapshot.data!.docs[index];
 
                 // Convert Timestamp to DateTime
                 DateTime date = (documentSnapshot['date'] as Timestamp).toDate();

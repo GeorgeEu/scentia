@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/widgets/schedule/day_item.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/services/schedule_data/schedule_data.dart';
 
+import '../../services/firestore_data.dart';
+
 
 class WeeklySchedule extends StatefulWidget {
+  var data = FirestoreData();
   List firstWeekSchedule;
   WeeklySchedule(this.firstWeekSchedule, {super.key});
 
@@ -32,13 +36,14 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
   @override
   void dispose() {
     pageController.dispose();
+    print(widget.data.getWeek());
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var days = widget.firstWeekSchedule;
-    // print(days);
+    print(widget.data.getWeek());
     const int pageCount = 5;
 
     return Column(

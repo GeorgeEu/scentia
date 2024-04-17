@@ -2,10 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../views/events_page.dart';
-import 'package:scientia/widgets/events/event.dart';
-
-import 'full_event.dart';
 
 // StatefulWidget
 class FullEvents extends StatefulWidget {
@@ -23,17 +19,17 @@ class _FullEventsState extends State<FullEvents> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, top: 12),
-      child: StreamBuilder(
-          stream: widget.events.snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-            if (streamSnapshot.hasData) {
+      child: FutureBuilder<QuerySnapshot>(
+          future: widget.events.get(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
               return ListView.separated(
                 primary: false,
                 shrinkWrap: true,
-                itemCount: streamSnapshot.data!.docs.length,
+                itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   final DocumentSnapshot documentSnapshot =
-                      streamSnapshot.data!.docs[index];
+                  snapshot.data!.docs[index];
 
                   // Convert Timestamp to DateTime
                   DateTime date =

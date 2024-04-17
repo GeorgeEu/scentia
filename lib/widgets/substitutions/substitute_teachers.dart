@@ -14,17 +14,17 @@ class SubstituteTeachers extends StatefulWidget {
 class _SubstituteTeachersState extends State<SubstituteTeachers> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: widget.substitutions.snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-        if (streamSnapshot.hasData) {
+    return FutureBuilder(
+      future: widget.substitutions.get(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData) {
           return ListView.separated(
             primary: false,
             shrinkWrap: true,
-            itemCount: streamSnapshot.data!.docs.length,
+            itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               final DocumentSnapshot documentSnapshot =
-              streamSnapshot.data!.docs[index];
+              snapshot.data!.docs[index];
 
               // Convert Timestamp to DateTime
               DateTime date = (documentSnapshot['date'] as Timestamp).toDate();
