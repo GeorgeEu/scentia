@@ -42,19 +42,21 @@ class FirestoreData {
     return subjects.docs;
   }
 
-  Future<List<DocumentSnapshot>> getWeek() async {
+  Future<DocumentSnapshot> getDailyRings(String day) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot week = await firestore.collection('week').get();
-
-    return week.docs;
+    QuerySnapshot rings = await firestore.collection('week')
+        .where('name', isEqualTo: day)
+        .get();
+    return rings.docs[0];
   }
 
-  static Future<List<DocumentSnapshot>> getLessons(String cls, String day) async {
+  Future<List<DocumentSnapshot>> getLessons(String cls, String day) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     QuerySnapshot lessons = await firestore
         .collection('lessons')
         .where('class', isEqualTo: cls)
         .where('day', isEqualTo: day)
+        .orderBy('lesson', descending: false)
         .get();
     return lessons.docs;
   }

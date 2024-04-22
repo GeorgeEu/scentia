@@ -1,7 +1,6 @@
 import 'package:scientia/widgets/attendance/summary_attendance/attendace.dart';
 import 'package:scientia/widgets/events/events.dart';
 import 'package:scientia/widgets/recent_grades.dart';
-import 'package:scientia/widgets/schedule/schedule_test.dart';
 import 'package:scientia/services/schedule_service.dart';
 import 'package:scientia/widgets/schedule/weakly_schedule.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +29,8 @@ class _MainPageState extends State<Main_Page> {
   Widget build(BuildContext context) {
     final attendance = AttendanceData();
     final allAttendance = attendance.getAllAttendance(1693530061000);
-    ScheduleService.getDailySchedule();
+    final data1 = ScheduleService(cls: '12a');
+    data1.getDailySchedule();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         isExtended: true,

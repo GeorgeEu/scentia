@@ -25,6 +25,7 @@ class DailySchedule {
 
 class ScheduleService {
   final String cls;
+  late List<Subject> subjects;
   final Set<String> weekday = const {
     "SUN",
     "MON",
@@ -35,19 +36,22 @@ class ScheduleService {
     "SAT"
   };
 
-  const ScheduleService({required this.cls});
+  ScheduleService({required this.cls});
 
-  static Future<DailySchedule> getDailySchedule() async {
+  Future<DailySchedule> getDailySchedule() async {
     final List<Subject> lessons = [];
     var data = FirestoreData();
-    var rawSchedule = await FirestoreData.getLessons('12a', 'MON');
+    var rings = await data.getDailyRings('MON');
+    var rawSchedule = await data.getLessons('12a', 'MON');
+    var dailyRings = rings.data();
+
     for (DocumentSnapshot lesson in rawSchedule) {
       var teacher = await data.getDoc(lesson['teacher']);
-
+      int number = lesson['lesson'];
       var subjectName = await data.getDoc(lesson['subject']);
 
       var subject = Subject(
-          start: '9:00', end: '9:45', name: subjectName['name'], teacher: teacher['name']);
+          start: rings['lessons'][number]['start'], end: rings['lessons'][number]['end'], name: subjectName['name'], teacher: teacher['name']);
       lessons.add(subject);
     }
 

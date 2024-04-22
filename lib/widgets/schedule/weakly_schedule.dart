@@ -36,14 +36,12 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
   @override
   void dispose() {
     pageController.dispose();
-    print(widget.data.getWeek());
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var days = widget.firstWeekSchedule;
-    print(widget.data.getWeek());
     const int pageCount = 5;
 
     return Column(
