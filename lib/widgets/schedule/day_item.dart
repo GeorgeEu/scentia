@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:scientia/models/daily_schedule.dart';
 
 class DayItem extends StatelessWidget {
-  final Map<String, dynamic> day;
-
-  DayItem(this.day);
+  final DailySchedule dayData;
+  DayItem(this.dayData);
 
   @override
   Widget build(BuildContext context) {
@@ -22,48 +22,42 @@ class DayItem extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            day['day'],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 24,
-                            ),
-                          )
-                        ]),
+                    child: Text(
+                      dayData.day,  // Assuming 'day' is something like 'Monday'
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 24,
+                      ),
+                    ),
                   ),
-                  if (day['schedule'] != null && day['schedule'].isNotEmpty)
-                    for (var lesson in day['schedule'])
-                      Container(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.ideographic,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 16),
-                              child: Text(
-                                lesson['Time'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15,
-                                    color: Colors.grey),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                lesson['Name'],
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                            )
-                          ],
+                  ...dayData.schedule.map((Subject subject) => Container(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.ideographic,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: Text(
+                            subject.start,  // Start time of the lesson
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                                color: Colors.grey),
+                          ),
                         ),
-                      )
-                  else
+                        Expanded(
+                          child: Text(
+                            subject.name,  // Name of the subject
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+                  if (dayData.schedule.isEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: const Text(

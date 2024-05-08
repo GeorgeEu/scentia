@@ -1,3 +1,4 @@
+import 'package:scientia/models/daily_schedule.dart';
 import 'package:scientia/widgets/attendance/summary_attendance/attendace.dart';
 import 'package:scientia/widgets/events/events.dart';
 import 'package:scientia/widgets/recent_grades.dart';
@@ -8,11 +9,19 @@ import 'package:scientia/widgets/navigation_drawer.dart';
 import 'package:scientia/services/schedule_data/schedule_data.dart';
 import 'package:scientia/services/attendance_data/attendance_data.dart';
 import 'package:scientia/services/firestore_data.dart';
-import 'dart:developer';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({Key? key}) : super(key: key);
 
+  final Set<String> weekday = const {
+    "SUN",
+    "MON",
+    "TUE",
+    "WED",
+    "THU",
+    "FRI",
+    "SAT"
+  };
 
   @override
   State<Main_Page> createState() => _MainPageState();
@@ -21,16 +30,34 @@ class Main_Page extends StatefulWidget {
 
 class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
-  final weeklySchedule = ScheduleData();
+  final weeklySchedule = ScheduleService(cls: '12a');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<DailySchedule> weeklyData = [];
 
+  // Future<void> getWeeklyData() async {
+  //   weeklyData = await weeklySchedule.getWeeklySchedule();
+  //   print('*****************************************');
+  //   print(weeklyData);
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // getWeeklyData();
+    //print('*****************************************');
+    // print(weeklySchedule.getWeeklySchedule());
+  }
 
   @override
   Widget build(BuildContext context) {
+    final weeklyData = weeklySchedule.getWeeklySchedule();
     final attendance = AttendanceData();
     final allAttendance = attendance.getAllAttendance(1693530061000);
-    final data1 = ScheduleService(cls: '12a');
-    data1.getDailySchedule();
+
+    // for (String day in widget.weekday) {
+    //   print(fruit);
+    // }
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         isExtended: true,
@@ -70,7 +97,7 @@ class _MainPageState extends State<Main_Page> {
         drawer: MyDrawer(),
         body: SingleChildScrollView(
           child: Column(children: [
-            WeeklySchedule(weeklySchedule.getWeeklySchedule(1678723200000)),
+            WeeklySchedule(weeklyData),
             RecentGrades(),
             Events(data.getEvents()),
             Attendace(allAttendance),
