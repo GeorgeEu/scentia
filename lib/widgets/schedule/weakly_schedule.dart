@@ -1,12 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:scientia/widgets/schedule/day_item.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:scientia/services/schedule_data/schedule_data.dart';
-
+import 'package:scientia/widgets/schedule/day_item.dart';
 import '../../models/daily_schedule.dart';
-import '../../services/firestore_data.dart';
-
 
 class WeeklySchedule extends StatefulWidget {
   final Future<List<DailySchedule>> schedule;
@@ -30,9 +24,12 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
             return PageView.builder(
               controller: pageController,
               itemCount: snapshot.data!.length,
+              padEnds: false,
               itemBuilder: (context, index) {
+                // Apply right padding only for the last item
+                final isLastItem = index == snapshot.data!.length - 1;
                 return Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.only(left: 16, top: 16, right: isLastItem ? 16 : 0),
                   child: DayItem(snapshot.data![index]),
                 );
               },
@@ -46,5 +43,3 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     );
   }
 }
-
-

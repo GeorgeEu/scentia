@@ -51,15 +51,25 @@ class FirestoreData {
   }
 
   Future<List<DocumentSnapshot>> getLessons(String cls, String day) async {
+    final DateTime now = DateTime.now();
+    final DateTime oneWeekAgo = now.subtract(const Duration(days: 14));
+    Timestamp nowTimestamp = Timestamp.fromDate(now);
+    Timestamp oneWeekAgoTimestamp = Timestamp.fromDate(oneWeekAgo);
     FirebaseFirestore firestore = FirebaseFirestore.instance;
+
     QuerySnapshot lessons = await firestore
         .collection('lessons')
         .where('class', isEqualTo: cls)
+        .where('startFrom', isLessThan: nowTimestamp)
+        .where('startFrom', isGreaterThanOrEqualTo: oneWeekAgoTimestamp)
         .where('day', isEqualTo: day)
         .orderBy('lesson', descending: false)
         .get();
+
     return lessons.docs;
   }
+
+
 
   Future<DocumentSnapshot> getDoc(DocumentReference doc) async {
     return await doc.get();

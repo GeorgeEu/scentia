@@ -8,11 +8,20 @@ import 'package:scientia/views/authentication_page.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const Scentia());
+  // Lock screen orientation to portrait mode
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
+    runApp(const Scentia());
+  });
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Color(0xFFf2f2f2),
   ));
@@ -27,8 +36,6 @@ class Scentia extends StatefulWidget {
 
 class _ScentiaState extends State<Scentia> {
   @override
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -36,7 +43,7 @@ class _ScentiaState extends State<Scentia> {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: AuthenticationWrapper()
+      home: AuthenticationWrapper(),
     );
   }
 }
@@ -65,4 +72,3 @@ class AuthenticationWrapper extends StatelessWidget {
     );
   }
 }
-

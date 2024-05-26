@@ -30,7 +30,7 @@ class Main_Page extends StatefulWidget {
 
 class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
-  final weeklySchedule = ScheduleService(cls: '12a');
+  final weeklySchedule = ScheduleService(cls: '12b');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<DailySchedule> weeklyData = [];
 
