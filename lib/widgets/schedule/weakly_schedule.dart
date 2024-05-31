@@ -4,7 +4,7 @@ import '../../models/daily_schedule.dart';
 
 class WeeklySchedule extends StatefulWidget {
   final Future<List<DailySchedule>> schedule;
-  WeeklySchedule(this.schedule, {super.key});
+  const WeeklySchedule(this.schedule, {super.key});
 
   @override
   State<WeeklySchedule> createState() => _WeeklyScheduleState();
@@ -37,7 +37,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );

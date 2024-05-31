@@ -23,10 +23,10 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
   void initState() {
     super.initState();
     subjects.initialize();
-    Grades();
+    grades();
   }
 
-  void Grades() async {
+  void grades() async {
     if (!mounted) return; // Add this line to check if the widget is still mounted
     setState(() {
       isLoading = true; // Set loading to true when starting to fetch data
@@ -76,15 +76,15 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     gradeItems[index]['subject'],
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: Text(
                     gradeItems[index]['date'],
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ),
               ],
@@ -93,9 +93,9 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
               children: [
                 Text(
                   gradeItems[index]['teacher'].toString(),
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
-                Spacer(),
+                const Spacer(),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4, right: 16),
                   child: Container(
@@ -108,7 +108,7 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
                     alignment: Alignment.center,
                     child: Text(
                       gradeItems[index]['grade'].toString(),
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
                     ),
                   ),
                 ),
@@ -118,7 +118,7 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
         );
       },
       separatorBuilder: (context, index) {
-        return Divider(thickness: 0.5); // This is the separator widget
+        return const Divider(thickness: 0.5); // This is the separator widget
       },
     );
   }

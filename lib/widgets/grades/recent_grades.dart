@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scientia/views/grades_page.dart';
 import 'package:scientia/widgets/grades/daily_grades_test.dart';
-import 'package:scientia/widgets/grades/lesson_grades.dart';
 
 class RecentGrades extends StatefulWidget {
   const RecentGrades({super.key});
@@ -21,14 +20,14 @@ class _RecentGradesState extends State<RecentGrades> {
         children: [
           Row(
             children: [
-              Text(
+              const Text(
                 'Grades',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 22,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               TextButton(
                 style: ButtonStyle(
                   padding: MaterialStateProperty.all(EdgeInsets.zero),
@@ -36,10 +35,10 @@ class _RecentGradesState extends State<RecentGrades> {
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => GradesPage()
+                      builder: (context) => const GradesPage()
                   ));
                 },
-                child: Text(
+                child: const Text(
                   'Show All',
                   style: TextStyle(
                       fontSize: 16,
@@ -50,7 +49,7 @@ class _RecentGradesState extends State<RecentGrades> {
             ],
           ),
           Container(
-            padding: EdgeInsets.only(top: 12, left: 16, bottom: 12),
+            padding: const EdgeInsets.only(top: 12, left: 16, bottom: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.white,

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scientia/widgets/bottom_bar/bottom_bar.dart';
-import 'package:flutter_emoji/flutter_emoji.dart';
 import 'package:scientia/views/main_page.dart';
 import 'package:scientia/services/auth_services.dart';
 
@@ -9,8 +7,6 @@ class AuthenticationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var parser = EmojiParser();
-    var hiEmoji = parser.get('wave');
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

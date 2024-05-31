@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
-import 'dart:developer';
 
 class FirestoreData {
   final _uid = "Tb3HelcRbnQZcxHok9l4YI5pwwI3";
@@ -67,6 +65,16 @@ class FirestoreData {
         .get();
 
     return lessons.docs;
+  }
+
+  Future<List<DocumentSnapshot>> getHomework(DocumentReference uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot grades = await firestore
+        .collection('homework') // Replace with your collection name
+        .where('uid', isEqualTo: uid) // Assuming 'uid' is the field you're querying
+        .get();
+
+    return grades.docs;
   }
 
 
