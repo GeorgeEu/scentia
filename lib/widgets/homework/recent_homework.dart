@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scientia/views/grades_page.dart';
-import 'package:scientia/widgets/grades/daily_grades_test.dart';
+import 'package:scientia/views/homework_page.dart';
 
 import 'homework_test.dart';
 
@@ -37,7 +36,7 @@ class _RecentHomeworkState extends State<RecentHomework> {
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const GradesPage()
+                      builder: (context) => HomeworkPage()
                   ));
                 },
                 child: const Text(
@@ -51,6 +50,7 @@ class _RecentHomeworkState extends State<RecentHomework> {
             ],
           ),
           Container(
+            width: double.infinity,
             padding: const EdgeInsets.only(top: 12, left: 16, bottom: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),

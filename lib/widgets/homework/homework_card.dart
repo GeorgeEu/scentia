@@ -1,72 +1,108 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:intl/intl.dart';
+import 'package:scientia/services/firestore_data.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../models/homework_model.dart';
 
-import 'homework_segment.dart';
+class HomeworkCard extends StatelessWidget {
+  final HomeworkModel homeworkModel = HomeworkModel();
 
-class HomeworkCard extends StatefulWidget {
-  final List _homework;
+  HomeworkCard({super.key});
 
-  const HomeworkCard(this._homework);
-
-  @override
-  State<HomeworkCard> createState() => _HomeworkCardState();
-}
-
-class _HomeworkCardState extends State<HomeworkCard> {
   @override
   Widget build(BuildContext context) {
-    var homeworkCount = widget._homework.length; //fix it later
-    return ListView.builder(
-      primary: false,
-      shrinkWrap: true,
-      itemCount: homeworkCount,
-      itemBuilder: (context, day) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Container(
-            padding: EdgeInsets.only(left: 16, right: 8, top: 8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16), color: Colors.grey.shade50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    widget._homework[day]['day'].toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-                (widget._homework[day]['homework'].length > 0)
-                    ? ListView.separated(
-                        padding: EdgeInsets.only(bottom: 8),
-                        primary: false,
-                        shrinkWrap: true,
-                        itemCount: widget._homework[day]['homework'].length,
-                        itemBuilder: (context, index) {
-                          return HomeworkSegment(
-                              widget._homework[day]['homework'][index]);
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Divider(
-                            thickness: 0.5,
-                            height: 6,
-                          );
-                        },
-                      )
-                    : Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: const Text(
-                        'There is no homework',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
-                      ),
-                    ),
-              ],
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: homeworkModel.fetchHomework(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(
+            child: Text(
+              'There is no homework',
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w600),
             ),
-          ),
-        );
+          );
+        } else {
+          final homeworkItems = snapshot.data!;
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4, left: 16, bottom: 16),
+              child: ListView.separated(
+                padding: EdgeInsets.zero,
+                primary: false,
+                shrinkWrap: true,
+                itemCount: homeworkItems.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Row(
+                          children: [
+                            Text(
+                              homeworkItems[index]['subject'],
+                              style: const TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w600),
+                            ),
+                            const Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16),
+                              child: Text(
+                                'Due to: ${homeworkItems[index]['date']}',
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.grey),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        homeworkItems[index]['teacher'].toString(),
+                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8, right: 16),
+                        child: Linkify(
+                          onOpen: (link) async {
+                            if (!await launchUrl(Uri.parse(link.url))) {
+                              throw Exception('Could not launch ${link.url}');
+                            }
+                          },
+                          text: homeworkItems[index]['task'],
+                          linkStyle: const TextStyle(
+                              color: Colors.blue, // Customize the link color if needed
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.blue),
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const Divider(
+                    thickness: 0.5,
+                    height: 0,
+                  ); // This is the separator widget
+                },
+              ),
+            ),
+          );
+        }
       },
     );
   }

@@ -47,19 +47,19 @@ class _MainPageState extends State<Main_Page> {
     final allAttendance = attendance.getAllAttendance(1693530061000);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        isExtended: true,
-        onPressed: () {
-          _showBottomSheet(context);
-        },
-        backgroundColor: const Color(0xFFB7B7FF),
-        elevation: 0,
-        child: const Icon(
-          Icons.add_rounded,
-          color: Colors.white,
-          size: 30,
+        floatingActionButton: FloatingActionButton(
+          isExtended: true,
+          onPressed: () {
+            _showBottomSheet(context);
+          },
+          backgroundColor: const Color(0xFFB7B7FF),
+          elevation: 0,
+          child: const Icon(
+            Icons.add_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
         ),
-      ),
         backgroundColor: const Color(0xFFF3F2F8),
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
@@ -74,11 +74,11 @@ class _MainPageState extends State<Main_Page> {
           ),
           elevation: 0,
           title: const Text(
-              "11A, American International School Progress",
+            "11A, American International School Progress",
             style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.w600
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.w600
             ),
           ),
         ),
@@ -153,4 +153,3 @@ class _MainPageState extends State<Main_Page> {
 
   }
 }
-

@@ -155,7 +155,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => Homework_Page()));
+                  MaterialPageRoute(builder: (context) => HomeworkPage()));
             },
           ),
           ListTile(

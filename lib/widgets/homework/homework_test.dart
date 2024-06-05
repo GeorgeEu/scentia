@@ -56,19 +56,18 @@ class _HomeworkTestState extends State<HomeworkTest> {
     });
   }
 
-  // Future<void> _onOpen(LinkableElement link) async {
-  //   if (await canLaunch(link.url)) {
-  //     await launch(link.url);
-  //   } else {
-  //     print('Could not launch $link');
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       // Show loading indicator while data is being fetched
       return const Center(child: CircularProgressIndicator());
+    }
+
+    if (homeworkItems.isEmpty) {
+      return const Text(
+        'There is no homework',
+        style: TextStyle(fontSize: 16, color: Colors.grey),
+      );
     }
 
     // Render the list view once the data is fetched
@@ -114,9 +113,9 @@ class _HomeworkTestState extends State<HomeworkTest> {
                 },
                 text: homeworkItems[index]['task'],
                 linkStyle: const TextStyle(
-                  color: Colors.blue, // Customize the link color if needed
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.blue
+                    color: Colors.blue, // Customize the link color if needed
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.blue
                 ),
                 style: TextStyle(
                   color: Colors.grey.shade700,
