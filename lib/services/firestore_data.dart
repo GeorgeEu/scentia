@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreData {
-  final _uid = "Tb3HelcRbnQZcxHok9l4YI5pwwI3";
 
   CollectionReference getExams() {
     final CollectionReference _exams =
@@ -50,9 +49,7 @@ class FirestoreData {
 
   Future<List<DocumentSnapshot>> getLessons(String cls, String day) async {
     final DateTime now = DateTime.now();
-    //final DateTime oneWeekAgo = now.subtract(const Duration(days: 7));
     Timestamp nowTimestamp = Timestamp.fromDate(now);
-    //Timestamp oneWeekAgoTimestamp = Timestamp.fromDate(oneWeekAgo);
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Query all documents for the specified day and class

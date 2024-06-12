@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scientia/widgets/attendance/attendance_calendar.dart';
 import 'package:scientia/views/authentication_page.dart';
 import 'package:scientia/views/events_page.dart';
@@ -13,7 +12,7 @@ import '../views/schedule_page.dart';
 import '../views/substitutions_page.dart';
 
 class MyDrawer extends StatefulWidget {
-  const MyDrawer({Key? key}) : super(key: key);
+  const MyDrawer({super.key});
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -24,7 +23,13 @@ class _MyDrawerState extends State<MyDrawer> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
     return Drawer(
-      backgroundColor: Color(0xFFF7F7FA),
+      backgroundColor: const Color(0xFFF7F7FA),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(8),
+          bottomRight: Radius.circular(8),
+        ),
+      ),
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -33,10 +38,10 @@ class _MyDrawerState extends State<MyDrawer> {
               dividerTheme: const DividerThemeData(color: Colors.transparent),
             ),
             child: DrawerHeader(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFFA4A4FF),
                 ),
-                padding: EdgeInsets.fromLTRB(16, 16, 0, 8),
+                padding: const EdgeInsets.fromLTRB(16, 16, 0, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -54,26 +59,26 @@ class _MyDrawerState extends State<MyDrawer> {
                           children: [
                             Text(
                               user.displayName!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                             ),
                             Text(
                               user.email!,
-                              style: TextStyle(fontSize: 14, color: Colors.white70),
+                              style: const TextStyle(fontSize: 14, color: Colors.white70),
                             ),
                           ],
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                           padding: EdgeInsets.zero,
                           onPressed: () async {
                             await AuthService().logout();
                             Navigator.of(context)
                                 .pushReplacement(MaterialPageRoute(
-                              builder: (context) => AuthenticationPage(),
+                              builder: (context) => const AuthenticationPage(),
                             ));
                           },
-                          icon: Icon(Icons.logout_rounded, color: Colors.white,),
+                          icon: const Icon(Icons.logout_rounded, color: Colors.white,),
                         )
                       ],
                     ),
@@ -82,74 +87,74 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.school_rounded),
-            title: Text(
+            leading: const Icon(Icons.school_rounded),
+            title: const Text(
               'Exams',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => ExamsPage()));
+                  .push(MaterialPageRoute(builder: (context) => const ExamsPage()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.grading_rounded),
-            title: Text(
+            leading: const Icon(Icons.grading_rounded),
+            title: const Text(
               'Attendance',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AttendanceCalendar()));
+                  MaterialPageRoute(builder: (context) => const AttendanceCalendar()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.change_circle_rounded),
-            title: Text(
+            leading: const Icon(Icons.change_circle_rounded),
+            title: const Text(
               'Substitutions',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SubstitutionsPage()));
+                  MaterialPageRoute(builder: (context) => const SubstitutionsPage()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.event_rounded),
-            title: Text(
+            leading: const Icon(Icons.event_rounded),
+            title: const Text(
               'Events',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => EventsPage()));
+                  .push(MaterialPageRoute(builder: (context) => const EventsPage()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings_rounded),
-            title: Text(
+            leading: const Icon(Icons.settings_rounded),
+            title: const Text(
               'Settings',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SettingsPage()));
+                  MaterialPageRoute(builder: (context) => const SettingsPage()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.calendar_month_rounded),
-            title: Text(
+            leading: const Icon(Icons.calendar_month_rounded),
+            title: const Text(
               'Schedule',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SchedulePage()));
+                  MaterialPageRoute(builder: (context) => const SchedulePage()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.bookmark_border_rounded),
-            title: Text(
+            leading: const Icon(Icons.bookmark_border_rounded),
+            title: const Text(
               'Homework',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
@@ -159,14 +164,14 @@ class _MyDrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.grade_rounded),
-            title: Text(
+            leading: const Icon(Icons.grade_rounded),
+            title: const Text(
               'Grades',
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GradesPage()));
+                  MaterialPageRoute(builder: (context) => const GradesPage()));
             },
           )
           // Add more ListTiles for other navigation items.
