@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scientia/services/firestore_data.dart';
-
 import '../../services/subject_services.dart';
+import '../../utils/formater.dart';
+
 
 class DailyGradesTest extends StatefulWidget {
   final data = FirestoreData();
@@ -52,7 +53,6 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -66,6 +66,9 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
       shrinkWrap: true,
       itemCount: gradeItems.length < 4 ? gradeItems.length : 4,
       itemBuilder: (context, index) {
+        final gradeValue = gradeItems[index]['grade'];
+        final specialColor = Formater.gradeToColor(gradeValue); // Using the utility function
+
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,12 +105,13 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
                     width: 24,
                     height: 24,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: Colors.grey.shade400,
+                      borderRadius: BorderRadius.circular(8),
+                      color: specialColor is Color ? specialColor : null,
+                      gradient: specialColor is LinearGradient ? specialColor : null,
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      gradeItems[index]['grade'].toString(),
+                      gradeValue.toString(),
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
                     ),
                   ),

@@ -31,8 +31,8 @@ class _RecentHomeworkState extends State<RecentHomework> {
               const Spacer(),
               TextButton(
                 style: ButtonStyle(
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  padding: WidgetStateProperty.all(EdgeInsets.zero),
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(

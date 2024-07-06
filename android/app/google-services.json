@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "541209528339-4dvopt79n9kqsaoqtvek1i8cvn2v1ejr.apps.googleusercontent.com",
+          "client_id": "541209528339-t4ppvrq1ssjodcqmvbuhc1ltedmb3apf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.scientia",
-            "certificate_hash": "a9cc6e92ee45348a820c820c2fa4569d244cebe4"
+            "certificate_hash": "159bb217018d231b8bb2dc6237fb576dc90f6c96"
           }
         },
         {
@@ -38,6 +38,13 @@
             {
               "client_id": "541209528339-sprqrtp651ccfu9fa2scskqraqr0d3ad.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "541209528339-c3htj43hd06s52ucl7fedmur6qano4j7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cardTest"
+              }
             }
           ]
         }
