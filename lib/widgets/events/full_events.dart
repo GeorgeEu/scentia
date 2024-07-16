@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 // StatefulWidget
 class FullEvents extends StatefulWidget {
-  final CollectionReference events;
+  final Future<List<DocumentSnapshot>> events;
 
   FullEvents(this.events);
 
@@ -19,21 +19,27 @@ class _FullEventsState extends State<FullEvents> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, top: 12),
-      child: FutureBuilder<QuerySnapshot>(
-          future: widget.events.get(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasData) {
+      child: FutureBuilder<List<DocumentSnapshot>>(
+          future: widget.events,
+          builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               return ListView.separated(
                 primary: false,
                 shrinkWrap: true,
-                itemCount: snapshot.data!.docs.length,
+                itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   final DocumentSnapshot documentSnapshot =
-                  snapshot.data!.docs[index];
+                  snapshot.data![index];
 
                   // Convert Timestamp to DateTime
                   DateTime date =
-                      (documentSnapshot['date'] as Timestamp).toDate();
+                  (documentSnapshot['date'] as Timestamp).toDate();
 
                   // Format DateTime to String
                   String formattedDate = DateFormat('EEEE – kk:mm').format(date);
@@ -41,12 +47,12 @@ class _FullEventsState extends State<FullEvents> {
                   return InkWell(
                     onTap: () {
                       showEventBottomSheet(
-                        context,
-                        documentSnapshot['name'],
-                        documentSnapshot['address'],
-                        documentSnapshot['desc'],
-                        documentSnapshot['imageUrl'],
-                        formattedDate
+                          context,
+                          documentSnapshot['name'],
+                          documentSnapshot['address'],
+                          documentSnapshot['desc'],
+                          documentSnapshot['imageUrl'],
+                          formattedDate
                       );
                     },
                     child: Padding(
@@ -74,35 +80,35 @@ class _FullEventsState extends State<FullEvents> {
                           ),
                           Expanded(
                               child: Container(
-                            padding: EdgeInsets.only(left: 24),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formattedDate,
-                                  style: TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.grey,
-                                      fontSize: 15),
+                                padding: EdgeInsets.only(left: 24),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      formattedDate,
+                                      style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.grey,
+                                          fontSize: 15),
+                                    ),
+                                    Text(
+                                      documentSnapshot['name'],
+                                      style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18),
+                                    ),
+                                    Text(
+                                      documentSnapshot['address'],
+                                      style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  documentSnapshot['name'],
-                                  style: TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
-                                ),
-                                Text(
-                                  documentSnapshot['address'],
-                                  style: TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          )),
+                              )),
                         ],
                       ),
                     ),
@@ -113,10 +119,11 @@ class _FullEventsState extends State<FullEvents> {
                 },
               );
             }
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Text('No events found.'));
           }),
     );
   }
+
   void showEventBottomSheet(BuildContext context, String name, String address, String desc, String imageUrl, String formattedDate) {
     showModalBottomSheet(
         context: context,

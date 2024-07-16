@@ -2,22 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreData {
 
-  CollectionReference getExams() {
-    final CollectionReference _exams =
-        FirebaseFirestore.instance.collection('exams');
-    return _exams;
+  Future<List<DocumentSnapshot>> getExams(String uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot grades = await firestore
+        .collection('exams') // Replace with your collection name
+        .where('uid', isEqualTo: uid) // Assuming 'uid' is the field you're querying
+        .get();
+
+    return grades.docs;
   }
 
-  CollectionReference getSubstitutions() {
-    final CollectionReference _substitutions =
-        FirebaseFirestore.instance.collection('substitutions');
-    return _substitutions;
+  Future<List<DocumentSnapshot>> getSubstitutions(String uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot grades = await firestore
+        .collection('substitutions') // Replace with your collection name
+        .where('uid', isEqualTo: uid) // Assuming 'uid' is the field you're querying
+        .get();
+
+    return grades.docs;
   }
 
-  CollectionReference getEvents() {
-    final CollectionReference _events =
-        FirebaseFirestore.instance.collection('events');
-    return _events;
+  Future<List<DocumentSnapshot>> getEvents(String uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot grades = await firestore
+        .collection('events') // Replace with your collection name
+        .where('uid', isEqualTo: uid) // Assuming 'uid' is the field you're querying
+        .get();
+
+    return grades.docs;
   }
 
   Future<List<DocumentSnapshot>> getGrades(String uid) async {
@@ -47,16 +59,14 @@ class FirestoreData {
     return rings.docs[0];
   }
 
-  Future<List<DocumentSnapshot>> getLessons(String cls, String day) async {
-    final DateTime now = DateTime.now();
-    Timestamp nowTimestamp = Timestamp.fromDate(now);
+  Future<List<DocumentSnapshot>> getLessons(String cls, String day, Timestamp timestamp) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Query all documents for the specified day and class
     QuerySnapshot lessons = await firestore
         .collection('lessons')
         .where('class', isEqualTo: cls)
-        .where('startFrom', isLessThan: nowTimestamp)
+        .where('startFrom', isLessThan: timestamp)
         .where('day', isEqualTo: day)
         .get();
 

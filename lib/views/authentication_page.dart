@@ -65,7 +65,7 @@ class AuthenticationPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  await AuthService().signInwithGoogle(); // Wait for sign-in to complete
+                  await AuthService().signInWithGoogle(); // Wait for sign-in to complete
                   Navigator.pushReplacement(
                     // Use pushReplacement to replace the current route
                     context,
@@ -75,10 +75,10 @@ class AuthenticationPage extends StatelessWidget {
                   );
                 },
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.grey.shade300),
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
+                  overlayColor: WidgetStateProperty.all(Colors.grey.shade300),
+                  backgroundColor: WidgetStateProperty.all(Colors.white),
                   // Change background color to grey
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                       side: BorderSide(
@@ -88,7 +88,7 @@ class AuthenticationPage extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   // Align the content to the center
-                  elevation: MaterialStateProperty.all(0.1),
+                  elevation: WidgetStateProperty.all(0.1),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,10 +114,10 @@ class AuthenticationPage extends StatelessWidget {
                   onPressed: () {},
                   style: ButtonStyle(
                     overlayColor:
-                        MaterialStateProperty.all(Colors.grey.shade300),
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                        WidgetStateProperty.all(Colors.grey.shade300),
+                    backgroundColor: WidgetStateProperty.all(Colors.white),
                     // Change background color to grey
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                         side: BorderSide(
@@ -127,7 +127,7 @@ class AuthenticationPage extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     // Align the content to the center
-                    elevation: MaterialStateProperty.all(0.1),
+                    elevation: WidgetStateProperty.all(0.1),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

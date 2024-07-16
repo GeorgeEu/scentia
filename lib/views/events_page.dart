@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scientia/services/firestore_data.dart';
 
 import '../../services/events_data/events_data.dart';
+import '../services/auth_services.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
+  String? userId = AuthService.getCurrentUserId();
   var data = FirestoreData();
   @override
   Widget build(BuildContext context) {
@@ -41,9 +43,7 @@ class _EventsPageState extends State<EventsPage> {
         ),
         // titleSpacing: 0,
       ),
-      body: SingleChildScrollView(
-        child: FullEvents(data.getEvents()),
-      )
+      body: FullEvents(data.getEvents(userId!))
     );
   }
 }

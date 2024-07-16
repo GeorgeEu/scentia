@@ -3,9 +3,11 @@ import 'package:scientia/services/firestore_data.dart';
 import 'package:scientia/services/substitute_data/substitutions_data.dart';
 import 'package:flutter/material.dart';
 
+import '../services/auth_services.dart';
+
 
 class SubstitutionsPage extends StatefulWidget {
-  const SubstitutionsPage({Key? key}) : super(key: key);
+  const SubstitutionsPage({super.key});
 
   @override
   State<SubstitutionsPage> createState() => _SubstitutionsPageState();
@@ -13,9 +15,11 @@ class SubstitutionsPage extends StatefulWidget {
 
 class _SubstitutionsPageState extends State<SubstitutionsPage> {
   var data = FirestoreData();
+  String? userId = AuthService.getCurrentUserId();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffefeff4),
         appBar: AppBar(
           backgroundColor: Color(0xFFA4A4FF),
           actions: [
@@ -40,17 +44,7 @@ class _SubstitutionsPageState extends State<SubstitutionsPage> {
           ),
           // titleSpacing: 0,
         ),
-        body: Container(
-          color: const Color(0xffefeff4),
-          height: double.infinity,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SubstituteTeachers(data.getSubstitutions()),
-              ],
-            ),
-          ),
-        )
+        body: SubstituteTeachers(data.getSubstitutions(userId!))
     );
   }
 }

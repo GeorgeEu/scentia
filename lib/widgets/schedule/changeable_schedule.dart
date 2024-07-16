@@ -22,7 +22,11 @@ class _ChangeableScheduleState extends State<ChangeableSchedule> {
             padding: EdgeInsets.zero,
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              return DayItem(snapshot.data![index]);
+              final isFirstItem = index == 0;
+              return Padding(
+                padding: EdgeInsets.only(top: isFirstItem ? 16 : 0, left: 16, right: 16),
+                child: DayItem(snapshot.data![index]),
+              );
             },
           );
         } else if (snapshot.hasError) {

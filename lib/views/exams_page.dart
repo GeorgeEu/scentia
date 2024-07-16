@@ -1,7 +1,8 @@
 import 'package:scientia/services/firestore_data.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/widgets/exams/exams.dart';
+
+import '../services/auth_services.dart';
 
 class ExamsPage extends StatefulWidget {
   const ExamsPage({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class ExamsPage extends StatefulWidget {
 }
 
 class _ExamsPageState extends State<ExamsPage> {
+  String? userId = AuthService.getCurrentUserId();
   var exams = FirestoreData();
 
   @override
@@ -33,10 +35,6 @@ class _ExamsPageState extends State<ExamsPage> {
             ),
           ),
         ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Exams(exams.getExams()),
-          ),
-        ));
+        body: Exams(exams.getExams(userId!)));
   }
 }

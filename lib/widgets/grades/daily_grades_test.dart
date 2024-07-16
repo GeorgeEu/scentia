@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:scientia/services/firestore_data.dart';
+import '../../services/auth_services.dart';
 import '../../services/subject_services.dart';
 import '../../utils/formater.dart';
-
 
 class DailyGradesTest extends StatefulWidget {
   final data = FirestoreData();
@@ -32,7 +33,8 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
     setState(() {
       isLoading = true; // Set loading to true when starting to fetch data
     });
-    List<DocumentSnapshot> grades = await widget.data.getGrades('Tb3HelcRbnQZcxHok9l4YI5pwwI3');
+    String? userId = AuthService.getCurrentUserId();
+    List<DocumentSnapshot> grades = await widget.data.getGrades(userId!);
     List<Map<String, dynamic>> tempGradeItems = [];
     for (var grade in grades) {
       var gradeData = grade.data() as Map<String, dynamic>;
@@ -53,6 +55,7 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -68,7 +71,6 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
       itemBuilder: (context, index) {
         final gradeValue = gradeItems[index]['grade'];
         final specialColor = Formater.gradeToColor(gradeValue); // Using the utility function
-
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

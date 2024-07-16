@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Subject {
   final String start;
   final String end;
@@ -13,7 +15,8 @@ class Subject {
 
 class DailySchedule {
   final String day;
+  late Timestamp timestamp;
   final List<Subject> schedule;
 
-  const DailySchedule({required this.schedule, required this.day});
+  DailySchedule({required this.schedule, required this.day, required this.timestamp});
 }

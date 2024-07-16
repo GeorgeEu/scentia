@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class MyDatePicker extends StatefulWidget {
-  const MyDatePicker({super.key});
+  final Function(DateTime) onDateSelected;
+
+  const MyDatePicker({super.key, required this.onDateSelected});
 
   @override
   State<MyDatePicker> createState() => _MyDatePickerState();
@@ -20,7 +20,6 @@ class _MyDatePickerState extends State<MyDatePicker> {
     selectedDay = DateTime.now();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,7 +33,6 @@ class _MyDatePickerState extends State<MyDatePicker> {
             ),
             padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: TableCalendar(
-              //eventLoader: (day) => _attendance.getDailyAttendance(day.millisecondsSinceEpoch),
               calendarFormat: _calendarFormat,
               onFormatChanged: (format) {
                 setState(() {
@@ -47,20 +45,15 @@ class _MyDatePickerState extends State<MyDatePicker> {
               selectedDayPredicate: (day) {
                 return isSameDay(selectedDay, day);
               },
-              // Inside your _CalendarState class
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
                   this.selectedDay = selectedDay;
                 });
+                widget.onDateSelected(selectedDay); // Notify parent widget
+                // Automatically navigate back to the schedule tab
+                DefaultTabController.of(context).animateTo(0);
               },
             ),
-          ),
-        ),
-        Text(
-          'Selected date: ${DateFormat.yMMMd().format(selectedDay)}',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
           ),
         ),
       ],

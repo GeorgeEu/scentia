@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scientia/services/firestore_data.dart';
 import 'package:scientia/services/subject_services.dart';
-import 'package:scientia/utils/formater.dart'; // Import the color utilities
+import 'package:scientia/utils/formater.dart';
+
+import '../../services/auth_services.dart'; // Import the color utilities
 
 class LessonGrades extends StatefulWidget {
   final FirestoreData data = FirestoreData();
@@ -24,7 +26,8 @@ class _LessonGradesState extends State<LessonGrades> {
   }
 
   Future<List<Map<String, dynamic>>> getSubjectGrades() async {
-    List<DocumentSnapshot> grades = await widget.data.getGrades('Tb3HelcRbnQZcxHok9l4YI5pwwI3');
+    String? userId = AuthService.getCurrentUserId();
+    List<DocumentSnapshot> grades = await widget.data.getGrades(userId!);
     var subjectsSet = Set<String>();
     grades.forEach((grade) {
       var data = grade.data() as Map<String, dynamic>;

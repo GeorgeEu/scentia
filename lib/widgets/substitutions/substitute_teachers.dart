@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SubstituteTeachers extends StatefulWidget {
-  final CollectionReference substitutions;
+  final Future<List<DocumentSnapshot>> substitutions;
 
-  SubstituteTeachers(this.substitutions);
+  const SubstituteTeachers(this.substitutions, {super.key});
 
   @override
   _SubstituteTeachersState createState() => _SubstituteTeachersState();
@@ -15,70 +15,76 @@ class _SubstituteTeachersState extends State<SubstituteTeachers> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: widget.substitutions.get(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasData) {
+      future: widget.substitutions,
+      builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           return ListView.separated(
             primary: false,
             shrinkWrap: true,
-            itemCount: snapshot.data!.docs.length,
+            itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              final DocumentSnapshot documentSnapshot =
-              snapshot.data!.docs[index];
+              final DocumentSnapshot substituter = snapshot.data![index];
 
               // Convert Timestamp to DateTime
-              DateTime date = (documentSnapshot['date'] as Timestamp).toDate();
+              DateTime date = (substituter['date'] as Timestamp).toDate();
 
               // Format DateTime to String
               String formattedDate = DateFormat('EEEE – kk:mm').format(date);
 
-
-              return Padding(
-                padding: EdgeInsets.only(left: 16,right: 16, top: 8, bottom: 8),
-                child: Row(
-                  children: [
-                    Expanded(
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              documentSnapshot['subject'],
+                              substituter['subject'],
                               style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey,
-                                  fontSize: 16
+                                overflow: TextOverflow.ellipsis,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.grey,
+                                fontSize: 16,
                               ),
                             ),
                             Text(
-                              documentSnapshot['substituted'],
+                              substituter['substituted'],
                               style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18
+                                overflow: TextOverflow.ellipsis,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
                               ),
                             ),
                             Text(
-                              documentSnapshot['substituter'],
+                              substituter['substituter'],
                               style: TextStyle(
                                 overflow: TextOverflow.ellipsis,
                                 fontSize: 15,
                               ),
                             ),
                           ],
-                        )
-                    ),
-                    Text(
-                      formattedDate,
-                      style: TextStyle(
+                        ),
+                      ),
+                      Text(
+                        formattedDate,
+                        style: TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.normal,
                           color: Colors.grey,
-                          fontSize: 15
+                          fontSize: 15,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
@@ -86,9 +92,9 @@ class _SubstituteTeachersState extends State<SubstituteTeachers> {
               return const SizedBox(height: 8);
             },
           );
-        } return Center(child: CircularProgressIndicator());
+        }
+        return Center(child: Text('No substitutions found.'));
       },
     );
   }
 }
-

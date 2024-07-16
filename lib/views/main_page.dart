@@ -1,4 +1,4 @@
-import 'package:scientia/models/daily_schedule.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/widgets/attendance/summary_attendance/attendace.dart';
 import 'package:scientia/widgets/events/events.dart';
 import 'package:scientia/widgets/grades/recent_grades.dart';
@@ -10,18 +10,20 @@ import 'package:scientia/widgets/navigation_drawer.dart';
 import 'package:scientia/services/attendance_data/attendance_data.dart';
 import 'package:scientia/services/firestore_data.dart';
 
+import '../services/auth_services.dart';
+
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
 
-  final Set<String> weekday = const {
-    "SUN",
-    "MON",
-    "TUE",
-    "WED",
-    "THU",
-    "FRI",
-    "SAT"
-  };
+  // final Set<String> weekday = const {
+  //   "SUN",
+  //   "MON",
+  //   "TUE",
+  //   "WED",
+  //   "THU",
+  //   "FRI",
+  //   "SAT"
+  // };
 
   @override
   State<Main_Page> createState() => _MainPageState();
@@ -30,9 +32,8 @@ class Main_Page extends StatefulWidget {
 
 class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
-  final weeklySchedule = ScheduleService(cls: '12b');
+  String? userId = AuthService.getCurrentUserId();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<DailySchedule> weeklyData = [];
 
 
   @override
@@ -42,6 +43,9 @@ class _MainPageState extends State<Main_Page> {
 
   @override
   Widget build(BuildContext context) {
+    final DateTime now = DateTime.now();
+    final Timestamp currTimestamp = Timestamp.fromDate(now);
+    final weeklySchedule = ScheduleService(cls: '12b', timestamp: currTimestamp);
     final weeklyData = weeklySchedule.getWeeklySchedule();
     final attendance = AttendanceData();
     final allAttendance = attendance.getAllAttendance(1693530061000);
@@ -88,7 +92,7 @@ class _MainPageState extends State<Main_Page> {
             WeeklySchedule(weeklyData),
             const RecentGrades(),
             const RecentHomework(),
-            Events(data.getEvents()),
+            Events(data.getEvents(userId!)),
             Attendace(allAttendance),
           ]),
         ));
