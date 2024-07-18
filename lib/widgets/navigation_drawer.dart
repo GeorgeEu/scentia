@@ -12,7 +12,8 @@ import '../views/schedule_page.dart';
 import '../views/substitutions_page.dart';
 
 class MyDrawer extends StatefulWidget {
-  const MyDrawer({super.key});
+  final List<Map<String, dynamic>> homework;
+  const MyDrawer({super.key, required this.homework});
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -160,7 +161,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => HomeworkPage()));
+                  MaterialPageRoute(builder: (context) => HomeworkPage(homework: widget.homework)));
             },
           ),
           ListTile(

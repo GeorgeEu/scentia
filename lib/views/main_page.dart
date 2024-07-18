@@ -10,44 +10,53 @@ import 'package:scientia/widgets/navigation_drawer.dart';
 import 'package:scientia/services/attendance_data/attendance_data.dart';
 import 'package:scientia/services/firestore_data.dart';
 
+import '../models/homework_model.dart';
 import '../services/auth_services.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
 
-  // final Set<String> weekday = const {
-  //   "SUN",
-  //   "MON",
-  //   "TUE",
-  //   "WED",
-  //   "THU",
-  //   "FRI",
-  //   "SAT"
-  // };
-
   @override
   State<Main_Page> createState() => _MainPageState();
 }
-
 
 class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
   String? userId = AuthService.getCurrentUserId();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Map<String, dynamic>> homework = [];
+  bool isHomeworkLoading = true;
 
+  Future<void> _getHomework() async {
+    List<Map<String, dynamic>> temp_homework =
+        await HomeworkModel().fetchHomework();
+    setState(() {
+      homework = temp_homework;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    _getHomework().then((_) {
+      setState(() {
+        isHomeworkLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
     final Timestamp currTimestamp = Timestamp.fromDate(now);
-    final weeklySchedule = ScheduleService(cls: '12b', timestamp: currTimestamp);
+
+    final weeklySchedule =
+        ScheduleService(cls: '12b', timestamp: currTimestamp);
+
     final weeklyData = weeklySchedule.getWeeklySchedule();
+
     final attendance = AttendanceData();
+
     final allAttendance = attendance.getAllAttendance(1693530061000);
 
     return Scaffold(
@@ -80,23 +89,23 @@ class _MainPageState extends State<Main_Page> {
           title: const Text(
             "11A, American International School Progress",
             style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.w600
-            ),
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
           ),
         ),
-        drawer: const MyDrawer(),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            WeeklySchedule(weeklyData),
-            const RecentGrades(),
-            const RecentHomework(),
-            Events(data.getEvents(userId!)),
-            Attendace(allAttendance),
-          ]),
-        ));
+        drawer: MyDrawer(homework: homework),
+        body: isHomeworkLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(children: [
+                  WeeklySchedule(weeklyData),
+                  const RecentGrades(),
+                  RecentHomework(homework: homework),
+                  Events(data.getEvents(userId!)),
+                  Attendace(allAttendance),
+                ]),
+              ));
   }
+
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -154,6 +163,5 @@ class _MainPageState extends State<Main_Page> {
             ],
           );
         });
-
   }
 }

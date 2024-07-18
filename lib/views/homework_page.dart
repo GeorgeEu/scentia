@@ -3,9 +3,9 @@ import 'package:scientia/services/firestore_data.dart';
 import 'package:scientia/widgets/homework/homework_card.dart';
 
 class HomeworkPage extends StatefulWidget {
-  final data = FirestoreData();
+  final List<Map<String, dynamic>> homework;
 
-  HomeworkPage({super.key});
+  HomeworkPage({super.key, required this.homework});
 
   @override
   State<HomeworkPage> createState() => _HomeworkPageState();
@@ -33,7 +33,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
           ),
         ),
       ),
-      body: HomeworkCard()
+      body: HomeworkCard(homework: widget.homework)
     );
   }
 }
