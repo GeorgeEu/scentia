@@ -12,7 +12,7 @@ class HomeworkCard extends StatelessWidget {
     return homework.isNotEmpty
         ? SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 16, bottom: 16),
+        padding: const EdgeInsets.only(top: 12, left: 24, bottom: 24, right: 24),
         child: ListView.separated(
           padding: EdgeInsets.zero,
           primary: false,
@@ -30,52 +30,48 @@ class HomeworkCard extends StatelessWidget {
                       Text(
                         homework[index]['subject'],
                         style: const TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w600),
+                            fontSize: 20, fontWeight: FontWeight.w600, height: 1),
                       ),
                       const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: Text(
-                          'Due to: ${homework[index]['date']}',
-                          style: const TextStyle(
-                              fontSize: 14, color: Colors.grey),
-                        ),
+                      Text(
+                        'Due to: ${homework[index]['date']}',
+                        style: const TextStyle(
+                            fontSize: 14, color: Colors.grey, height: 1),
                       ),
                     ],
                   ),
                 ),
-                Text(
-                  homework[index]['teacher'].toString(),
-                  style: const TextStyle(
-                      fontSize: 14, color: Colors.grey),
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8, right: 16),
-                  child: Linkify(
-                    onOpen: (link) async {
-                      if (!await launchUrl(Uri.parse(link.url))) {
-                        throw Exception('Could not launch ${link.url}');
-                      }
-                    },
-                    text: homework[index]['task'],
-                    linkStyle: const TextStyle(
-                        color: Colors.blue, // Customize the link color if needed
-                        decoration: TextDecoration.underline,
-                        decorationColor: Colors.blue),
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                    ),
+                  padding: const EdgeInsets.only(top: 4, bottom: 2),
+                  child: Text(
+                    homework[index]['teacher'].toString(),
+                    style: const TextStyle(
+                        fontSize: 14, color: Colors.grey, height: 1),
+                  ),
+                ),
+                Linkify(
+                  onOpen: (link) async {
+                    if (!await launchUrl(Uri.parse(link.url))) {
+                      throw Exception('Could not launch ${link.url}');
+                    }
+                  },
+                  text: homework[index]['task'],
+                  linkStyle: const TextStyle(
+                      color: Colors.blue, // Customize the link color if needed
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.blue),
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
                   ),
                 ),
               ],
             );
           },
           separatorBuilder: (context, index) {
-            return const Divider(
-              thickness: 0.5,
-              height: 0,
+            return const SizedBox(
+              height: 8,
             ); // This is the separator widget
           },
         ),

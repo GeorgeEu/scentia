@@ -10,6 +10,7 @@ import 'package:scientia/widgets/navigation_drawer.dart';
 import 'package:scientia/services/attendance_data/attendance_data.dart';
 import 'package:scientia/services/firestore_data.dart';
 
+import '../models/grades_model.dart';
 import '../models/homework_model.dart';
 import '../services/auth_services.dart';
 
@@ -25,24 +26,48 @@ class _MainPageState extends State<Main_Page> {
   String? userId = AuthService.getCurrentUserId();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map<String, dynamic>> homework = [];
-  bool isHomeworkLoading = true;
+
+  List<DocumentSnapshot> events = [];
+
+  List<Map<String, dynamic>> grades = [];
+
+  List<Map<String, dynamic>> allGrades = [];
+
+  bool isLoading = true;
 
   Future<void> _getHomework() async {
-    List<Map<String, dynamic>> temp_homework =
-        await HomeworkModel().fetchHomework();
-    setState(() {
-      homework = temp_homework;
-    });
+    homework = await HomeworkModel().fetchHomework();
+  }
+
+  Future<void> _getEvents() async {
+    events = await data.getEvents(userId!);
+  }
+
+  Future<void> _getGrades() async {
+    grades = await GradesModel().fetchGrades();
+  }
+
+  Future<void> _getAllGrades() async {
+    allGrades = await GradesModel().getSubjectGrades();
   }
 
   @override
   void initState() {
     super.initState();
-    _getHomework().then((_) {
-      setState(() {
-        isHomeworkLoading = false;
-      });
+    _loadData().then((_) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
+  }
+
+  Future<void> _loadData() async {
+    await _getHomework();
+    await _getGrades();
+    await _getAllGrades();
+    await _getEvents();
   }
 
   @override
@@ -92,15 +117,16 @@ class _MainPageState extends State<Main_Page> {
                 fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
           ),
         ),
-        drawer: MyDrawer(homework: homework),
-        body: isHomeworkLoading
+        drawer:
+            MyDrawer(homework: homework, grades: grades, allGrades: allGrades, events: events),
+        body: isLoading
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 child: Column(children: [
                   WeeklySchedule(weeklyData),
-                  const RecentGrades(),
+                  RecentGrades(grades: grades, allGrades: allGrades),
                   RecentHomework(homework: homework),
-                  Events(data.getEvents(userId!)),
+                  Events(events: events),
                   Attendace(allAttendance),
                 ]),
               ));

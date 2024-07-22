@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 
 class GradesPage extends StatefulWidget {
-  const GradesPage({Key? key}) : super(key: key);
+  List<Map<String, dynamic>> allGrades;
+  GradesPage({super.key, required this.allGrades});
 
   @override
   State<GradesPage> createState() => _GradesPageState();
@@ -30,7 +31,7 @@ class _GradesPageState extends State<GradesPage> {
           ),
           // titleSpacing: 0,
         ),
-        body: LessonGrades()
+        body: LessonGrades(allGrades: widget.allGrades)
     );
   }
 }

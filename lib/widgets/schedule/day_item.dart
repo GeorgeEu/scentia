@@ -9,74 +9,71 @@ class DayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: InkWell(
-        onTap: () {
-          showEventBottomSheet(context, dayData);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(16)),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 11, bottom: 11, left: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    dayData.day,  // Assuming 'day' is something like 'Monday'
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 24,
-                    ),
+    return InkWell(
+      onTap: () {
+        showEventBottomSheet(context, dayData);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 11, bottom: 11, left: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  dayData.day,  // Assuming 'day' is something like 'Monday'
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 24,
                   ),
                 ),
-                if (dayData.schedule.isNotEmpty)
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: dayData.schedule.length,
-                    itemBuilder: (context, index) {
-                      final subject = dayData.schedule[index];
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16),
-                            child: Text(
-                              subject.start,  // Start time of the lesson
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: Colors.grey),
-                            ),
+              ),
+              if (dayData.schedule.isNotEmpty)
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: dayData.schedule.length,
+                  itemBuilder: (context, index) {
+                    final subject = dayData.schedule[index];
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.ideographic,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: Text(
+                            subject.start,  // Start time of the lesson
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                                color: Colors.grey),
                           ),
-                          Expanded(
-                            child: Text(
-                              subject.name,  // Name of the subject
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 18),
-                            ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            subject.name,  // Name of the subject
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 18),
                           ),
-                        ],
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(thickness: 0.5),
-                  )
-                else
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Text(
-                      'There are no lessons',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
-                    ),
+                        ),
+                      ],
+                    );
+                  },
+                  separatorBuilder: (context, index) => const Divider(thickness: 0.5),
+                )
+              else
+                const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text(
+                    'There are no lessons',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),

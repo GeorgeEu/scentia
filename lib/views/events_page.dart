@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/widgets/events/full_events.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/services/firestore_data.dart';
@@ -6,7 +7,8 @@ import '../../services/events_data/events_data.dart';
 import '../services/auth_services.dart';
 
 class EventsPage extends StatefulWidget {
-  const EventsPage({Key? key}) : super(key: key);
+  List<DocumentSnapshot> events;
+  EventsPage({super.key, required this.events});
 
   @override
   State<EventsPage> createState() => _EventsPageState();
@@ -43,7 +45,7 @@ class _EventsPageState extends State<EventsPage> {
         ),
         // titleSpacing: 0,
       ),
-      body: FullEvents(data.getEvents(userId!))
+      body: FullEvents(events: widget.events)
     );
   }
 }

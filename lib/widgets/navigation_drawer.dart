@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:scientia/widgets/attendance/attendance_calendar.dart';
 import 'package:scientia/views/authentication_page.dart';
 import 'package:scientia/views/events_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/views/exams_page.dart';
 import 'package:scientia/views/settings_page.dart';
 import 'package:flutter/material.dart'; // Make sure this is the correct path to your GoogleSignInApi
@@ -13,7 +14,10 @@ import '../views/substitutions_page.dart';
 
 class MyDrawer extends StatefulWidget {
   final List<Map<String, dynamic>> homework;
-  const MyDrawer({super.key, required this.homework});
+  final List<Map<String, dynamic>> grades;
+  final List<Map<String, dynamic>> allGrades;
+  final List<DocumentSnapshot> events;
+  const MyDrawer({super.key, required this.homework, required this.grades, required this.allGrades, required this.events});
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -128,7 +132,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             onTap: () {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const EventsPage()));
+                  .push(MaterialPageRoute(builder: (context) => EventsPage(events: widget.events)));
             },
           ),
           ListTile(
@@ -172,7 +176,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const GradesPage()));
+                  MaterialPageRoute(builder: (context) => GradesPage(allGrades: widget.allGrades)));
             },
           )
           // Add more ListTiles for other navigation items.

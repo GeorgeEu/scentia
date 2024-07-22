@@ -14,8 +14,6 @@ class SubstitutionsPage extends StatefulWidget {
 }
 
 class _SubstitutionsPageState extends State<SubstitutionsPage> {
-  var data = FirestoreData();
-  String? userId = AuthService.getCurrentUserId();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +42,7 @@ class _SubstitutionsPageState extends State<SubstitutionsPage> {
           ),
           // titleSpacing: 0,
         ),
-        body: SubstituteTeachers(data.getSubstitutions(userId!))
+        body: SubstituteTeachers()
     );
   }
 }

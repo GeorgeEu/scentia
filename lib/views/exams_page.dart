@@ -1,3 +1,4 @@
+import 'package:scientia/models/exams_model.dart';
 import 'package:scientia/services/firestore_data.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/widgets/exams/exams.dart';
@@ -12,8 +13,6 @@ class ExamsPage extends StatefulWidget {
 }
 
 class _ExamsPageState extends State<ExamsPage> {
-  String? userId = AuthService.getCurrentUserId();
-  var exams = FirestoreData();
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +34,7 @@ class _ExamsPageState extends State<ExamsPage> {
             ),
           ),
         ),
-        body: Exams(exams.getExams(userId!)));
+        body: Exams()
+    );
   }
 }

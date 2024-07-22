@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:scientia/views/schedule_page.dart';
 import 'package:scientia/widgets/schedule/day_item.dart';
 import '../../models/daily_schedule.dart';
+import '../st_chevron_right.dart';
+import '../st_header.dart';
+import '../st_row.dart';
 
 class WeeklySchedule extends StatefulWidget {
   final Future<List<DailySchedule>> schedule;
@@ -14,7 +17,7 @@ class WeeklySchedule extends StatefulWidget {
 class _WeeklyScheduleState extends State<WeeklySchedule> {
   final int _currentWeekday = _getCustomWeekdayNumber(DateTime.now().weekday);
   late PageController pageController;
-  double _boxHeight = 300;
+  double _boxHeight = 351;
 
   @override
   void initState() {
@@ -30,38 +33,20 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Row(
-            children: [
-              const Text(
-                'Weekly Schedule',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 22,
-                ),
-              ),
-              const Spacer(),
-              TextButton(
-                style: ButtonStyle(
-                  padding: WidgetStateProperty.all(EdgeInsets.zero),
-                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const SchedulePage()
-                  ));
-                },
-                child: const Text(
-                  'Show More',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400
-                  ),
-                ),
-              )
-            ],
+        StRow(
+          stHeader: StHeader(text: 'Schedule'),
+          stChevronRight: StChevronRight(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SchedulePage())
+              );
+            },
           ),
+          onPress: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => SchedulePage())
+            );
+          },
         ),
         SizedBox(
           height: _boxHeight,
@@ -69,11 +54,22 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
             future: widget.schedule,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                // Check if any day has more than 8 subjects
-                bool hasLongSchedule = snapshot.data!.any((day) => day.schedule.length > 6);
+                // Debug print to check the data
+                // for (var day in snapshot.data!) {
+                //   print('Day ${day.day}: ${day.schedule.length} subjects');
+                // }
+
+                // Check if all days have 6 or fewer subjects
+                bool allDaysShortSchedule = snapshot.data!.every((day) => day.schedule.length <= 6);
 
                 // Update the height if necessary
-                if (hasLongSchedule && _boxHeight != 500) {
+                if (allDaysShortSchedule && _boxHeight != 300) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setState(() {
+                      _boxHeight = 300;
+                    });
+                  });
+                } else if (!allDaysShortSchedule && _boxHeight != 351) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     setState(() {
                       _boxHeight = 351;
