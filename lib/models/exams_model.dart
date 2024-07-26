@@ -12,11 +12,19 @@ class ExamsModel {
     List<Map<String, dynamic>> tempExamItems = [];
     for (var exam in exams) {
       var examData = exam.data() as Map<String, dynamic>;
+      DocumentSnapshot assistantDoc = await data.getDoc(examData['assistant']);
+      String assistantName = assistantDoc['name'];
+
       DocumentSnapshot subjectDoc = await data.getDoc(examData['name']);
-      String subjectName = subjectDoc['name'];
+      DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
+      DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
+      String subjectName = nestedSubjectDoc['name'];
+
       DateTime date = (examData['date'] as Timestamp).toDate();
       String formattedDate = DateFormat('MM-dd – kk:mm').format(date);
+
       tempExamItems.add({
+        'assistant': assistantName,
         'date': formattedDate,
         'name': subjectName,
         'room': examData['room'],

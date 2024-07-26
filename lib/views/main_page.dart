@@ -64,10 +64,12 @@ class _MainPageState extends State<Main_Page> {
   }
 
   Future<void> _loadData() async {
-    await _getHomework();
-    await _getGrades();
-    await _getAllGrades();
-    await _getEvents();
+    await Future.wait([
+      _getHomework(),
+      _getGrades(),
+      _getAllGrades(),
+      _getEvents(),
+    ]);
   }
 
   @override
@@ -75,8 +77,7 @@ class _MainPageState extends State<Main_Page> {
     final DateTime now = DateTime.now();
     final Timestamp currTimestamp = Timestamp.fromDate(now);
 
-    final weeklySchedule =
-        ScheduleService(cls: '12b', timestamp: currTimestamp);
+    final weeklySchedule = ScheduleService(timestamp: currTimestamp);
 
     final weeklyData = weeklySchedule.getWeeklySchedule();
 
@@ -118,18 +119,18 @@ class _MainPageState extends State<Main_Page> {
           ),
         ),
         drawer:
-            MyDrawer(homework: homework, grades: grades, allGrades: allGrades, events: events),
+        MyDrawer(homework: homework, grades: grades, allGrades: allGrades, events: events),
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
-                child: Column(children: [
-                  WeeklySchedule(weeklyData),
-                  RecentGrades(grades: grades, allGrades: allGrades),
-                  RecentHomework(homework: homework),
-                  Events(events: events),
-                  Attendace(allAttendance),
-                ]),
-              ));
+          child: Column(children: [
+            WeeklySchedule(weeklyData),
+            RecentGrades(grades: grades, allGrades: allGrades),
+            RecentHomework(homework: homework),
+            Events(events: events),
+            Attendace(allAttendance),
+          ]),
+        ));
   }
 
   void _showBottomSheet(BuildContext context) {

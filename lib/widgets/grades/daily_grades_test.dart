@@ -16,12 +16,11 @@ class DailyGradesTest extends StatefulWidget {
 class _DailyGradesTestState extends State<DailyGradesTest> {
   SubjectServices subjects = SubjectServices();
 
-
-
   @override
   Widget build(BuildContext context) {
     // Render the list view once the data is fetched
-    return ListView.separated(
+    return widget.gradeItems.isNotEmpty
+        ? ListView.separated(
       primary: false,
       shrinkWrap: true,
       itemCount: widget.gradeItems.length < 4 ? widget.gradeItems.length : 4,
@@ -83,6 +82,12 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
       separatorBuilder: (context, index) {
         return const Divider(thickness: 0.5); // This is the separator widget
       },
+    )
+        : Center(
+      child: Text(
+        'There are no grades',
+        style: TextStyle(fontSize: 18, color: Colors.grey),
+      ),
     );
   }
 }

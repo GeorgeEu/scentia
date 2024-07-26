@@ -59,26 +59,29 @@ class FirestoreData {
     return rings.docs[0];
   }
 
-  Future<List<DocumentSnapshot>> getLessons(String cls, String day, Timestamp timestamp) async {
+  Future<List<DocumentSnapshot>> getLessons(String classId, String day, Timestamp timestamp) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    // Query all documents for the specified day and class
+    // Get the class document reference
+    DocumentReference classRef = firestore.collection('classes').doc(classId);
+
+    // Query all documents for the specified day and class reference
     QuerySnapshot lessons = await firestore
         .collection('lessons')
-        .where('class', isEqualTo: cls)
+        .where('class', isEqualTo: classRef)
         .where('startFrom', isLessThan: timestamp)
         .where('day', isEqualTo: day)
         .get();
 
     // Process the documents to keep only one document per class with the latest timestamp
-    Map<int, DocumentSnapshot> uniqueClasses = {};
+    Map<String, DocumentSnapshot> uniqueClasses = {};
 
     for (DocumentSnapshot doc in lessons.docs) {
-      int lessonValue = doc['lesson'];
-      Timestamp timestamp = doc['startFrom'];
+      String lessonValue = doc['lesson'].path;
+      Timestamp docTimestamp = doc['startFrom'];
 
       if (uniqueClasses.containsKey(lessonValue)) {
-        if (timestamp.compareTo(uniqueClasses[lessonValue]!['startFrom']) > 0) {
+        if (docTimestamp.compareTo(uniqueClasses[lessonValue]!['startFrom']) > 0) {
           uniqueClasses[lessonValue] = doc;
         }
       } else {
@@ -88,11 +91,11 @@ class FirestoreData {
 
     // Return the processed list of documents
     List<DocumentSnapshot> sortedDocuments = uniqueClasses.values.toList();
-    sortedDocuments.sort((a, b) => a['lesson'].compareTo(b['lesson']));
+    sortedDocuments.sort((a, b) => a['lesson'].path.compareTo(b['lesson'].path));
 
-    // Return the sorted list of documents
     return sortedDocuments;
   }
+
 
 
   Future<List<DocumentSnapshot>> getHomework(DocumentReference uid) async {

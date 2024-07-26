@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:scientia/models/daily_schedule.dart';
-
 import '../../utils/formater.dart';
 
 class DayItem extends StatelessWidget {
@@ -24,10 +23,10 @@ class DayItem extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: Text(
-                  dayData.day,  // Assuming 'day' is something like 'Monday'
+                  Formater.shortWeekDayToLong(dayData.day),  // Assuming 'day' is something like 'Monday'
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 24,
+                    fontSize: 22,
                   ),
                 ),
               ),
@@ -37,7 +36,7 @@ class DayItem extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: dayData.schedule.length,
                   itemBuilder: (context, index) {
-                    final subject = dayData.schedule[index];
+                    final lesson = dayData.schedule[index];
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -46,7 +45,7 @@ class DayItem extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 16),
                           child: Text(
-                            subject.start,  // Start time of the lesson
+                            lesson.start,  // Start and end time of the lesson
                             style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 15,
@@ -55,7 +54,7 @@ class DayItem extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            subject.name,  // Name of the subject
+                            lesson.subjectName,  // Name of the subject
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontSize: 18),
                           ),
@@ -117,13 +116,13 @@ void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
                       controller: scrollController,
                       itemCount: dayData.schedule.length,
                       itemBuilder: (context, index) {
-                        final subject = dayData.schedule[index];
+                        final lesson = dayData.schedule[index];
                         return Row(
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 16),
                               child: Text(
-                                subject.start,  // Start time of the lesson
+                                '${lesson.start} - ${lesson.end}',  // Start and end time of the lesson
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15,
@@ -134,13 +133,13 @@ void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  subject.name,  // Name of the subject
+                                  lesson.subjectName,  // Name of the subject
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(fontSize: 18),
                                 ),
                                 Text(
+                                  lesson.teacherName,  // Name of the teacher
                                   overflow: TextOverflow.ellipsis,
-                                  subject.teacher,
                                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                                 ),
                               ],
@@ -170,5 +169,3 @@ void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
     },
   );
 }
-
-

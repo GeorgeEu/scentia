@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../models/exams_model.dart'; // Import your ExamsModel
 
 class Exams extends StatefulWidget {
@@ -69,10 +67,29 @@ class _ExamsState extends State<Exams> {
                               fontSize: 15, fontWeight: FontWeight.w500, height: 1, color: Colors.grey),
                         ),
                       ),
+                      Row(
+                        children: [
+                          Text(
+                              'Assistant: ',
+                              style: TextStyle(
+                                height: 1,
+                                fontSize: 15
+                              )
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4, bottom: 3),
+                            child: Text(
+                              exam['assistant'],
+                              style: const TextStyle(
+                                  fontSize: 15, height: 1),
+                            ),
+                          ),
+                        ],
+                      ),
                       Text(
                         exam['desc'],
                         style: const TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 16),
+                            fontWeight: FontWeight.normal, fontSize: 14),
                       )
                     ],
                   );

@@ -29,7 +29,7 @@ class _SchedulePageState extends State<SchedulePage> with SingleTickerProviderSt
     final Timestamp currTimestamp = Timestamp.fromDate(selectedDate);
 
     // Initialize the ScheduleService with the current timestamp
-    scheduleService = ScheduleService(cls: '12b', timestamp: currTimestamp);
+    scheduleService = ScheduleService(timestamp: currTimestamp);
     schedule = scheduleService.getWeeklySchedule();
   }
 
@@ -37,7 +37,7 @@ class _SchedulePageState extends State<SchedulePage> with SingleTickerProviderSt
     setState(() {
       selectedDate = date;
       final Timestamp newTimestamp = Timestamp.fromDate(date);
-      scheduleService = ScheduleService(cls: '12b', timestamp: newTimestamp);
+      scheduleService = ScheduleService(timestamp: newTimestamp);
       schedule = scheduleService.getWeeklySchedule();
       // Switch back to the first tab (schedule tab)
       _tabController.animateTo(0);

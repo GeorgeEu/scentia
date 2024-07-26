@@ -17,7 +17,7 @@ class WeeklySchedule extends StatefulWidget {
 class _WeeklyScheduleState extends State<WeeklySchedule> {
   final int _currentWeekday = _getCustomWeekdayNumber(DateTime.now().weekday);
   late PageController pageController;
-  double _boxHeight = 351;
+  double _boxHeight = 373;
 
   @override
   void initState() {
@@ -54,25 +54,21 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
             future: widget.schedule,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                // Debug print to check the data
-                // for (var day in snapshot.data!) {
-                //   print('Day ${day.day}: ${day.schedule.length} subjects');
-                // }
 
                 // Check if all days have 6 or fewer subjects
                 bool allDaysShortSchedule = snapshot.data!.every((day) => day.schedule.length <= 6);
 
                 // Update the height if necessary
-                if (allDaysShortSchedule && _boxHeight != 300) {
+                if (allDaysShortSchedule && _boxHeight != 290) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     setState(() {
-                      _boxHeight = 300;
+                      _boxHeight = 290;
                     });
                   });
-                } else if (!allDaysShortSchedule && _boxHeight != 351) {
+                } else if (!allDaysShortSchedule && _boxHeight != 373) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     setState(() {
-                      _boxHeight = 351;
+                      _boxHeight = 373;
                     });
                   });
                 }
