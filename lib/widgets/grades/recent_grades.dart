@@ -40,7 +40,7 @@ class _RecentGradesState extends State<RecentGrades> {
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: Container(
-            padding: const EdgeInsets.only(top: 14, left: 16, bottom: 14),
+            padding: const EdgeInsets.only(top: 14, bottom: 14),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.white,

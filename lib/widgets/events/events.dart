@@ -5,6 +5,7 @@ import 'package:scientia/widgets/st_row.dart';
 import '../../views/events_page.dart';
 import '../st_chevron_right.dart';
 import '../st_header.dart';
+import 'package:flutter_svg/flutter_svg.dart';  // Ensure you have the flutter_svg package included in your pubspec.yaml file
 
 class Events extends StatefulWidget {
   final List<DocumentSnapshot> events;
@@ -38,7 +39,7 @@ class _EventsState extends State<Events> {
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: Container(
-            padding: const EdgeInsets.only(top: 16, left: 16, bottom: 16),
+            padding: const EdgeInsets.only(top: 16, bottom: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.white,
@@ -67,71 +68,80 @@ class _EventsState extends State<Events> {
                         event['imageUrl'],
                         formattedDate);
                   },
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        width: 80,
-                        height: 80,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            event['imageUrl'],
-                            // Use the image URL from Firestore
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Text('Image not available'); // Error text if image fails to load
-                            },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          width: 80,
+                          height: 80,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              event['imageUrl'],
+                              // Use the image URL from Firestore
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Text('Image not available'); // Error text if image fails to load
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 24),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                formattedDate,
-                                style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.grey,
-                                    fontSize: 15),
-                              ),
-                              Text(
-                                event['name'],
-                                style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18),
-                              ),
-                              Text(
-                                event['address'],
-                                style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                    fontSize: 16),
-                              ),
-                            ],
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  formattedDate,
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.grey,
+                                      fontSize: 15),
+                                ),
+                                Text(
+                                  event['name'],
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                                Text(
+                                  event['address'],
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      fontSize: 16),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
               separatorBuilder: (context, index) {
                 return const Divider(
                   thickness: 0.5,
-                  indent: 104,
+                  indent: 113,
                 ); // Your separator widget
               },
             )
-                : const Center(
-              child: Text('No events found.'),
+                : SizedBox(
+              height: 120,
+              child: Center(
+                child: Text(
+                  'There are no events yet',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ),
             ),
           ),
         ),
@@ -143,70 +153,92 @@ class _EventsState extends State<Events> {
       String desc, String imageUrl, String formattedDate) {
     showModalBottomSheet(
       context: context,
-      showDragHandle: true,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       builder: (BuildContext context) {
-        return SizedBox(
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8, left: 16, right: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 350,
-                  height: 216,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      imageUrl,
-                      // Use the image URL from Firestore
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Text('Image not available'); // Error text if image fails to load
-                      },
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.68,  // Adjust as needed
+          minChildSize: 0.3,
+          maxChildSize: 0.9,  // Adjust as needed
+          builder: (BuildContext context, ScrollController scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15.0, bottom: 20),
+                      child: SvgPicture.asset(
+                        'assets/drag-handle.svg', // Path to your SVG file
+                        width: 40,  // Adjust the size as needed
+                        height: 4,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Text(
-                    formattedDate,
-                    style: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.grey,
-                        fontSize: 15),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: AspectRatio(
+                        aspectRatio: 16 / 10,  // or the aspect ratio of your image
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Text('Image not available'); // Error text if image fails to load
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                Text(
-                  name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 24),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    address,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 8),
+                    child: Text(
+                      formattedDate,
+                      style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.grey,
+                          fontSize: 15),
+                    ),
                   ),
-                ),
-                Text(
-                  desc,
-                  style: const TextStyle(
-                      fontSize: 16),
-                ),
-              ],
-            ),
-          ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 24),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, bottom: 8),
+                    child: Text(
+                      address,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, bottom: 8),
+                    child: Text(
+                      desc,
+                      style: const TextStyle(
+                          fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );

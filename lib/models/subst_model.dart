@@ -8,41 +8,44 @@ class SubstModel {
 
   Future<List<Map<String, dynamic>>> fetchSubst() async {
     String? userId = AuthService.getCurrentUserId();
+    if (userId == null) {
+      return [];
+    }
 
-    List<DocumentSnapshot> substitutions = await data.getSubstitutions(userId!);
-    List<Map<String, dynamic>> tempSubstItems = [];
+    List<DocumentSnapshot> substitutions = await data.getSubstitutions(userId);
 
-    for (var substitution in substitutions) {
+    // Use Future.wait to fetch all data concurrently
+    List<Future<Map<String, dynamic>>> substFutures = substitutions.map((substitution) async {
       var substData = substitution.data() as Map<String, dynamic>;
 
-      // Retrieve subject from nested reference
-      DocumentSnapshot subjectDoc = await data.getDoc(substData['subject']);
+      // Fetch subject, substituted, and substituter documents concurrently
+      Future<DocumentSnapshot> subjectDocFuture = data.getDoc(substData['subject']);
+      Future<DocumentSnapshot> substitutedDocFuture = data.getDoc(substData['substituted']);
+      Future<DocumentSnapshot> substituterDocFuture = data.getDoc(substData['substituter']);
+
+      DocumentSnapshot subjectDoc = await subjectDocFuture;
       DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
       DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
       String subjectName = nestedSubjectDoc['name'];
 
-      // Retrieve substituted name
-      DocumentSnapshot substitutedDoc = await data.getDoc(substData['substituted']);
+      DocumentSnapshot substitutedDoc = await substitutedDocFuture;
       String substitutedName = substitutedDoc['name'];
 
-      // Retrieve substituter name
-      DocumentSnapshot substituterDoc = await data.getDoc(substData['substituter']);
+      DocumentSnapshot substituterDoc = await substituterDocFuture;
       String substituterName = substituterDoc['name'];
 
-      // Format date
       DateTime date = (substData['date'] as Timestamp).toDate();
       String formattedDate = DateFormat('EEEE, MM-dd HH:mm').format(date);
 
-
-      // Add to the list
-      tempSubstItems.add({
+      return {
         'date': formattedDate,
         'subject': subjectName,
         'substituted': substitutedName,
         'substituter': substituterName,
-      });
-    }
+      };
+    }).toList();
 
-    return tempSubstItems;
+    // Await all futures to complete
+    return await Future.wait(substFutures);
   }
 }

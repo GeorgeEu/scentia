@@ -26,7 +26,7 @@ class _ChangeableScheduleState extends State<ChangeableSchedule> {
               final isLastItem = index == snapshot.data!.length - 1;
               return Padding(
                 padding: EdgeInsets.only(top: isFirstItem ? 16 : 0, left: 16, right: 16, bottom: isLastItem ? 16 : 0),
-                child: DayItem(snapshot.data![index]),
+                child: DayItem(dayData: snapshot.data![index]),
               );
             },
             separatorBuilder: (context, index) => const SizedBox(height: 16),

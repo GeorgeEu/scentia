@@ -14,24 +14,34 @@ class HomeworkModel {
 
     // Fetch the homework documents for the current user
     List<DocumentSnapshot> homeworkDocs = await data.getHomework(userDocRef);
-    List<Map<String, dynamic>> tempHomework = [];
-
-    for (var task in homeworkDocs) {
+    List<Future<Map<String, dynamic>>> homeworkFutures = homeworkDocs.map((task) async {
       var homeworkData = task.data() as Map<String, dynamic>;
-      DocumentSnapshot subjectDoc = await data.getDoc(homeworkData['subject']);
-      DocumentSnapshot teacherDoc = await data.getDoc(homeworkData['teacher']);
-      String subjectName = subjectDoc['name']; // Adjust this field based on your Firestore structure
-      String teacherName = teacherDoc['name']; // Adjust this field based on your Firestore structure
+
+      Future<DocumentSnapshot> subjectDocFuture = data.getDoc(homeworkData['subject']);
+      Future<DocumentSnapshot> teacherDocFuture = data.getDoc(homeworkData['teacher']);
+
+      DocumentSnapshot subjectDoc = await subjectDocFuture;
+      DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
+      DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
+      String subjectName = nestedSubjectDoc['name'];
+
+      DocumentSnapshot teacherDoc = await teacherDocFuture;
+      DocumentReference nestedTeacherRef = teacherDoc['teacher'] as DocumentReference;
+      DocumentSnapshot nestedTeacherDoc = await nestedTeacherRef.get();
+      String teacherName = nestedTeacherDoc['name'];
+
       DateTime date = (homeworkData['endAt'] as Timestamp).toDate();
       String formattedDate = DateFormat('MMM d').format(date);
-      tempHomework.add({
+
+      return {
         'task': homeworkData['task'],
         'subject': subjectName,
         'teacher': teacherName,
         'date': formattedDate,
-      });
-    }
+      };
+    }).toList();
 
-    return tempHomework; // Return the fetched homework items
+    return await Future.wait(homeworkFutures);
   }
 }
+

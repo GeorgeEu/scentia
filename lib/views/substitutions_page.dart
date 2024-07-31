@@ -1,6 +1,4 @@
 import 'package:scientia/widgets/substitutions/substitute_teachers.dart';
-import 'package:scientia/services/firestore_data.dart';
-import 'package:scientia/services/substitute_data/substitutions_data.dart';
 import 'package:flutter/material.dart';
 
 import '../services/auth_services.dart';

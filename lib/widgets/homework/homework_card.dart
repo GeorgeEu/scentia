@@ -83,7 +83,7 @@ class HomeworkCard extends StatelessWidget {
         style: TextStyle(
           fontSize: 16,
           color: Colors.grey,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

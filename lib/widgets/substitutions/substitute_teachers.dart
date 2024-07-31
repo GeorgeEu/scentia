@@ -106,7 +106,14 @@ class _SubstituteTeachersState extends State<SubstituteTeachers> {
           );
         }
         return Center(
-          child: Text('No substitutions found.'),
+          child: Text(
+            'No substitutions found',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+              )
+          ),
         );
       },
     );

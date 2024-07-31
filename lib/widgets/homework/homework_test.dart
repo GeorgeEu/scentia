@@ -68,12 +68,16 @@ class HomeworkTest extends StatelessWidget {
                 },
               ),
         )
-        : Text(
-          'There is no homework',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
-            fontWeight: FontWeight.w600,
+        : SizedBox(
+          height: 120,
+          child: Center(
+            child: Text(
+              'There is no homework yet',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey,
+              ),
+            ),
           ),
         );
   }

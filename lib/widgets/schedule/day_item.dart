@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scientia/models/daily_schedule.dart';
+import 'package:flutter_svg/flutter_svg.dart';  // Ensure you have the flutter_svg package included in your pubspec.yaml file
 import '../../utils/formater.dart';
 
 class DayItem extends StatelessWidget {
   final DailySchedule dayData;
-  const DayItem(this.dayData, {super.key});
+  const DayItem({super.key, required this.dayData});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class DayItem extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 16),
                           child: Text(
-                            lesson.start,  // Start and end time of the lesson
+                            lesson.start,  // Start time of the lesson
                             style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 15,
@@ -78,41 +79,51 @@ class DayItem extends StatelessWidget {
       ),
     );
   }
-}
 
-void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
-  showModalBottomSheet(
-    context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-    ),
-    builder: (BuildContext context) {
-      return DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.5,  // Adjust as needed
-        minChildSize: 0.3,  // Adjust as needed
-        maxChildSize: 0.8,  // Adjust as needed
-        builder: (BuildContext context, ScrollController scrollController) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Text(
-                    Formater.shortWeekDayToLong(dayData.day),  // Assuming 'day' is something like 'Monday'
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 30,
+  void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.72,  // Adjust as needed
+          minChildSize: 0.3,
+          maxChildSize: 0.9,  // Adjust as needed
+          builder: (BuildContext context, ScrollController scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 10),
+                      child: SvgPicture.asset(
+                        'assets/drag-handle.svg', // Path to your SVG file
+                        width: 40,  // Adjust the size as needed
+                        height: 4,
+                      ),
                     ),
                   ),
-                ),
-                if (dayData.schedule.isNotEmpty)
-                  Expanded(
-                    child: ListView.separated(
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, bottom: 10),
+                    child: Text(
+                      Formater.shortWeekDayToLong(dayData.day),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 30,
+                        height: 1,
+                      ),
+                    ),
+                  ),
+                  if (dayData.schedule.isNotEmpty)
+                    ListView.separated(
+                      shrinkWrap: true,
                       controller: scrollController,
                       itemCount: dayData.schedule.length,
                       itemBuilder: (context, index) {
@@ -120,7 +131,7 @@ void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
                         return Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(right: 16),
+                              padding: const EdgeInsets.only(left: 16, right: 16),
                               child: Text(
                                 '${lesson.start} - ${lesson.end}',  // Start and end time of the lesson
                                 style: const TextStyle(
@@ -147,25 +158,22 @@ void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
                           ],
                         );
                       },
-                      separatorBuilder: (context, index) => const Divider(thickness: 0.5),
-                    ),
-                  )
-                else
-                  const SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 8),
+                      separatorBuilder: (context, index) => const Divider(thickness: 0.5, indent: 16),
+                    )
+                  else
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8, left: 16),
                       child: Text(
                         'There are no lessons',
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                     ),
-                  ),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }

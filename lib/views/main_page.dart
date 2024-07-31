@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:scientia/widgets/attendance/summary_attendance/attendace.dart';
+import 'package:scientia/widgets/attendance/attendace.dart';
 import 'package:scientia/widgets/events/events.dart';
 import 'package:scientia/widgets/grades/recent_grades.dart';
 import 'package:scientia/services/schedule_service.dart';
@@ -7,9 +7,10 @@ import 'package:scientia/widgets/homework/recent_homework.dart';
 import 'package:scientia/widgets/schedule/weakly_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/widgets/navigation_drawer.dart';
-import 'package:scientia/services/attendance_data/attendance_data.dart';
 import 'package:scientia/services/firestore_data.dart';
 
+import '../models/attendance_model.dart';
+import '../models/daily_schedule.dart';
 import '../models/grades_model.dart';
 import '../models/homework_model.dart';
 import '../services/auth_services.dart';
@@ -26,17 +27,24 @@ class _MainPageState extends State<Main_Page> {
   String? userId = AuthService.getCurrentUserId();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map<String, dynamic>> homework = [];
-
+  List<Map<String, dynamic>> attendance = [];
   List<DocumentSnapshot> events = [];
-
   List<Map<String, dynamic>> grades = [];
-
   List<Map<String, dynamic>> allGrades = [];
-
+  Map<String, int> attendanceCount = {};
+  List<DailySchedule> schedule = [];
   bool isLoading = true;
 
   Future<void> _getHomework() async {
     homework = await HomeworkModel().fetchHomework();
+  }
+
+  Future<void> _getAttendance() async {
+    attendance = await AttendanceModel().fetchAttendance();
+  }
+
+  Future<void> _getAttendanceCount() async {
+    attendanceCount = await AttendanceModel().fetchAttendanceCounts();
   }
 
   Future<void> _getEvents() async {
@@ -49,6 +57,13 @@ class _MainPageState extends State<Main_Page> {
 
   Future<void> _getAllGrades() async {
     allGrades = await GradesModel().getSubjectGrades();
+  }
+
+  Future<void> _getWeeklySchedule() async {
+    final DateTime now = DateTime.now();
+    final Timestamp currTimestamp = Timestamp.fromDate(now);
+    final weeklySchedule = ScheduleService(timestamp: currTimestamp);
+    schedule = await weeklySchedule.getWeeklySchedule();
   }
 
   @override
@@ -66,71 +81,71 @@ class _MainPageState extends State<Main_Page> {
   Future<void> _loadData() async {
     await Future.wait([
       _getHomework(),
+      _getAttendance(),
       _getGrades(),
+      _getAttendanceCount(),
       _getAllGrades(),
       _getEvents(),
+      _getWeeklySchedule(),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final DateTime now = DateTime.now();
-    final Timestamp currTimestamp = Timestamp.fromDate(now);
-
-    final weeklySchedule = ScheduleService(timestamp: currTimestamp);
-
-    final weeklyData = weeklySchedule.getWeeklySchedule();
-
-    final attendance = AttendanceData();
-
-    final allAttendance = attendance.getAllAttendance(1693530061000);
-
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          isExtended: true,
-          onPressed: () {
-            _showBottomSheet(context);
-          },
-          backgroundColor: const Color(0xFFB7B7FF),
-          elevation: 0,
-          child: const Icon(
-            Icons.add_rounded,
-            color: Colors.white,
-            size: 30,
-          ),
+      floatingActionButton: FloatingActionButton(
+        isExtended: true,
+        onPressed: () {
+          _showBottomSheet(context);
+        },
+        backgroundColor: const Color(0xFFB7B7FF),
+        elevation: 0,
+        child: const Icon(
+          Icons.add_rounded,
+          color: Colors.white,
+          size: 30,
         ),
-        backgroundColor: const Color(0xFFF3F2F8),
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          surfaceTintColor: Colors.transparent,
-          backgroundColor: const Color(0xFFA4A4FF),
-          leading: IconButton(
-            icon: const Icon(Icons.menu_rounded),
-            color: Colors.white,
-            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-            tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          ),
-          elevation: 0,
-          title: const Text(
-            "11A, American International School Progress",
-            style: TextStyle(
-                fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
-          ),
+      ),
+      backgroundColor: const Color(0xFFF3F2F8),
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: const Color(0xFFA4A4FF),
+        leading: IconButton(
+          icon: const Icon(Icons.menu_rounded),
+          color: Colors.white,
+          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
         ),
-        drawer:
-        MyDrawer(homework: homework, grades: grades, allGrades: allGrades, events: events),
-        body: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-          child: Column(children: [
-            WeeklySchedule(weeklyData),
+        elevation: 0,
+        title: const Text(
+          "11A, American International School Progress",
+          style: TextStyle(
+              fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+      ),
+      drawer: MyDrawer(
+        attendance: attendance,
+        homework: homework,
+        grades: grades,
+        allGrades: allGrades,
+        events: events,
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+        child: Column(
+          children: [
+            WeeklySchedule(schedule: schedule),
             RecentGrades(grades: grades, allGrades: allGrades),
             RecentHomework(homework: homework),
             Events(events: events),
-            Attendace(allAttendance),
-          ]),
-        ));
+            Attendace(attendance: attendance, attendanceCount: attendanceCount),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showBottomSheet(BuildContext context) {

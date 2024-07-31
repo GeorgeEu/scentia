@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/widgets/events/full_events.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/services/firestore_data.dart';
-
-import '../../services/events_data/events_data.dart';
 import '../services/auth_services.dart';
 
 class EventsPage extends StatefulWidget {

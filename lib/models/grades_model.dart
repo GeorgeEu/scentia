@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import '../services/auth_services.dart';
 import '../services/firestore_data.dart';
-import '../services/subject_services.dart';
 
 class GradesModel {
   final FirestoreData data = FirestoreData();
@@ -17,13 +16,16 @@ class GradesModel {
       Future<DocumentSnapshot> teacherDocFuture = data.getDoc(gradeData['teacher']);
       Future<DocumentSnapshot> subjectDocFuture = data.getDoc(gradeData['sid']);
 
-      DocumentSnapshot teacherDoc = await teacherDocFuture;
-      String teacherName = teacherDoc['name'];
-
       DocumentSnapshot subjectDoc = await subjectDocFuture;
       DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
       DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
       String subjectName = nestedSubjectDoc['name'];
+
+
+      DocumentSnapshot teacherDoc = await teacherDocFuture;
+      DocumentReference nestedTeacherRef = teacherDoc['teacher'] as DocumentReference;
+      DocumentSnapshot nestedTeacherDoc = await nestedTeacherRef.get();
+      String teacherName = nestedTeacherDoc['name'];
 
       DateTime date = (gradeData['date'] as Timestamp).toDate();
       String formattedDate = DateFormat('MMM d').format(date);
@@ -43,50 +45,68 @@ class GradesModel {
   Future<List<Map<String, dynamic>>> getSubjectGrades() async {
     String? userId = AuthService.getCurrentUserId();
     List<DocumentSnapshot> grades = await data.getGrades(userId!);
-    var subjectsSet = <DocumentReference>{};
-    grades.forEach((grade) {
-      var data = grade.data() as Map<String, dynamic>;
-      subjectsSet.add(data['sid']);
-    });
+    Map<String, Map<String, dynamic>> groupedGrades = {};
 
-    List<Map<String, dynamic>> allSubjectGrades = [];
-    for (var subjectRef in subjectsSet) {
-      // Fetch the nested subject document
-      DocumentSnapshot subjectDoc = await data.getDoc(subjectRef);
+    // Create a list of futures to resolve all necessary data
+    List<Future<void>> futures = grades.map((grade) async {
+      var gradeData = grade.data() as Map<String, dynamic>;
+
+      // Fetch the subject and teacher documents concurrently
+      Future<DocumentSnapshot> subjectDocFuture = data.getDoc(gradeData['sid']);
+      Future<DocumentSnapshot> teacherDocFuture = data.getDoc(gradeData['teacher']);
+
+      DocumentSnapshot subjectDoc = await subjectDocFuture;
       DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
       DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
       String subjectName = nestedSubjectDoc['name'];
 
-      // Filter grades for the current subject
-      List<Map<String, dynamic>> subjectGrades = [];
-      for (var grade in grades) {
-        var gradeData = grade.data() as Map<String, dynamic>;
-        if (gradeData['sid'] == subjectRef) {
-          DocumentSnapshot teacherDoc = await data.getDoc(gradeData['teacher']);
-          String teacherName = teacherDoc['name'];
-          DateTime date = (gradeData['date'] as Timestamp).toDate();
-          String formattedDate = DateFormat('MMM d').format(date);
-          subjectGrades.add({
-            'grade': gradeData['grade'],
-            'teacher': teacherName,
-            'date': formattedDate,
-          });
-        }
-      }
+      DocumentSnapshot teacherDoc = await teacherDocFuture;
+      DocumentReference nestedTeacherRef = teacherDoc['teacher'] as DocumentReference;
+      DocumentSnapshot nestedTeacherDoc = await nestedTeacherRef.get();
+      String teacherName = nestedTeacherDoc['name'];
 
-      // Calculate the mean grade
-      double meanGrade = subjectGrades
+      DateTime date = (gradeData['date'] as Timestamp).toDate();
+      String formattedDate = DateFormat('MMM d').format(date);
+
+      Map<String, dynamic> gradeInfo = {
+        'grade': gradeData['grade'],
+        'date': formattedDate,
+      };
+
+      // Group grades by subject name
+      if (groupedGrades.containsKey(subjectName)) {
+        groupedGrades[subjectName]!['Grades'].add(gradeInfo);
+      } else {
+        groupedGrades[subjectName] = {
+          'subjectName': subjectName,
+          'teacher': teacherName,
+          'Grades': [gradeInfo],
+        };
+      }
+    }).toList();
+
+    // Wait for all futures to complete
+    await Future.wait(futures);
+
+    // Calculate mean grades
+    for (var entry in groupedGrades.values) {
+      List<Map<String, dynamic>> gradesList = entry['Grades'];
+      double meanGrade = gradesList
           .map((grade) => grade['grade'] as int)
           .reduce((a, b) => a + b) /
-          subjectGrades.length;
-
-      allSubjectGrades.add({
-        "SID": subjectRef.id,
-        "subjectName": subjectName,
-        "Grades": subjectGrades,
-        "meanGrade": meanGrade,
-      });
+          gradesList.length;
+      entry['meanGrade'] = meanGrade;
     }
-    return allSubjectGrades;
+
+    return groupedGrades.values.toList();
   }
+
+
+
+
+
+
+
+
+
 }

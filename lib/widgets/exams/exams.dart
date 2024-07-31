@@ -99,7 +99,14 @@ class _ExamsState extends State<Exams> {
           );
         }
         return Center(
-          child: Text('No exams found.'),
+          child: Text(
+            'No exams found',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+              )
+          ),
         );
       },
     );

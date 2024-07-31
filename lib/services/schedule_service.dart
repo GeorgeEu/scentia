@@ -8,6 +8,7 @@ class ScheduleService {
   late final Future<void> _initFuture;
   late String classId;
   final Timestamp timestamp;
+  late String dayName;
   final FirestoreData firestoreData = FirestoreData();
 
   final Set<String> weekday = const {

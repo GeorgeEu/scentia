@@ -11,7 +11,7 @@ class LessonGrades extends StatelessWidget {
     return allGrades.isNotEmpty
         ? SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(top: 8, left: 16, bottom: 16),
+        padding: const EdgeInsets.only(top: 16, left: 16, bottom: 16),
         child: ListView.separated(
           primary: false,
           shrinkWrap: true,
@@ -27,22 +27,26 @@ class LessonGrades extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Text(
-                        subjectGradesMap['subjectName'],
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-                      ),
+                    Text(
+                      subjectGradesMap['subjectName'],
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, height: 1),
                     ),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(right: 16),
                       child: Text(
                         meanGrade.toStringAsFixed(2),
-                        style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+                        style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w600, height: 1),
                       ),
                     ),
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Text(
+                    subjectGradesMap['teacher'],
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal,color: Colors.grey),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 12),
@@ -78,11 +82,11 @@ class LessonGrades extends StatelessWidget {
     )
         : Center(
       child: Text(
-        'No grades available',
+        "You haven't got any grades yet.",
         style: TextStyle(
           fontSize: 16,
           color: Colors.grey,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

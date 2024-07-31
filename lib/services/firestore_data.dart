@@ -51,26 +51,17 @@ class FirestoreData {
     return subjects.docs;
   }
 
-  Future<DocumentSnapshot> getDailyRings(String day) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot rings = await firestore.collection('week')
-        .where('name', isEqualTo: day)
-        .get();
-    return rings.docs[0];
-  }
-
   Future<List<DocumentSnapshot>> getLessons(String classId, String day, Timestamp timestamp) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Get the class document reference
     DocumentReference classRef = firestore.collection('classes').doc(classId);
-
     // Query all documents for the specified day and class reference
     QuerySnapshot lessons = await firestore
         .collection('lessons')
         .where('class', isEqualTo: classRef)
         .where('startFrom', isLessThan: timestamp)
-        .where('day', isEqualTo: day)
+        .where('day', isEqualTo: day)  // Ensure day is queried as string
         .get();
 
     // Process the documents to keep only one document per class with the latest timestamp
@@ -88,13 +79,15 @@ class FirestoreData {
         uniqueClasses[lessonValue] = doc;
       }
     }
-
     // Return the processed list of documents
     List<DocumentSnapshot> sortedDocuments = uniqueClasses.values.toList();
     sortedDocuments.sort((a, b) => a['lesson'].path.compareTo(b['lesson'].path));
 
     return sortedDocuments;
   }
+
+
+
 
 
 
@@ -106,6 +99,16 @@ class FirestoreData {
         .get();
 
     return grades.docs;
+  }
+
+  Future<List<DocumentSnapshot>> getAttendance(DocumentReference uid) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot attendance = await firestore
+        .collection('attendance') // Replace with your collection name
+        .where('student', isEqualTo: uid) // Assuming 'uid' is the field you're querying
+        .get();
+
+    return attendance.docs;
   }
 
 
