@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:scientia/services/attendance_calc.dart';
 import 'package:scientia/widgets/attendance/attendace.dart';
 import 'package:scientia/widgets/events/events.dart';
 import 'package:scientia/widgets/grades/recent_grades.dart';
@@ -31,12 +32,17 @@ class _MainPageState extends State<Main_Page> {
   List<DocumentSnapshot> events = [];
   List<Map<String, dynamic>> grades = [];
   List<Map<String, dynamic>> allGrades = [];
+  Map<String, double> absencePercentageMap = {};
   Map<String, int> attendanceCount = {};
   List<DailySchedule> schedule = [];
   bool isLoading = true;
 
   Future<void> _getHomework() async {
     homework = await HomeworkModel().fetchHomework();
+  }
+
+  Future<void> _getAttendancePerc() async {
+    absencePercentageMap = await AttendanceCalc().calculateAbsencePercentagePerSubject();
   }
 
   Future<void> _getAttendance() async {
@@ -82,6 +88,7 @@ class _MainPageState extends State<Main_Page> {
     await Future.wait([
       _getHomework(),
       _getAttendance(),
+      _getAttendancePerc(),
       _getGrades(),
       _getAttendanceCount(),
       _getAllGrades(),
@@ -129,6 +136,7 @@ class _MainPageState extends State<Main_Page> {
         attendance: attendance,
         homework: homework,
         grades: grades,
+        absencePercentageMap: absencePercentageMap,
         allGrades: allGrades,
         events: events,
       ),
@@ -141,7 +149,7 @@ class _MainPageState extends State<Main_Page> {
             RecentGrades(grades: grades, allGrades: allGrades),
             RecentHomework(homework: homework),
             Events(events: events),
-            Attendace(attendance: attendance, attendanceCount: attendanceCount),
+            Attendace(attendance: attendance, attendanceCount: attendanceCount, absencePercentageMap: absencePercentageMap),
           ],
         ),
       ),

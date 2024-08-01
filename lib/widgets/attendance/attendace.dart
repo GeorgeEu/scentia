@@ -7,8 +7,9 @@ import '../st_row.dart';
 class Attendace extends StatelessWidget {
   final List<Map<String, dynamic>> attendance;
   final Map<String, int> attendanceCount;
+  final Map<String, double> absencePercentageMap;
 
-  const Attendace({super.key, required this.attendance, required this.attendanceCount});
+  const Attendace({super.key, required this.attendance, required this.attendanceCount, required this.absencePercentageMap});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +20,13 @@ class Attendace extends StatelessWidget {
           stChevronRight: StChevronRight(
             onPressed: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AttendancePage(attendance: attendance))
+                  MaterialPageRoute(builder: (context) => AttendancePage(attendance: attendance, absencePercentageMap: absencePercentageMap))
               );
             },
           ),
           onPress: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => AttendancePage(attendance: attendance))
+                MaterialPageRoute(builder: (context) => AttendancePage(attendance: attendance, absencePercentageMap: absencePercentageMap))
             );
           },
         ),

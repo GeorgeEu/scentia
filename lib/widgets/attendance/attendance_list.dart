@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scientia/widgets/empty_state_page.dart';
 
 class AttendanceList extends StatelessWidget {
   final List<Map<String, dynamic>> attendance;
@@ -17,51 +18,47 @@ class AttendanceList extends StatelessWidget {
           shrinkWrap: true,
           itemCount: attendance.length,
           itemBuilder: (context, index) {
-            return Column(
+            return Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        attendance[index]['subject'],
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w600, height: 1),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: Text(
-                          attendance[index]['status'].toString(),
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '${attendance[index]['date']} – ',
-                      style: const TextStyle(
-                          fontSize: 14, color: Colors.grey, height: 1),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        attendance[index]['subject'],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.normal, height: 1),
+                      ),
                     ),
-                    Text(
-                      '${attendance[index]['start']} - ${attendance[index]['end']}',
-                      style: const TextStyle(
-                          fontSize: 14, color: Colors.grey, height: 1),
+                    Row(
+                      children: [
+                        Text(
+                          '${attendance[index]['date']} – ',
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey, height: 1),
+                        ),
+                        Text(
+                          '${attendance[index]['start']} - ${attendance[index]['end']}',
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey, height: 1),
+                        ),
+                      ],
                     ),
                   ],
+                ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Text(
+                    attendance[index]['status'].toString(),
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
               ],
             );
@@ -76,13 +73,8 @@ class AttendanceList extends StatelessWidget {
       ),
     )
         : Center(
-      child: Text(
-        "You weren't late or didn't miss class.",
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.grey,
-          fontWeight: FontWeight.w500,
-        ),
+      child: EmptyStatePage(
+        message: "You weren't late or didn't miss class"
       ),
     );
   }

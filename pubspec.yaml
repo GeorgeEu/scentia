@@ -75,6 +75,8 @@ flutter:
   assets:
     - assets/drag-handle.svg
     - assets/picnic_in_c_p.jpg
+    - assets/puppies.png
+    - assets/birds.png
     - assets/jazz_fest.jpg
     - assets/st_patrick's_day.jpg
     - assets/avatar.jpg

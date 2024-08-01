@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:scientia/widgets/empty_state_widget.dart';
 import 'package:scientia/widgets/st_row.dart';
 import '../../views/events_page.dart';
 import '../st_chevron_right.dart';
@@ -39,7 +40,6 @@ class _EventsState extends State<Events> {
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: Container(
-            padding: const EdgeInsets.only(top: 16, bottom: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.white,
@@ -69,60 +69,66 @@ class _EventsState extends State<Events> {
                         formattedDate);
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          width: 80,
-                          height: 80,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              event['imageUrl'],
-                              // Use the image URL from Firestore
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Text('Image not available'); // Error text if image fails to load
-                              },
+                    padding: EdgeInsets.only(
+                      top: index == 0 ? 16.0 : 0.0, // Add padding only for the first item
+                      bottom: index == (widget.events.length > 3 ? 2 : widget.events.length - 1) ? 16.0 : 0.0, // Add padding only for the last item
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            width: 80,
+                            height: 80,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                event['imageUrl'],
+                                // Use the image URL from Firestore
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Text('Image not available'); // Error text if image fails to load
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 16),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formattedDate,
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.grey,
-                                      fontSize: 15),
-                                ),
-                                Text(
-                                  event['name'],
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
-                                ),
-                                Text(
-                                  event['address'],
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontSize: 16),
-                                ),
-                              ],
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 16),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    formattedDate,
+                                    style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.grey,
+                                        fontSize: 15),
+                                  ),
+                                  Text(
+                                    event['name'],
+                                    style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18),
+                                  ),
+                                  Text(
+                                    event['address'],
+                                    style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontSize: 16),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -135,12 +141,10 @@ class _EventsState extends State<Events> {
               },
             )
                 : SizedBox(
-              height: 120,
-              child: Center(
-                child: Text(
-                  'There are no events yet',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
+              height: 186,
+              width: double.infinity,
+              child: EmptyStateWidget(
+                message: 'There are no events yet',
               ),
             ),
           ),

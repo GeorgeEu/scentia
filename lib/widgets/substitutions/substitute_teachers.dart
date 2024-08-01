@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:scientia/widgets/empty_state_page.dart';
 import '../../models/subst_model.dart'; // Import your SubstModel
 
 class SubstituteTeachers extends StatefulWidget {
@@ -106,13 +107,8 @@ class _SubstituteTeachersState extends State<SubstituteTeachers> {
           );
         }
         return Center(
-          child: Text(
-            'No substitutions found',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
-              )
+          child: EmptyStatePage(
+            message: 'No substitutions found',
           ),
         );
       },

@@ -47,4 +47,20 @@ class Formater {
     }
   }
 
+
+  static dynamic percentToColor(double percent) {
+    const Color color1 = Color(0xFF009245);
+    const Color color2 = Color(0xFFFCEE21);
+    if (percent >= 0 && percent <= 5) {
+      return const LinearGradient(
+        colors: [color2, color1],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    } else {
+      return Colors.grey;
+    }
+  }
+
+
 }

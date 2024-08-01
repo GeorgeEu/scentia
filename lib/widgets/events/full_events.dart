@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_svg/flutter_svg.dart';  // Ensure you have the flutter_svg package included in your pubspec.yaml file
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scientia/widgets/empty_state_page.dart';  // Ensure you have the flutter_svg package included in your pubspec.yaml file
 
 class FullEvents extends StatefulWidget {
   final List<DocumentSnapshot> events;
@@ -109,14 +110,11 @@ class _FullEventsState extends State<FullEvents> {
           ); // Your separator widget
         },
       )
-          : Center(child: Text(
-        'There are no events yet',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          )
-      )),
+          : Center(
+        child: EmptyStatePage(
+          message: 'There are no events yet',
+        ),
+      ),
     );
   }
 

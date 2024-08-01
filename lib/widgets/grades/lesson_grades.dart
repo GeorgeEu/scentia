@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scientia/utils/formater.dart';
+import 'package:scientia/widgets/empty_state_page.dart';
 
 class LessonGrades extends StatelessWidget {
   final List<Map<String, dynamic>> allGrades;
@@ -81,13 +82,8 @@ class LessonGrades extends StatelessWidget {
       ),
     )
         : Center(
-      child: Text(
-        "You haven't got any grades yet.",
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.grey,
-          fontWeight: FontWeight.w500,
-        ),
+      child: EmptyStatePage(
+        message: "You haven't got any grades yet",
       ),
     );
   }

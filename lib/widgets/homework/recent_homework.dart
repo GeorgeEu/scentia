@@ -43,7 +43,6 @@ class _RecentHomeworkState extends State<RecentHomework> {
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.only(top: 12, bottom: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.white,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scientia/widgets/empty_state_page.dart';
 import '../../models/exams_model.dart'; // Import your ExamsModel
 
 class Exams extends StatefulWidget {
@@ -99,13 +100,8 @@ class _ExamsState extends State<Exams> {
           );
         }
         return Center(
-          child: Text(
-            'No exams found',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
-              )
+          child: EmptyStatePage(
+            message: 'No exams found',
           ),
         );
       },

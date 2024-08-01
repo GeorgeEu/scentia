@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:scientia/widgets/empty_state_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeworkCard extends StatelessWidget {
@@ -78,13 +79,8 @@ class HomeworkCard extends StatelessWidget {
       ),
     )
         : Center(
-      child: Text(
-        'There is no homework',
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.grey,
-          fontWeight: FontWeight.w500,
-        ),
+      child: EmptyStatePage(
+        message: 'There is no homework',
       ),
     );
   }
