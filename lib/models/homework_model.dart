@@ -1,34 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:scientia/services/firestore_data.dart';
+
 import '../services/auth_services.dart';
+import '../services/user_status_service.dart';
 
 class HomeworkModel {
   final FirestoreData data = FirestoreData();
+  final UserStatusService userService = UserStatusService(); // Create an instance of UserService
+  late String classId;
 
   Future<List<Map<String, dynamic>>> fetchHomework() async {
+    String userStatus = await userService.getUserStatus();
+    if (userStatus != 'student') {
+      return [];
+    }
+
     String? userId = AuthService.getCurrentUserId();
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
 
-    // Get the user's document reference
-    DocumentReference userDocRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    DocumentSnapshot userDoc = await data.getDoc(
+        FirebaseFirestore.instance.collection('users').doc(userId));
 
-    // Fetch the homework documents for the current user
-    List<DocumentSnapshot> homeworkDocs = await data.getHomework(userDocRef);
+    var classField = userDoc.get('class'); // Use get to access the field
+    if (classField == null) {
+      return []; // Return an empty list if the class field is null
+    } else if (classField is DocumentReference) {
+      // Handle the case where the class field is a reference
+      classId = classField.path;
+    } else {
+      throw Exception("Unexpected value type for class field");
+    }
+
+    List<DocumentSnapshot> homeworkDocs = await data.getHomework(classId);
     List<Future<Map<String, dynamic>>> homeworkFutures = homeworkDocs.map((task) async {
       var homeworkData = task.data() as Map<String, dynamic>;
 
-      Future<DocumentSnapshot> subjectDocFuture = data.getDoc(homeworkData['subject']);
-      Future<DocumentSnapshot> teacherDocFuture = data.getDoc(homeworkData['teacher']);
-
-      DocumentSnapshot subjectDoc = await subjectDocFuture;
-      DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
-      DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
-      String subjectName = nestedSubjectDoc['name'];
-
-      DocumentSnapshot teacherDoc = await teacherDocFuture;
-      DocumentReference nestedTeacherRef = teacherDoc['teacher'] as DocumentReference;
-      DocumentSnapshot nestedTeacherDoc = await nestedTeacherRef.get();
-      String teacherName = nestedTeacherDoc['name'];
+      DocumentSnapshot subjectDoc = await data.getDoc(homeworkData['subject']);
+      String subjectName = subjectDoc['name'];
 
       DateTime date = (homeworkData['endAt'] as Timestamp).toDate();
       String formattedDate = DateFormat('MMM d').format(date);
@@ -36,7 +47,7 @@ class HomeworkModel {
       return {
         'task': homeworkData['task'],
         'subject': subjectName,
-        'teacher': teacherName,
+        'teacher': homeworkData['teacher'],
         'date': formattedDate,
       };
     }).toList();
@@ -44,4 +55,3 @@ class HomeworkModel {
     return await Future.wait(homeworkFutures);
   }
 }
-

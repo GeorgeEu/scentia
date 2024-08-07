@@ -7,9 +7,34 @@ import '../services/firestore_data.dart';
 class GradesModel {
   final FirestoreData data = FirestoreData();
 
-  Future<List<Map<String, dynamic>>> fetchGrades() async {
+  Future<String> getUserStatus() async {
     String? userId = AuthService.getCurrentUserId();
-    List<DocumentSnapshot> grades = await data.getGrades(userId!);
+
+    if (userId == null) {
+      return 'student'; // or handle the null case appropriately
+    }
+
+    DocumentReference userDocRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    DocumentSnapshot userDoc = await userDocRef.get();
+
+    // Ensure data is not null and cast to Map<String, dynamic>
+    Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+
+    // Return the status or default to 'student'
+    return userData?['status'] ?? 'student';
+  }
+
+
+  Future<List<Map<String, dynamic>>> fetchGrades() async {
+    String userStatus = await getUserStatus();
+
+    if (userStatus != 'student') {
+      return []; // Return an empty list or handle non-student case
+    }
+
+    String? userId = AuthService.getCurrentUserId();
+    DocumentReference userDocRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    List<DocumentSnapshot> grades = await data.getGrades(userDocRef);
     List<Future<Map<String, dynamic>>> gradeFutures = grades.map((grade) async {
       var gradeData = grade.data() as Map<String, dynamic>;
 
@@ -44,7 +69,10 @@ class GradesModel {
 
   Future<List<Map<String, dynamic>>> getSubjectGrades() async {
     String? userId = AuthService.getCurrentUserId();
-    List<DocumentSnapshot> grades = await data.getGrades(userId!);
+
+    // Get the user's document reference
+    DocumentReference userDocRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    List<DocumentSnapshot> grades = await data.getGrades(userDocRef);
     Map<String, Map<String, dynamic>> groupedGrades = {};
 
     // Create a list of futures to resolve all necessary data

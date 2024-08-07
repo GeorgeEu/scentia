@@ -18,8 +18,9 @@ class StRow extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onPress,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
+        child: Container(
+          padding: EdgeInsets.only(left: 16),
+          height: 48,
           child: Row(
             children: [
               stHeader,

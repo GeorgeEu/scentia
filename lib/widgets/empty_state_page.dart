@@ -24,7 +24,7 @@ class EmptyStatePage extends StatelessWidget {
             message,
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 color: Colors.grey.shade800
             ),
           ),

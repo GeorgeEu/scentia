@@ -31,7 +31,7 @@ class HomeworkCard extends StatelessWidget {
                       Text(
                         homework[index]['subject'],
                         style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w600, height: 1),
+                            fontSize: 17, fontWeight: FontWeight.w600, height: 1),
                       ),
                       const Spacer(),
                       Text(

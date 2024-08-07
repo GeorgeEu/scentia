@@ -42,39 +42,43 @@ class _ExpandableTextState extends State<ExpandableText> {
 
         isTextOverflowing = tp.didExceedMaxLines;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Linkify(
-              onOpen: (link) async {
-                if (!await launchUrl(Uri.parse(link.url))) {
-                  throw Exception('Could not launch ${link.url}');
-                }
-              },
-              text: widget.text,
-              style: widget.style,
-              linkStyle: widget.linkStyle,
-              maxLines: isExpanded ? null : widget.maxLines,
-              overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-            ),
-            if (isTextOverflowing)
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    isExpanded = !isExpanded;
-                  });
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Linkify(
+                onOpen: (link) async {
+                  if (!await launchUrl(Uri.parse(link.url))) {
+                    throw Exception('Could not launch ${link.url}');
+                  }
                 },
-                child: Text(
-                  isExpanded ? "less" : "more",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                text: widget.text,
+                style: widget.style,
+                linkStyle: widget.linkStyle,
+                maxLines: isExpanded ? null : widget.maxLines,
+                overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                options: LinkifyOptions(humanize: false), // disable humanization to handle raw links
+              ),
+              if (isTextOverflowing)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(
+                    isExpanded ? "less" : "more",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         );
       },
     );

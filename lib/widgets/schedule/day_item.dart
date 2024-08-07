@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';  // Ensure you have the flutter_s
 import '../../utils/formater.dart';
 
 class DayItem extends StatelessWidget {
-  final DailySchedule dayData;
+  final dynamic dayData;
   const DayItem({super.key, required this.dayData});
 
   @override
@@ -80,7 +80,7 @@ class DayItem extends StatelessWidget {
     );
   }
 
-  void showEventBottomSheet(BuildContext context, DailySchedule dayData) {
+  void showEventBottomSheet(BuildContext context, dynamic dayData) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

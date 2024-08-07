@@ -43,7 +43,7 @@ class LessonGrades extends StatelessWidget {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
+                  padding: const EdgeInsets.only(bottom: 6, top: 3),
                   child: Text(
                     subjectGradesMap['teacher'],
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal,color: Colors.grey),

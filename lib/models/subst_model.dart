@@ -8,11 +8,11 @@ class SubstModel {
 
   Future<List<Map<String, dynamic>>> fetchSubst() async {
     String? userId = AuthService.getCurrentUserId();
-    if (userId == null) {
-      return [];
-    }
 
-    List<DocumentSnapshot> substitutions = await data.getSubstitutions(userId);
+    // Get the user's document reference
+    DocumentReference userDocRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    List<DocumentSnapshot> substitutions = await data.getSubstitutions(userDocRef);
 
     // Use Future.wait to fetch all data concurrently
     List<Future<Map<String, dynamic>>> substFutures = substitutions.map((substitution) async {
@@ -24,9 +24,7 @@ class SubstModel {
       Future<DocumentSnapshot> substituterDocFuture = data.getDoc(substData['substituter']);
 
       DocumentSnapshot subjectDoc = await subjectDocFuture;
-      DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
-      DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
-      String subjectName = nestedSubjectDoc['name'];
+      String subjectName = subjectDoc['name'];
 
       DocumentSnapshot substitutedDoc = await substitutedDocFuture;
       String substitutedName = substitutedDoc['name'];

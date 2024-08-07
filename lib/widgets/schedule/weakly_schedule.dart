@@ -7,7 +7,7 @@ import '../st_header.dart';
 import '../st_row.dart';
 
 class WeeklySchedule extends StatefulWidget {
-  final List<DailySchedule> schedule;
+  final List<dynamic> schedule;
   const WeeklySchedule({super.key, required this.schedule});
 
   @override
@@ -32,7 +32,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     _measureData(widget.schedule);
   }
 
-  void _measureData(List<DailySchedule> schedule) {
+  void _measureData(List<dynamic> schedule) {
     bool allDaysShortSchedule = schedule.every((day) => day.schedule.length <= 6);
     _boxHeight = allDaysShortSchedule ? 290 : 373;
   }

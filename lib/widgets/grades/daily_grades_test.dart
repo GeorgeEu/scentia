@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scientia/services/firestore_data.dart';
 import 'package:scientia/widgets/empty_state_widget.dart';
-import '../../services/subject_services.dart';
 import '../../utils/formater.dart';
 
 class DailyGradesTest extends StatefulWidget {
@@ -15,7 +14,6 @@ class DailyGradesTest extends StatefulWidget {
 }
 
 class _DailyGradesTestState extends State<DailyGradesTest> {
-  SubjectServices subjects = SubjectServices();
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +94,8 @@ class _DailyGradesTestState extends State<DailyGradesTest> {
       height: 186,
       width: double.infinity,
       child: EmptyStateWidget(
+        size: 95,
+        path: 'assets/dayns.png',
         message: 'There are no grades yet',
       ),
     );

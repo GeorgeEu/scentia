@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:scientia/widgets/empty_state_widget.dart';
 import 'package:scientia/widgets/st_row.dart';
 import '../../views/events_page.dart';
@@ -9,7 +7,7 @@ import '../st_header.dart';
 import 'package:flutter_svg/flutter_svg.dart';  // Ensure you have the flutter_svg package included in your pubspec.yaml file
 
 class Events extends StatefulWidget {
-  final List<DocumentSnapshot> events;
+  final List<Map<String, dynamic>> events;
 
   const Events({super.key, required this.events});
 
@@ -51,13 +49,6 @@ class _EventsState extends State<Events> {
               itemCount: widget.events.length > 3 ? 3 : widget.events.length,
               itemBuilder: (context, index) {
                 final event = widget.events[index];
-
-                // Convert Timestamp to DateTime
-                DateTime date = (event['date'] as Timestamp).toDate();
-
-                // Format DateTime to String
-                String formattedDate = DateFormat('EEEE – kk:mm').format(date);
-
                 return InkWell(
                   onTap: () {
                     showEventBottomSheet(
@@ -66,7 +57,7 @@ class _EventsState extends State<Events> {
                         event['address'],
                         event['desc'],
                         event['imageUrl'],
-                        formattedDate);
+                        event['date']);
                   },
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -103,7 +94,7 @@ class _EventsState extends State<Events> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    formattedDate,
+                                    event['date'],
                                     style: const TextStyle(
                                         overflow: TextOverflow.ellipsis,
                                         fontWeight: FontWeight.normal,
@@ -144,6 +135,8 @@ class _EventsState extends State<Events> {
               height: 186,
               width: double.infinity,
               child: EmptyStateWidget(
+                path: 'assets/platopys.png',
+                size: 130,
                 message: 'There are no events yet',
               ),
             ),

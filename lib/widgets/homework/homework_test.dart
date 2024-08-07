@@ -78,6 +78,8 @@ class HomeworkTest extends StatelessWidget {
         : const SizedBox(
       height: 186,
       child: EmptyStateWidget(
+        size: 105,
+        path: 'assets/cows.png',
         message: 'There is no homework yet',
       ),
     );

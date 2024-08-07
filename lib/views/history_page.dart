@@ -1,19 +1,8 @@
-import 'package:scientia/widgets/events/full_events.dart';
 import 'package:flutter/material.dart';
-import 'package:scientia/services/firestore_data.dart';
-import '../services/auth_services.dart';
 
-class EventsPage extends StatefulWidget {
-  final List<Map<String, dynamic>> events;
-  EventsPage({super.key, required this.events});
+class HistoryPage extends StatelessWidget {
+  const HistoryPage({super.key});
 
-  @override
-  State<EventsPage> createState() => _EventsPageState();
-}
-
-class _EventsPageState extends State<EventsPage> {
-  String? userId = AuthService.getCurrentUserId();
-  var data = FirestoreData();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,16 +23,14 @@ class _EventsPageState extends State<EventsPage> {
               Navigator.pop(context);
             }),
         title: const Text(
-          'Events',
+          'History',
           style: TextStyle(
-            fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w500,
               color: Colors.white
           ),
         ),
         // titleSpacing: 0,
       ),
-      body: FullEvents(events: widget.events)
     );
   }
 }
-

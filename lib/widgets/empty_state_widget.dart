@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class EmptyStateWidget extends StatelessWidget {
+  final String path;
   final String message;
-
-  const EmptyStateWidget({required this.message});
+  final double size;
+  const EmptyStateWidget({required this.message, required this.path, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -11,20 +12,21 @@ class EmptyStateWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.asset(
-          'assets/birds.png',
-          height: 150,
+          path,
+          //'assets/birds.png',
+          height: size,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return Text('Image not available'); // Error text if image fails to load
           },
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 8, top: 8),
           child: Text(
             message,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 13,
               color: Colors.grey.shade800
             ),
           ),

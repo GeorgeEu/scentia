@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/services/firestore_data.dart';
 import 'package:scientia/services/auth_services.dart';
 import 'package:scientia/models/subject_occurrence.dart';
+import 'package:scientia/services/user_status_service.dart';
 
 class AttendanceCalc {
   var data = FirestoreData();
+  final UserStatusService userService = UserStatusService();
 
   Future<DocumentSnapshot> _fetchCurrentUserDoc() async {
     String? userId = AuthService.getCurrentUserId(); // Get current user's ID
@@ -29,44 +31,57 @@ class AttendanceCalc {
   }
 
   Future<List<SubjectOccurrence>> getLessonOccurrences() async {
+    String userStatus = await userService.getUserStatus();
+    if (userStatus != 'student') {
+      return []; // Return an empty list or handle as needed
+    }
+
     DocumentSnapshot userDoc = await _fetchCurrentUserDoc();
-    String classId = userDoc['class'].id; // Assuming 'classRef' is the field in the user document
+    var classField = userDoc.get('class'); // Use get to access the field
+    if (classField == null) {
+      return []; // Return an empty list if the class field is null
+    } else if (classField is DocumentReference) {
+      // Use the full path of the class document
+      String classId = classField.path;
 
-    // Set the timestamp for the query
-    Timestamp timestamp = Timestamp.now(); // Replace with actual timestamp if needed
+      // Set the timestamp for the query
+      Timestamp timestamp = Timestamp.now(); // Replace with actual timestamp if needed
 
-    // Get sorted lessons from query
-    List<DocumentSnapshot> sortedDocuments = await data.getAttendanceLessons(classId, timestamp);
+      // Get sorted lessons from query
+      List<DocumentSnapshot> sortedDocuments = await data.getAttendanceLessons(classId, timestamp);
 
-    // Calculate days past from nearest September
-    int daysPastFromSeptember = await countDaysPastFromSeptember();
-    double weeksPastFromSeptember = daysPastFromSeptember / 7;
+      // Calculate days past from nearest September
+      int daysPastFromSeptember = await countDaysPastFromSeptember();
+      double weeksPastFromSeptember = daysPastFromSeptember / 7;
 
-    // Count the occurrences of each lesson
-    Map<String, int> lessonOccurrences = {};
+      // Count the occurrences of each lesson
+      Map<String, int> lessonOccurrences = {};
 
-    List<Future<void>> futures = sortedDocuments.map((doc) async {
-      DocumentReference subjectRef = doc['subject'];
-      DocumentSnapshot subjectDoc = await data.getDoc(subjectRef); // Use the getDoc function from the data file
-      String subjectName = subjectDoc['name'];
+      List<Future<void>> futures = sortedDocuments.map((doc) async {
+        DocumentReference subjectRef = doc['subject'];
+        DocumentSnapshot subjectDoc = await data.getDoc(subjectRef); // Use the getDoc function from the data file
+        String subjectName = subjectDoc['name'];
 
-      if (lessonOccurrences.containsKey(subjectName)) {
-        lessonOccurrences[subjectName] = lessonOccurrences[subjectName]! + 1;
-      } else {
-        lessonOccurrences[subjectName] = 1;
-      }
-    }).toList();
+        if (lessonOccurrences.containsKey(subjectName)) {
+          lessonOccurrences[subjectName] = lessonOccurrences[subjectName]! + 1;
+        } else {
+          lessonOccurrences[subjectName] = 1;
+        }
+      }).toList();
 
-    await Future.wait(futures);
+      await Future.wait(futures);
 
-    // Calculate occurrences per week
-    List<SubjectOccurrence> subjectOccurrencesList = [];
-    lessonOccurrences.forEach((subjectName, occurrences) {
-      int occurrencesPerWeek = (occurrences * weeksPastFromSeptember).floor();
-      subjectOccurrencesList.add(SubjectOccurrence(subject: subjectName, occurrences: occurrencesPerWeek));
-    });
+      // Calculate occurrences per week
+      List<SubjectOccurrence> subjectOccurrencesList = [];
+      lessonOccurrences.forEach((subjectName, occurrences) {
+        int occurrencesPerWeek = (occurrences * weeksPastFromSeptember).floor();
+        subjectOccurrencesList.add(SubjectOccurrence(subject: subjectName, occurrences: occurrencesPerWeek));
+      });
 
-    return subjectOccurrencesList;
+      return subjectOccurrencesList;
+    } else {
+      throw Exception("Unexpected value type for class field");
+    }
   }
 
   Future<List<SubjectOccurrence>> getFilteredAttendanceOccurrences() async {

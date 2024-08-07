@@ -9,10 +9,10 @@ class ExamsModel {
 
   Future<List<Map<String, dynamic>>> fetchExams() async {
     String? userId = AuthService.getCurrentUserId();
-    if (userId == null) {
-      return [];
-    }
-    List<DocumentSnapshot> exams = await data.getExams(userId);
+
+    // Get the user's document reference
+    DocumentReference userDocRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    List<DocumentSnapshot> exams = await data.getExams(userDocRef);
 
     // Use Future.wait to fetch all data concurrently
     List<Future<Map<String, dynamic>>> examFutures = exams.map((exam) async {
@@ -26,9 +26,7 @@ class ExamsModel {
       String assistantName = assistantDoc['name'];
 
       DocumentSnapshot subjectDoc = await subjectDocFuture;
-      DocumentReference nestedSubjectRef = subjectDoc['subject'] as DocumentReference;
-      DocumentSnapshot nestedSubjectDoc = await nestedSubjectRef.get();
-      String subjectName = nestedSubjectDoc['name'];
+      String subjectName = subjectDoc['name'];
 
       DateTime date = (examData['date'] as Timestamp).toDate();
       String formattedDate = DateFormat('MM-dd – kk:mm').format(date);

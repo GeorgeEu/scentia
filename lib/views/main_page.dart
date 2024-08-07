@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
 import 'package:scientia/widgets/attendance/attendace.dart';
+import 'package:scientia/widgets/content_column.dart';
 import 'package:scientia/widgets/events/events.dart';
 import 'package:scientia/widgets/grades/recent_grades.dart';
 import 'package:scientia/services/schedule_service.dart';
+import 'package:scientia/widgets/history.dart';
 import 'package:scientia/widgets/homework/recent_homework.dart';
 import 'package:scientia/widgets/schedule/weakly_schedule.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +15,12 @@ import 'package:scientia/services/firestore_data.dart';
 
 import '../models/attendance_model.dart';
 import '../models/daily_schedule.dart';
+import '../models/daily_teacher_schedule.dart';
 import '../models/grades_model.dart';
 import '../models/homework_model.dart';
 import '../services/auth_services.dart';
+import '../services/teacher_schedule.dart';
+import 'hw_creating_page.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
@@ -25,16 +31,17 @@ class Main_Page extends StatefulWidget {
 
 class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
-  String? userId = AuthService.getCurrentUserId();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map<String, dynamic>> homework = [];
   List<Map<String, dynamic>> attendance = [];
-  List<DocumentSnapshot> events = [];
+  List<Map<String, dynamic>> events = [];
   List<Map<String, dynamic>> grades = [];
   List<Map<String, dynamic>> allGrades = [];
   Map<String, double> absencePercentageMap = {};
   Map<String, int> attendanceCount = {};
   List<DailySchedule> schedule = [];
+  List<DailyTeacherSchedule> teachSchedule = [];
+  String? userStatus;
   bool isLoading = true;
 
   Future<void> _getHomework() async {
@@ -54,7 +61,7 @@ class _MainPageState extends State<Main_Page> {
   }
 
   Future<void> _getEvents() async {
-    events = await data.getEvents(userId!);
+    events = await EventsModel().fetchEvents();
   }
 
   Future<void> _getGrades() async {
@@ -65,11 +72,43 @@ class _MainPageState extends State<Main_Page> {
     allGrades = await GradesModel().getSubjectGrades();
   }
 
+  Future<void> _fetchUserStatus() async {
+    String? userId = AuthService.getCurrentUserId();
+    if (userId != null) {
+      try {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('account')
+            .doc('permission')
+            .get();
+
+        // Ensure the document exists and cast the data to a Map
+        if (userDoc.exists) {
+          final data = userDoc.data() as Map<String, dynamic>?;
+          setState(() {
+            userStatus = data?['status'];
+          });
+        }
+      } catch (e) {
+        print("Error fetching user status: $e");
+      }
+    }
+  }
+
+
   Future<void> _getWeeklySchedule() async {
     final DateTime now = DateTime.now();
     final Timestamp currTimestamp = Timestamp.fromDate(now);
     final weeklySchedule = ScheduleService(timestamp: currTimestamp);
     schedule = await weeklySchedule.getWeeklySchedule();
+  }
+
+  Future<void> _getWeeklyTeacherSchedule() async {
+    final DateTime now = DateTime.now();
+    final Timestamp currTimestamp = Timestamp.fromDate(now);
+    final teacherSchedule = TeacherSchedule(timestamp: currTimestamp);
+    teachSchedule = await teacherSchedule.getWeeklyTeacherSchedule();
   }
 
   @override
@@ -86,6 +125,7 @@ class _MainPageState extends State<Main_Page> {
 
   Future<void> _loadData() async {
     await Future.wait([
+      _fetchUserStatus(),
       _getHomework(),
       _getAttendance(),
       _getAttendancePerc(),
@@ -93,6 +133,7 @@ class _MainPageState extends State<Main_Page> {
       _getAttendanceCount(),
       _getAllGrades(),
       _getEvents(),
+      _getWeeklyTeacherSchedule(),
       _getWeeklySchedule(),
     ]);
   }
@@ -100,7 +141,8 @@ class _MainPageState extends State<Main_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: !isLoading && userStatus == 'teacher'
+          ? FloatingActionButton(
         isExtended: true,
         onPressed: () {
           _showBottomSheet(context);
@@ -112,7 +154,8 @@ class _MainPageState extends State<Main_Page> {
           color: Colors.white,
           size: 30,
         ),
-      ),
+      )
+          : null,
       backgroundColor: const Color(0xFFF3F2F8),
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -145,16 +188,29 @@ class _MainPageState extends State<Main_Page> {
           : SingleChildScrollView(
         child: Column(
           children: [
-            WeeklySchedule(schedule: schedule),
-            RecentGrades(grades: grades, allGrades: allGrades),
-            RecentHomework(homework: homework),
-            Events(events: events),
-            Attendace(attendance: attendance, attendanceCount: attendanceCount, absencePercentageMap: absencePercentageMap),
+            WeeklySchedule(
+              schedule: userStatus == 'teacher' ? teachSchedule : schedule,
+            ),
+            if (userStatus == 'teacher')
+              const History()
+            else
+              ContentColumn(
+                children: [
+                  RecentGrades(grades: grades, allGrades: allGrades),
+                  RecentHomework(homework: homework),
+                  Events(events: events),
+                  Attendace(
+                      attendance: attendance,
+                      attendanceCount: attendanceCount,
+                      absencePercentageMap: absencePercentageMap),
+                ],
+              ),
           ],
         ),
       ),
     );
   }
+
 
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -193,7 +249,13 @@ class _MainPageState extends State<Main_Page> {
               ListTile(
                 leading: const Icon(Icons.backpack_rounded),
                 title: const Text('Create a homework'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop(); // Close the bottom sheet
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HwCreatingPage()),
+                  );
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.mail_rounded),

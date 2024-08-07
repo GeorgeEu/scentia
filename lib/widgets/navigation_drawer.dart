@@ -17,9 +17,9 @@ class MyDrawer extends StatefulWidget {
   final List<Map<String, dynamic>> grades;
   final List<Map<String, dynamic>> allGrades;
   final List<Map<String, dynamic>> attendance;
-  final List<DocumentSnapshot> events;
+  final List<Map<String, dynamic>> events;
   Map<String, double> absencePercentageMap = {};
-  MyDrawer({super.key, required this.homework, required this.grades, required this.allGrades, required this.events, required this.attendance, required this.absencePercentageMap});
+  MyDrawer({super.key, required this.grades, required this.allGrades, required this.events, required this.absencePercentageMap, required this.homework, required this.attendance});
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -111,8 +111,8 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AttendancePage(attendance: widget.attendance, absencePercentageMap: widget.absencePercentageMap)));
+               Navigator.of(context).push(
+                   MaterialPageRoute(builder: (context) => AttendancePage(attendance: widget.attendance, absencePercentageMap: widget.absencePercentageMap)));
             },
           ),
           ListTile(
@@ -166,8 +166,8 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => HomeworkPage(homework: widget.homework)));
+               Navigator.of(context).push(
+                   MaterialPageRoute(builder: (context) => HomeworkPage(homework: widget.homework)));
             },
           ),
           ListTile(

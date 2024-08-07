@@ -39,7 +39,6 @@ class _ScentiaState extends State<Scentia> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Card Test',
       theme: ThemeData(
         useMaterial3: true,
       ),

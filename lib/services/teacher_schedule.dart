@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/services/firestore_data.dart';
 import 'package:scientia/models/daily_schedule.dart';
 
+import '../models/daily_teacher_schedule.dart';
 import 'auth_services.dart';// Assuming you have an AuthService to get the current user's ID
 
-class ScheduleService {
+class TeacherSchedule {
   late final Future<void> _initFuture;
-  late String classId;
   final Timestamp timestamp;
   late String dayName;
   final FirestoreData firestoreData = FirestoreData();
@@ -21,7 +21,7 @@ class ScheduleService {
     "SAT"
   };
 
-  ScheduleService({required this.timestamp}) {
+  TeacherSchedule({required this.timestamp}) {
     _initFuture = _fetchCurrentUserClass();
   }
 
@@ -30,23 +30,9 @@ class ScheduleService {
     if (userId == null) {
       throw Exception("User not logged in");
     }
-
-    DocumentSnapshot userDoc = await firestoreData.getDoc(
-        FirebaseFirestore.instance.collection('users').doc(userId));
-
-    var classField = userDoc.get('class'); // Use get to access the field
-    if (classField == null) {
-      // Handle the case where the class field is null (for teachers)
-      classId = ""; // Set classId to an empty string or handle it as needed
-    } else if (classField is DocumentReference) {
-      // Handle the case where the class field is a reference (for students)
-      classId = classField.path;
-    } else {
-      throw Exception("Unexpected value type for class field");
-    }
   }
 
-  Future<Lesson> _buildLesson(DocumentSnapshot lessonDoc) async {
+  Future<TeacherLesson> _buildLesson(DocumentSnapshot lessonDoc) async {
     DocumentReference teacherRef = lessonDoc['teacher'];
     DocumentReference subjectRef = lessonDoc['subject'];
     DocumentReference lessonRef = lessonDoc['lesson'];
@@ -69,7 +55,7 @@ class ScheduleService {
     String subjectName = subjectDoc['name'];
     String teacherName = teacherDoc['name'];
 
-    return Lesson.fromFirestore(
+    return TeacherLesson.fromFirestore(
       lessonDoc,
       start,
       end,
@@ -78,33 +64,28 @@ class ScheduleService {
     );
   }
 
-  Future<DailySchedule> getDailySchedule(String day) async {
+  Future<DailyTeacherSchedule> getDailyTeacherSchedule(String day) async {
     await _initFuture; // Ensure classId is initialized
-
-    if (classId.isEmpty) {
-      // Handle the case where classId is empty
-      return DailySchedule(schedule: [], day: day, timestamp: timestamp);
-    }
-
+    String? userId = AuthService.getCurrentUserId();
     // Fetch the raw schedule
-    var rawSchedule = await firestoreData.getLessons(classId, day, timestamp);
+    var rawSchedule = await firestoreData.getTeacherLessons(userId!, day, timestamp);
 
-    List<Future<Lesson>> lessonFutures = rawSchedule.map((lessonDoc) {
+    List<Future<TeacherLesson>> lessonFutures = rawSchedule.map((lessonDoc) {
       return _buildLesson(lessonDoc);
     }).toList();
 
-    List<Lesson> lessonList = await Future.wait(lessonFutures);
+    List<TeacherLesson> lessonList = await Future.wait(lessonFutures);
 
-    return DailySchedule(schedule: lessonList, day: day, timestamp: timestamp);
+    return DailyTeacherSchedule(schedule: lessonList, day: day, timestamp: timestamp);
   }
 
-  Future<List<DailySchedule>> getWeeklySchedule() async {
+  Future<List<DailyTeacherSchedule>> getWeeklyTeacherSchedule() async {
     await _initFuture; // Ensure classId is initialized
 
-    final List<Future<DailySchedule>> dailyScheduleFutures = [];
+    final List<Future<DailyTeacherSchedule>> dailyScheduleFutures = [];
 
     for (String day in weekday) {
-      dailyScheduleFutures.add(getDailySchedule(day));
+      dailyScheduleFutures.add(getDailyTeacherSchedule(day));
     }
 
     return await Future.wait(dailyScheduleFutures);
