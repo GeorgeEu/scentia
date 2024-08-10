@@ -19,6 +19,7 @@ import '../models/daily_teacher_schedule.dart';
 import '../models/grades_model.dart';
 import '../models/homework_model.dart';
 import '../services/auth_services.dart';
+import '../services/hw_creation_service.dart';
 import '../services/teacher_schedule.dart';
 import 'hw_creating_page.dart';
 
@@ -38,14 +39,57 @@ class _MainPageState extends State<Main_Page> {
   List<Map<String, dynamic>> grades = [];
   List<Map<String, dynamic>> allGrades = [];
   Map<String, double> absencePercentageMap = {};
+
+  List<DropdownMenuItem<String>> classDropdownItems = [];
+  List<DropdownMenuItem<String>> subjectDropdownItems = [];
+  late String teacherName;
+
   Map<String, int> attendanceCount = {};
   List<DailySchedule> schedule = [];
   List<DailyTeacherSchedule> teachSchedule = [];
-  String? userStatus;
+
+  late String userStatus;//User status
+
   bool isLoading = true;
+
+  Future<void> _fetchUserStatus() async {
+    String? userId = AuthService.getCurrentUserId();
+    if (userId != null) {
+      try {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('account')
+            .doc('permission')
+            .get();
+
+        // Ensure the document exists and cast the data to a Map
+        if (userDoc.exists) {
+          final data = userDoc.data() as Map<String, dynamic>?;
+          setState(() {
+            userStatus = data?['status'];
+          });
+        }
+      } catch (e) {
+        print("Error fetching user status: $e");
+      }
+    }
+  }
 
   Future<void> _getHomework() async {
     homework = await HomeworkModel().fetchHomework();
+  }
+
+  Future<void> _getClasses() async {
+    classDropdownItems = await HwCreationService().fetchClasses(); // Use ClassSubjectService
+  }
+
+  Future<void> _getSubjects() async {
+    subjectDropdownItems = await HwCreationService().fetchSubjects();
+  }
+
+  Future<void> _getTeacherName() async {
+    teacherName = (await HwCreationService().fetchTeacherName());
   }
 
   Future<void> _getAttendancePerc() async {
@@ -72,30 +116,6 @@ class _MainPageState extends State<Main_Page> {
     allGrades = await GradesModel().getSubjectGrades();
   }
 
-  Future<void> _fetchUserStatus() async {
-    String? userId = AuthService.getCurrentUserId();
-    if (userId != null) {
-      try {
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .collection('account')
-            .doc('permission')
-            .get();
-
-        // Ensure the document exists and cast the data to a Map
-        if (userDoc.exists) {
-          final data = userDoc.data() as Map<String, dynamic>?;
-          setState(() {
-            userStatus = data?['status'];
-          });
-        }
-      } catch (e) {
-        print("Error fetching user status: $e");
-      }
-    }
-  }
-
 
   Future<void> _getWeeklySchedule() async {
     final DateTime now = DateTime.now();
@@ -111,6 +131,60 @@ class _MainPageState extends State<Main_Page> {
     teachSchedule = await teacherSchedule.getWeeklyTeacherSchedule();
   }
 
+  Future<void> _loadStudentData() async {
+    await Future.wait([
+
+    ]);
+  }
+
+  Future<void> _loadTeacherData() async {
+    await Future.wait([
+
+    ]);
+  }
+
+  Future<void> _loadData() async {
+    await _fetchUserStatus(); // Ensure userStatus is fetched first
+    if (userStatus.isEmpty) {
+      print("User status is not set.");
+      return; // Or handle the case where the userStatus is not available
+    }
+
+    await Future.wait([
+      if (userStatus == 'teacher') ...[
+        _getClasses(),
+        _getTeacherName(),
+        _getSubjects(),
+        _getWeeklyTeacherSchedule(),
+      ],
+      if (userStatus == 'student') ...[
+        _getHomework(),
+        _getAttendance(),
+        _getClasses(),
+        _getTeacherName(),
+        _getSubjects(),
+        _getAttendancePerc(),
+        _getGrades(),
+        _getAttendanceCount(),
+        _getAllGrades(),
+        _getEvents(),
+        _getWeeklyTeacherSchedule(),
+        _getWeeklySchedule(),
+      ],
+    ]);
+  }
+
+  // Future<void> _loadData() async {
+  //   await _fetchUserStatus(); // Ensure userStatus is set before loading data
+  //
+  //   if (userStatus == 'teacher') {
+  //     await _loadTeacherData();
+  //   } else if (userStatus == 'student') {
+  //     await _loadStudentData();
+  //   }
+  // }
+
+
   @override
   void initState() {
     super.initState();
@@ -121,21 +195,6 @@ class _MainPageState extends State<Main_Page> {
         });
       }
     });
-  }
-
-  Future<void> _loadData() async {
-    await Future.wait([
-      _fetchUserStatus(),
-      _getHomework(),
-      _getAttendance(),
-      _getAttendancePerc(),
-      _getGrades(),
-      _getAttendanceCount(),
-      _getAllGrades(),
-      _getEvents(),
-      _getWeeklyTeacherSchedule(),
-      _getWeeklySchedule(),
-    ]);
   }
 
   @override
@@ -253,7 +312,7 @@ class _MainPageState extends State<Main_Page> {
                   Navigator.of(context).pop(); // Close the bottom sheet
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HwCreatingPage()),
+                    MaterialPageRoute(builder: (context) => HwCreatingPage(classDropdownItems: classDropdownItems, subjectDropdownItems: subjectDropdownItems, teacherName: teacherName,)),
                   );
                 },
               ),

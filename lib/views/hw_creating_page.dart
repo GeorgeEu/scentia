@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../services/auth_services.dart';
+import 'package:scientia/widgets/st_dropdown_field.dart';
+import 'package:scientia/widgets/st_snackbar.dart';
+import '../widgets/empty_state_page.dart';
+import '../widgets/st_form_textfield.dart';
 
 class HwCreatingPage extends StatefulWidget {
-  const HwCreatingPage({super.key});
+  final List<DropdownMenuItem<String>> classDropdownItems;
+  final List<DropdownMenuItem<String>> subjectDropdownItems;
+  final String teacherName;
+  HwCreatingPage({
+    super.key,
+    required this.classDropdownItems,
+    required this.subjectDropdownItems,
+    required this.teacherName,
+  });
 
   @override
   State<HwCreatingPage> createState() => _HwCreatingPageState();
@@ -17,68 +27,11 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
   String? _selectedClass;
   String? _selectedSubject;
   String? _teacherName;
-  List<DropdownMenuItem<String>> _classDropdownItems = [];
-  List<DropdownMenuItem<String>> _subjectDropdownItems = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchInitialData();
-  }
-
-  Future<void> _fetchInitialData() async {
-    try {
-      // Get current user ID
-      String? currentUserId = AuthService.getCurrentUserId();
-
-      // Fetch the user's school and name
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .doc('/users/$currentUserId/account/permission')
-          .get();
-      DocumentReference schoolRef = userDoc.get('school');
-      DocumentSnapshot userInfo = await FirebaseFirestore.instance
-          .doc('/users/$currentUserId')
-          .get();
-      String teacherName = userInfo.get('name');
-
-      // Fetch the classes for the school
-      QuerySnapshot classSnapshot = await FirebaseFirestore.instance
-          .collection('${schoolRef.path}/classes')
-          .get();
-
-      // Fetch the subjects
-      QuerySnapshot subjectSnapshot = await FirebaseFirestore.instance
-          .collection('subjects')
-          .get();
-
-      // Populate the dropdown items for classes and subjects
-      List<DropdownMenuItem<String>> classItems = classSnapshot.docs
-          .map((doc) => DropdownMenuItem<String>(
-        value: doc.reference.path,
-        child: Text(doc['name']),
-      ))
-          .toList();
-      List<DropdownMenuItem<String>> subjectItems = subjectSnapshot.docs
-          .map((doc) => DropdownMenuItem<String>(
-        value: doc.reference.path,
-        child: Text(doc['name']),
-      ))
-          .toList();
-
-      setState(() {
-        _classDropdownItems = classItems;
-        _subjectDropdownItems = subjectItems;
-        _teacherName = teacherName;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error fetching data: $e')));
-    }
+    _teacherName = widget.teacherName;
   }
 
   void _createHomework() async {
@@ -95,10 +48,10 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
 
       try {
         await homeworkCollection.add(newHomework);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Homework added successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(StSnackBar(message: 'Homework sent successfully'));
         Navigator.pop(context); // Close the form after successful submission
       } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add homework: $error')));
+        ScaffoldMessenger.of(context).showSnackBar(StSnackBar(message: 'Failed to add homework: $error'));
       }
     }
   }
@@ -123,34 +76,41 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
           ),
         ),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+      body: widget.classDropdownItems.isEmpty || widget.subjectDropdownItems.isEmpty
+          ? Center(
+        child: EmptyStatePage(
+          message: 'There is no classes or subjects available',
+        ),
+      )
           : Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              DropdownButtonFormField<String>(
-                value: _selectedClass,
-                decoration: InputDecoration(labelText: 'Class'),
-                items: _classDropdownItems,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedClass = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a class';
-                  }
-                  return null;
-                },
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16, top: 24),
+                child: StDropdownField(
+                  value: _selectedClass,
+                  labelText: 'Class',
+                  items: widget.classDropdownItems,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedClass = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a class';
+                    }
+                    return null;
+                  },
+                ),
               ),
-              DropdownButtonFormField<String>(
+              StDropdownField(
                 value: _selectedSubject,
-                decoration: InputDecoration(labelText: 'Subject'),
-                items: _subjectDropdownItems,
+                labelText: 'Subject',
+                items: widget.subjectDropdownItems,
                 onChanged: (value) {
                   setState(() {
                     _selectedSubject = value;
@@ -163,16 +123,19 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _taskController,
-                decoration: InputDecoration(labelText: 'Task'),
-                maxLines: 4,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the task';
-                  }
-                  return null;
-                },
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: StFormTextfield(
+                  controller: _taskController,
+                  labelText: 'Task',
+                  maxLines: 4,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the task';
+                    }
+                    return null;
+                  },
+                ),
               ),
               ListTile(
                 title: Text(_endAt == null ? 'End At' : _endAt.toString()),
@@ -194,6 +157,14 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _createHomework,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white, // Text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8), // Border roundness
+                  ),
+                  elevation: 0, // Removes shadow
+                ),
                 child: Text('Create Homework'),
               ),
             ],
