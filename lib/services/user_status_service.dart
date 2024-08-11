@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:scientia/utils/accounting.dart';
 import '../services/auth_services.dart';
 
 class UserStatusService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore data = FirebaseFirestore.instance;
 
   Future<String> getUserStatus() async {
     String? userId = AuthService.getCurrentUserId();
@@ -10,8 +11,11 @@ class UserStatusService {
       return 'student'; // Default to 'student' if no user is logged in
     }
 
-    DocumentReference userDocRef = _firestore.collection('users').doc(userId);
+    DocumentReference userDocRef = data.collection('users').doc(userId);
     DocumentSnapshot userDoc = await userDocRef.get();
+
+    // Log the read operation (1 document read)
+    await Accounting.detectAndStoreRead(1);
 
     // Cast the data to Map<String, dynamic> before accessing it
     Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;

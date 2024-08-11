@@ -89,7 +89,7 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
           child: ListView(
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 16, top: 24),
+                padding: const EdgeInsets.only(bottom: 32, top: 24),
                 child: StDropdownField(
                   value: _selectedClass,
                   labelText: 'Class',
@@ -124,7 +124,7 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.only(top: 32),
                 child: StFormTextfield(
                   controller: _taskController,
                   labelText: 'Task',

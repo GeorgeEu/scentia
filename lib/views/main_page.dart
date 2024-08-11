@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
+import 'package:scientia/utils/accounting.dart';
 import 'package:scientia/widgets/attendance/attendace.dart';
 import 'package:scientia/widgets/content_column.dart';
 import 'package:scientia/widgets/events/events.dart';
@@ -48,7 +49,7 @@ class _MainPageState extends State<Main_Page> {
   List<DailySchedule> schedule = [];
   List<DailyTeacherSchedule> teachSchedule = [];
 
-  late String userStatus;//User status
+  String? userStatus; // Nullable type
 
   bool isLoading = true;
 
@@ -63,18 +64,23 @@ class _MainPageState extends State<Main_Page> {
             .doc('permission')
             .get();
 
-        // Ensure the document exists and cast the data to a Map
+        // Log the read operation (1 document read)
+        await Accounting.detectAndStoreRead(1);
+
         if (userDoc.exists) {
           final data = userDoc.data() as Map<String, dynamic>?;
-          setState(() {
-            userStatus = data?['status'];
-          });
+          if (mounted) { // Check if the widget is still mounted
+            setState(() {
+              userStatus = data?['status'];
+            });
+          }
         }
       } catch (e) {
         print("Error fetching user status: $e");
       }
     }
   }
+
 
   Future<void> _getHomework() async {
     homework = await HomeworkModel().fetchHomework();
@@ -131,25 +137,17 @@ class _MainPageState extends State<Main_Page> {
     teachSchedule = await teacherSchedule.getWeeklyTeacherSchedule();
   }
 
-  Future<void> _loadStudentData() async {
-    await Future.wait([
-
-    ]);
-  }
-
-  Future<void> _loadTeacherData() async {
-    await Future.wait([
-
-    ]);
-  }
-
   Future<void> _loadData() async {
-    await _fetchUserStatus(); // Ensure userStatus is fetched first
-    if (userStatus.isEmpty) {
+    // Fetch user status first
+    await _fetchUserStatus();
+
+    // Check if userStatus is properly set
+    if (userStatus!.isEmpty) {
       print("User status is not set.");
-      return; // Or handle the case where the userStatus is not available
+      return; // Or handle the case where userStatus is not available
     }
 
+    // Based on userStatus, fetch other data
     await Future.wait([
       if (userStatus == 'teacher') ...[
         _getClasses(),
@@ -160,40 +158,35 @@ class _MainPageState extends State<Main_Page> {
       if (userStatus == 'student') ...[
         _getHomework(),
         _getAttendance(),
-        _getClasses(),
-        _getTeacherName(),
-        _getSubjects(),
         _getAttendancePerc(),
         _getGrades(),
         _getAttendanceCount(),
         _getAllGrades(),
         _getEvents(),
-        _getWeeklyTeacherSchedule(),
         _getWeeklySchedule(),
       ],
     ]);
+
+    int totalReads = await Accounting.getTotalOperationCount();
+    print('Total database reads: $totalReads');
+
+    // Update the loading state after data has been fetched
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
-  // Future<void> _loadData() async {
-  //   await _fetchUserStatus(); // Ensure userStatus is set before loading data
-  //
-  //   if (userStatus == 'teacher') {
-  //     await _loadTeacherData();
-  //   } else if (userStatus == 'student') {
-  //     await _loadStudentData();
-  //   }
-  // }
 
 
   @override
   void initState() {
     super.initState();
     _loadData().then((_) {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
