@@ -15,7 +15,7 @@ class UserStatusService {
     DocumentSnapshot userDoc = await userDocRef.get();
 
     // Log the read operation (1 document read)
-    await Accounting.detectAndStoreRead(1);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1);
 
     // Cast the data to Map<String, dynamic> before accessing it
     Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;

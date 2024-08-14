@@ -7,7 +7,7 @@ class FirestoreData {
     DocumentSnapshot snapshot = await doc.get();
 
     // Log the read operation (1 document)
-    await Accounting.detectAndStoreRead(1);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1);
 
     return snapshot;
   }
@@ -20,35 +20,35 @@ class FirestoreData {
         .get();
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(grades.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, grades.docs.length);
 
     return grades.docs;
   }
 
   Future<List<DocumentSnapshot>> getSubstitutions(DocumentReference uid) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot grades = await firestore
+    QuerySnapshot substitutions = await firestore
         .collection('substitutions')
         .where('uid', isEqualTo: uid)
         .get();
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(grades.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, substitutions.docs.length);
 
-    return grades.docs;
+    return substitutions.docs;
   }
 
   Future<List<DocumentSnapshot>> getEvents(DocumentReference uid) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot grades = await firestore
+    QuerySnapshot events = await firestore
         .collection('events')
         .where('uid', isEqualTo: uid)
         .get();
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(grades.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, events.docs.length);
 
-    return grades.docs;
+    return events.docs;
   }
 
   Future<List<DocumentSnapshot>> getGrades(DocumentReference uid) async {
@@ -59,7 +59,7 @@ class FirestoreData {
         .get();
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(grades.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, grades.docs.length);
 
     return grades.docs;
   }
@@ -94,8 +94,7 @@ class FirestoreData {
     sortedDocuments.sort((a, b) => a['lesson'].path.compareTo(b['lesson'].path));
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(lessons.docs.length);
-    print(lessons.docs);
+    Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, lessons.docs.length);
     return sortedDocuments;
   }
 
@@ -131,7 +130,7 @@ class FirestoreData {
     sortedDocuments.sort((a, b) => a['lesson'].path.compareTo(b['lesson'].path));
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(lessons.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, lessons.docs.length);
 
     return sortedDocuments;
   }
@@ -165,7 +164,7 @@ class FirestoreData {
     sortedDocuments.sort((a, b) => a['lesson'].path.compareTo(b['lesson'].path));
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(lessons.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, lessons.docs.length);
 
     return sortedDocuments;
   }
@@ -174,15 +173,15 @@ class FirestoreData {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentReference classRef = firestore.doc(classPath);
 
-    QuerySnapshot grades = await firestore
+    QuerySnapshot homework = await firestore
         .collection('homework')
         .where('class', isEqualTo: classRef)
         .get();
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(grades.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, homework.docs.length);
 
-    return grades.docs;
+    return homework.docs;
   }
 
   Future<List<DocumentSnapshot>> getAttendance(DocumentReference uid) async {
@@ -193,7 +192,7 @@ class FirestoreData {
         .get();
 
     // Log the read operation
-    await Accounting.detectAndStoreRead(attendance.docs.length);
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, attendance.docs.length);
 
     return attendance.docs;
   }

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
+import 'package:scientia/services/grade_creation_service.dart';
 import 'package:scientia/utils/accounting.dart';
+import 'package:scientia/views/grade_creating_page.dart';
 import 'package:scientia/widgets/attendance/attendace.dart';
 import 'package:scientia/widgets/content_column.dart';
 import 'package:scientia/widgets/events/events.dart';
@@ -20,7 +22,6 @@ import '../models/daily_teacher_schedule.dart';
 import '../models/grades_model.dart';
 import '../models/homework_model.dart';
 import '../services/auth_services.dart';
-import '../services/hw_creation_service.dart';
 import '../services/teacher_schedule.dart';
 import 'hw_creating_page.dart';
 
@@ -41,17 +42,19 @@ class _MainPageState extends State<Main_Page> {
   List<Map<String, dynamic>> allGrades = [];
   Map<String, double> absencePercentageMap = {};
 
-  List<DropdownMenuItem<String>> classDropdownItems = [];
-  List<DropdownMenuItem<String>> subjectDropdownItems = [];
+  List<Class> classes = [];
+  List<Subject> subjects = [];
+  List<Student> students = [];
   late String teacherName;
 
   Map<String, int> attendanceCount = {};
   List<DailySchedule> schedule = [];
   List<DailyTeacherSchedule> teachSchedule = [];
 
-  String? userStatus; // Nullable type
+  String userStatus = ''; // Nullable type
 
   bool isLoading = true;
+  bool isDataLoading = true;
 
   Future<void> _fetchUserStatus() async {
     String? userId = AuthService.getCurrentUserId();
@@ -65,7 +68,7 @@ class _MainPageState extends State<Main_Page> {
             .get();
 
         // Log the read operation (1 document read)
-        await Accounting.detectAndStoreRead(1);
+        await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1);
 
         if (userDoc.exists) {
           final data = userDoc.data() as Map<String, dynamic>?;
@@ -86,16 +89,17 @@ class _MainPageState extends State<Main_Page> {
     homework = await HomeworkModel().fetchHomework();
   }
 
-  Future<void> _getClasses() async {
-    classDropdownItems = await HwCreationService().fetchClasses(); // Use ClassSubjectService
+  Future<void> _getSubjects() async {
+    subjects = await GradeCreationService().fetchSubjects();
   }
 
-  Future<void> _getSubjects() async {
-    subjectDropdownItems = await HwCreationService().fetchSubjects();
+  Future<void> _getStudentsAndClasses() async {
+    classes = await GradeCreationService().fetchClasses();
+    students = await GradeCreationService().fetchStudentsForClasses(classes);
   }
 
   Future<void> _getTeacherName() async {
-    teacherName = (await HwCreationService().fetchTeacherName());
+    teacherName = await GradeCreationService().fetchTeacherName();
   }
 
   Future<void> _getAttendancePerc() async {
@@ -142,7 +146,7 @@ class _MainPageState extends State<Main_Page> {
     await _fetchUserStatus();
 
     // Check if userStatus is properly set
-    if (userStatus!.isEmpty) {
+    if (userStatus.isEmpty) {
       print("User status is not set.");
       return; // Or handle the case where userStatus is not available
     }
@@ -150,7 +154,7 @@ class _MainPageState extends State<Main_Page> {
     // Based on userStatus, fetch other data
     await Future.wait([
       if (userStatus == 'teacher') ...[
-        _getClasses(),
+        _getStudentsAndClasses(),
         _getTeacherName(),
         _getSubjects(),
         _getWeeklyTeacherSchedule(),
@@ -167,16 +171,17 @@ class _MainPageState extends State<Main_Page> {
       ],
     ]);
 
-    int totalReads = await Accounting.getTotalOperationCount();
-    print('Total database reads: $totalReads');
+    var counts = await Accounting.getTotalOperationCounts();
+    print('Total database reads: $counts');
 
     // Update the loading state after data has been fetched
     if (mounted) {
       setState(() {
-        isLoading = false;
+        isDataLoading = false;
       });
     }
   }
+
 
 
 
@@ -305,7 +310,18 @@ class _MainPageState extends State<Main_Page> {
                   Navigator.of(context).pop(); // Close the bottom sheet
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HwCreatingPage(classDropdownItems: classDropdownItems, subjectDropdownItems: subjectDropdownItems, teacherName: teacherName,)),
+                    MaterialPageRoute(builder: (context) => HwCreatingPage(classes: classes, subjects: subjects, teacherName: teacherName)),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.border_color_rounded),
+                title: const Text('Give a grade'),
+                onTap: () {
+                  Navigator.of(context).pop(); // Close the bottom sheet
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GradeCreatingPage(students: students, subjects: subjects, teacherName: teacherName)),
                   );
                 },
               ),
@@ -319,11 +335,7 @@ class _MainPageState extends State<Main_Page> {
                 title: const Text('Make an announcement'),
                 onTap: () {},
               ),
-              ListTile(
-                leading: const Icon(Icons.border_color_rounded),
-                title: const Text('Give a grade'),
-                onTap: () {},
-              ),
+
             ],
           );
         });

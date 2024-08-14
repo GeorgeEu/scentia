@@ -13,7 +13,7 @@ class StSnackBar extends SnackBar {
       children: [
         Text(
           message,
-          style: TextStyle(color: Colors.white, height: 1), // Custom text style
+          style: TextStyle(color: Colors.white, height: 1, overflow: TextOverflow.ellipsis), // Custom text style
         ),
       ],
     ),
