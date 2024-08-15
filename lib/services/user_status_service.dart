@@ -5,20 +5,32 @@ import '../services/auth_services.dart';
 class UserStatusService {
   final FirebaseFirestore data = FirebaseFirestore.instance;
 
-  Future<String> getUserStatus() async {
+  Future<String?> getUserStatus() async {
     String? userId = AuthService.getCurrentUserId();
     if (userId == null) {
-      return 'student'; // Default to 'student' if no user is logged in
+      return null; // Return null for not logged in users
     }
 
-    DocumentReference userDocRef = data.collection('users').doc(userId);
-    DocumentSnapshot userDoc = await userDocRef.get();
+    try {
+      DocumentSnapshot userDoc = await data
+          .collection('users')
+          .doc(userId)
+          .collection('account')
+          .doc('permission')
+          .get();
 
-    // Log the read operation (1 document read)
-    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1);
+      // Log the read operation (1 document read)
+      await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1);
 
-    // Cast the data to Map<String, dynamic> before accessing it
-    Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
-    return userData?['status'] ?? 'student'; // Default to 'student' if status is not found
+      if (userDoc.exists) {
+        final data = userDoc.data() as Map<String, dynamic>?;
+        return data?['status'] ?? ''; // Return empty string if status is not found
+      } else {
+        return ''; // Return empty string if the document does not exist
+      }
+    } catch (e) {
+      print("Error fetching user status: $e");
+      return null; // Handle errors by returning null or an empty string
+    }
   }
 }

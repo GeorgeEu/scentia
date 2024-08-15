@@ -31,7 +31,7 @@ class AttendanceCalc {
   }
 
   Future<List<SubjectOccurrence>> getLessonOccurrences() async {
-    String userStatus = await userService.getUserStatus();
+    String? userStatus = await userService.getUserStatus();
     if (userStatus != 'student') {
       return []; // Return an empty list or handle as needed
     }

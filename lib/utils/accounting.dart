@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/auth_services.dart';
 
@@ -11,10 +12,18 @@ class Accounting {
   static final _storage = FlutterSecureStorage();
   static int _readCount = 0;  // Client-side counter for reads
   static int _writeCount = 0;  // Client-side counter for writes
-  static const int _storageThreshold = 500;  // Limit before clearing storage
+
+  static const int readLimit = 150;  // Limit before clearing storage for reads
+  static const int writeLimit = 15;  // Limit before clearing storage for writes
+
+  static bool _isSendingLogs = false;  // Flag to indicate if logs are being sent
 
   // Function to track and store both read and write operations
   static Future<void> detectAndStoreOperation(DatabaseOperation operation, int documentCount) async {
+    if (_isSendingLogs) {
+      return;  // Stop counting if logs are being sent
+    }
+
     if (documentCount <= 0) {
       return;  // Skip logging if no documents were read or written
     }
@@ -38,10 +47,10 @@ class Accounting {
     }
 
     // Retrieve the current stored counts
-    String? storedReadCountStr = await _storage.read(key: 'dbRead_$userId');
+    String? storedReadCountStr = await _storage.read(key: 'dbReads');
     int storedReadCount = storedReadCountStr != null ? int.parse(storedReadCountStr) : 0;
 
-    String? storedWriteCountStr = await _storage.read(key: 'dbWrite_$userId');
+    String? storedWriteCountStr = await _storage.read(key: 'dbWrites');
     int storedWriteCount = storedWriteCountStr != null ? int.parse(storedWriteCountStr) : 0;
 
     // Add the client-side counts to the stored counts
@@ -49,25 +58,63 @@ class Accounting {
     int newStoredWriteCount = storedWriteCount + _writeCount;
 
     // Store the updated counts back in secure storage
-    await _storage.write(key: 'dbRead_$userId', value: newStoredReadCount.toString());
-    await _storage.write(key: 'dbWrite_$userId', value: newStoredWriteCount.toString());
+    await _storage.write(key: 'dbReads', value: newStoredReadCount.toString());
+    await _storage.write(key: 'dbWrites', value: newStoredWriteCount.toString());
 
-    print('User $userId: Saved $_readCount reads and $_writeCount writes to storage. Total reads: $newStoredReadCount, Total writes: $newStoredWriteCount');
-
-    // Reset the client-side counters after saving
     _readCount = 0;
     _writeCount = 0;
 
-    // Check if the total stored counts have reached or exceeded the threshold
-    if (newStoredReadCount >= _storageThreshold || newStoredWriteCount >= _storageThreshold) {
-      await _clearStorage(userId);  // Clear the storage if the threshold is reached
+    // Check if the total stored counts have reached or exceeded the thresholds
+    if (newStoredReadCount >= readLimit || newStoredWriteCount >= writeLimit) {
+      await _prepareAndSendLogs(userId, newStoredReadCount, newStoredWriteCount);
+    }
+  }
+
+  // Prepare logs before sending to Firestore
+  static Future<void> _prepareAndSendLogs(String userId, int reads, int writes) async {
+    if (_isSendingLogs) {
+      return;  // Avoid duplicate log sending
+    }
+
+    _isSendingLogs = true;  // Indicate that logs are being prepared and sent
+
+    // Prepare the log data
+    final logData = {
+      'dbReads': reads,
+      'dbWrites': writes,
+    };
+
+    try {
+      await sendLogs(userId, logData);
+      await _clearStorage(userId);  // Clear the storage after sending logs
+    } catch (error) {
+      print('Error sending logs: $error');
+    } finally {
+      _isSendingLogs = false;  // Reset the flag after logs are sent
+    }
+  }
+
+  // Send the prepared log data to Firestore
+  static Future<void> sendLogs(String userId, Map<String, int> logData) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+    try {
+      await firestore.collection('logs').doc(userId).set({
+        timestamp: logData,
+      }, SetOptions(merge: true)); // Merge with existing data if any
+
+      print('Logs sent to Firestore: { uid: $userId, timestamp: $timestamp, data: $logData }');
+    } catch (e) {
+      print('Failed to send logs to Firestore: $e');
+      throw e;  // Rethrow to handle the error in the calling method
     }
   }
 
   // Clear the stored counts in the secure storage
   static Future<void> _clearStorage(String userId) async {
-    await _storage.delete(key: 'dbRead_$userId');
-    await _storage.delete(key: 'dbWrite_$userId');
+    await _storage.delete(key: 'dbReads');
+    await _storage.delete(key: 'dbWrites');
     print('User $userId: Cleared stored operations after reaching the threshold.');
   }
 
@@ -79,10 +126,10 @@ class Accounting {
       return {'reads': 0, 'writes': 0};
     }
 
-    String? storedReadCountStr = await _storage.read(key: 'dbRead_$userId');
+    String? storedReadCountStr = await _storage.read(key: 'dbReads');
     int storedReadCount = storedReadCountStr != null ? int.parse(storedReadCountStr) : 0;
 
-    String? storedWriteCountStr = await _storage.read(key: 'dbWrite_$userId');
+    String? storedWriteCountStr = await _storage.read(key: 'dbWrites');
     int storedWriteCount = storedWriteCountStr != null ? int.parse(storedWriteCountStr) : 0;
 
     return {

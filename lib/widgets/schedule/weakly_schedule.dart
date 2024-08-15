@@ -8,7 +8,8 @@ import '../st_row.dart';
 
 class WeeklySchedule extends StatefulWidget {
   final List<dynamic> schedule;
-  const WeeklySchedule({super.key, required this.schedule});
+  final String userStatus;
+  const WeeklySchedule({super.key, required this.schedule, required this.userStatus});
 
   @override
   State<WeeklySchedule> createState() => _WeeklyScheduleState();
@@ -46,13 +47,13 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
           stChevronRight: StChevronRight(
             onPressed: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SchedulePage())
+                  MaterialPageRoute(builder: (context) => SchedulePage(userStatus: widget.userStatus))
               );
             },
           ),
           onPress: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => SchedulePage())
+                MaterialPageRoute(builder: (context) => SchedulePage(userStatus: widget.userStatus))
             );
           },
         ),

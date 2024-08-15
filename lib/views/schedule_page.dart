@@ -1,13 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:scientia/models/daily_teacher_schedule.dart';
+import 'package:scientia/services/teacher_schedule.dart';
 import 'package:scientia/widgets/schedule/my_date_picker.dart';
 
 import '../models/daily_schedule.dart';
 import '../services/schedule_service.dart';
+import '../services/user_status_service.dart';
 import '../widgets/schedule/changeable_schedule.dart';
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({super.key});
+  final String userStatus;
+  const SchedulePage({super.key, required this.userStatus});
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -15,7 +19,9 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> with SingleTickerProviderStateMixin {
   late ScheduleService scheduleService;
+  late TeacherSchedule teacherScheduleService;
   late Future<List<DailySchedule>> schedule;
+  late Future<List<DailyTeacherSchedule>> teacherSchedule;
   late TabController _tabController;
   late DateTime selectedDate;
 
@@ -28,9 +34,14 @@ class _SchedulePageState extends State<SchedulePage> with SingleTickerProviderSt
     selectedDate = DateTime.now();
     final Timestamp currTimestamp = Timestamp.fromDate(selectedDate);
 
+
+
     // Initialize the ScheduleService with the current timestamp
     scheduleService = ScheduleService(timestamp: currTimestamp);
     schedule = scheduleService.getWeeklySchedule();
+
+    teacherScheduleService = TeacherSchedule(timestamp: currTimestamp);
+    teacherSchedule = teacherScheduleService.getWeeklyTeacherSchedule();
   }
 
   void _onDateSelected(DateTime date) {
@@ -39,7 +50,9 @@ class _SchedulePageState extends State<SchedulePage> with SingleTickerProviderSt
       final Timestamp newTimestamp = Timestamp.fromDate(date);
       scheduleService = ScheduleService(timestamp: newTimestamp);
       schedule = scheduleService.getWeeklySchedule();
-      // Switch back to the first tab (schedule tab)
+
+      teacherScheduleService = TeacherSchedule(timestamp: newTimestamp);
+      teacherSchedule = teacherScheduleService.getWeeklyTeacherSchedule();
       _tabController.animateTo(0);
     });
   }
@@ -84,7 +97,9 @@ class _SchedulePageState extends State<SchedulePage> with SingleTickerProviderSt
         body: TabBarView(
           controller: _tabController,
           children: [
-            ChangeableSchedule(schedule),
+            ChangeableSchedule(
+              schedule: widget.userStatus == 'teacher' ? teacherSchedule : schedule,
+            ),
             MyDatePicker(onDateSelected: _onDateSelected),
           ],
         ),

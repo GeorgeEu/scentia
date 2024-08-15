@@ -66,7 +66,6 @@ class _MainPageState extends State<Main_Page> {
             .collection('account')
             .doc('permission')
             .get();
-
         // Log the read operation (1 document read)
         await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1);
 
@@ -178,22 +177,27 @@ class _MainPageState extends State<Main_Page> {
     if (mounted) {
       setState(() {
         isDataLoading = false;
+        if (!isDataLoading) {
+          isLoading = true;
+        }
       });
     }
   }
-
-
-
 
   @override
   void initState() {
     super.initState();
     _loadData().then((_) {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          if (!isDataLoading) {
+            isLoading = false;
+          }
+        });
+      }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -233,6 +237,7 @@ class _MainPageState extends State<Main_Page> {
         ),
       ),
       drawer: MyDrawer(
+        userStatus: userStatus,
         attendance: attendance,
         homework: homework,
         grades: grades,
@@ -247,6 +252,7 @@ class _MainPageState extends State<Main_Page> {
           children: [
             WeeklySchedule(
               schedule: userStatus == 'teacher' ? teachSchedule : schedule,
+              userStatus: userStatus,
             ),
             if (userStatus == 'teacher')
               const History()

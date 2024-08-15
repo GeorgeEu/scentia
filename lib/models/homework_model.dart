@@ -11,7 +11,7 @@ class HomeworkModel {
   late String classId;
 
   Future<List<Map<String, dynamic>>> fetchHomework() async {
-    String userStatus = await userService.getUserStatus();
+    String? userStatus = await userService.getUserStatus();
     if (userStatus != 'student') {
       return [];
     }

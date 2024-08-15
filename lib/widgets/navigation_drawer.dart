@@ -18,8 +18,18 @@ class MyDrawer extends StatefulWidget {
   final List<Map<String, dynamic>> allGrades;
   final List<Map<String, dynamic>> attendance;
   final List<Map<String, dynamic>> events;
+  final String userStatus;
   Map<String, double> absencePercentageMap = {};
-  MyDrawer({super.key, required this.grades, required this.allGrades, required this.events, required this.absencePercentageMap, required this.homework, required this.attendance});
+
+  MyDrawer(
+      {super.key,
+      required this.grades,
+      required this.allGrades,
+      required this.events,
+      required this.absencePercentageMap,
+      required this.homework,
+      required this.attendance,
+      required this.userStatus});
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -67,11 +77,14 @@ class _MyDrawerState extends State<MyDrawer> {
                             Text(
                               user.displayName!,
                               style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
                             ),
                             Text(
                               user.email!,
-                              style: const TextStyle(fontSize: 14, color: Colors.white70),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white70),
                             ),
                           ],
                         ),
@@ -85,13 +98,15 @@ class _MyDrawerState extends State<MyDrawer> {
                               builder: (context) => const AuthenticationPage(),
                             ));
                           },
-                          icon: const Icon(Icons.logout_rounded, color: Colors.white,),
+                          icon: const Icon(
+                            Icons.logout_rounded,
+                            color: Colors.white,
+                          ),
                         )
                       ],
                     ),
                   ],
-                )
-            ),
+                )),
           ),
           ListTile(
             leading: const Icon(Icons.school_rounded),
@@ -100,8 +115,8 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const ExamsPage()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const ExamsPage()));
             },
           ),
           ListTile(
@@ -111,8 +126,10 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-               Navigator.of(context).push(
-                   MaterialPageRoute(builder: (context) => AttendancePage(attendance: widget.attendance, absencePercentageMap: widget.absencePercentageMap)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AttendancePage(
+                      attendance: widget.attendance,
+                      absencePercentageMap: widget.absencePercentageMap)));
             },
           ),
           ListTile(
@@ -122,8 +139,8 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SubstitutionsPage()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const SubstitutionsPage()));
             },
           ),
           ListTile(
@@ -133,8 +150,8 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => EventsPage(events: widget.events)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EventsPage(events: widget.events)));
             },
           ),
           ListTile(
@@ -144,8 +161,8 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SettingsPage()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const SettingsPage()));
             },
           ),
           ListTile(
@@ -155,8 +172,8 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SchedulePage()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => SchedulePage(userStatus: widget.userStatus)));
             },
           ),
           ListTile(
@@ -166,8 +183,9 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-               Navigator.of(context).push(
-                   MaterialPageRoute(builder: (context) => HomeworkPage(homework: widget.homework)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      HomeworkPage(homework: widget.homework)));
             },
           ),
           ListTile(
@@ -177,8 +195,9 @@ class _MyDrawerState extends State<MyDrawer> {
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GradesPage(allGrades: widget.allGrades)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      GradesPage(allGrades: widget.allGrades)));
             },
           )
           // Add more ListTiles for other navigation items.

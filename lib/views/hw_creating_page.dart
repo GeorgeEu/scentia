@@ -56,7 +56,7 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
         await homeworkCollection.add(newHomework);
 
         // Log the write operation (1 document)
-        await Accounting.detectAndStoreOperation(DatabaseOperation.dbWrite, 1);
+        await Accounting.detectAndStoreOperation(DatabaseOperation.dbWrite, newHomework.length);
 
         ScaffoldMessenger.of(context)
             .showSnackBar(StSnackBar(message: 'Homework sent successfully'));
