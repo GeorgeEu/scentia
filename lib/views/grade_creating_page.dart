@@ -64,7 +64,7 @@ class _GradeCreatingPageState extends State<GradeCreatingPage> {
         await gradesCollection.add(newGrade);
 
         // Log the write operation (1 document)
-        await Accounting.detectAndStoreOperation(DatabaseOperation.dbWrite, 1);
+        await Accounting.detectAndStoreOperation(DatabaseOperation.dbWrite, newGrade.length);
 
         ScaffoldMessenger.of(context)
             .showSnackBar(StSnackBar(message: 'Graded successfully'));

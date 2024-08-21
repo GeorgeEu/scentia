@@ -5,16 +5,18 @@ import '../services/auth_services.dart';
 enum DatabaseOperation {
   dbRead,
   dbWrite,
-  // Future operations: dbDelete
+  dbDelete
 }
 
 class Accounting {
   static final _storage = FlutterSecureStorage();
   static int _readCount = 0;  // Client-side counter for reads
   static int _writeCount = 0;  // Client-side counter for writes
+  static int _deleteCount = 0;
 
-  static const int readLimit = 150;  // Limit before clearing storage for reads
+  static const int readLimit = 180;  // Limit before clearing storage for reads
   static const int writeLimit = 15;  // Limit before clearing storage for writes
+  static const int deleteLimit = 15;
 
   static bool _isSendingLogs = false;  // Flag to indicate if logs are being sent
 
@@ -32,6 +34,8 @@ class Accounting {
       _readCount += documentCount;
     } else if (operation == DatabaseOperation.dbWrite) {
       _writeCount += documentCount;
+    } else if (operation == DatabaseOperation.dbDelete) {
+      _deleteCount += documentCount;
     }
 
     // Save the updated counts to secure storage
@@ -53,25 +57,30 @@ class Accounting {
     String? storedWriteCountStr = await _storage.read(key: 'dbWrites');
     int storedWriteCount = storedWriteCountStr != null ? int.parse(storedWriteCountStr) : 0;
 
+    String? storedDeleteCountStr = await _storage.read(key: 'dbDelete');
+    int storedDeleteCount = storedDeleteCountStr != null ? int.parse(storedDeleteCountStr) : 0;
+
     // Add the client-side counts to the stored counts
     int newStoredReadCount = storedReadCount + _readCount;
     int newStoredWriteCount = storedWriteCount + _writeCount;
+    int newStoredDeleteCount = storedDeleteCount + _deleteCount;
 
     // Store the updated counts back in secure storage
     await _storage.write(key: 'dbReads', value: newStoredReadCount.toString());
     await _storage.write(key: 'dbWrites', value: newStoredWriteCount.toString());
+    await _storage.write(key: 'dbDelete', value: newStoredDeleteCount.toString());
 
     _readCount = 0;
     _writeCount = 0;
-
+    _deleteCount = 0;
     // Check if the total stored counts have reached or exceeded the thresholds
-    if (newStoredReadCount >= readLimit || newStoredWriteCount >= writeLimit) {
-      await _prepareAndSendLogs(userId, newStoredReadCount, newStoredWriteCount);
+    if (newStoredReadCount >= readLimit || newStoredWriteCount >= writeLimit || newStoredDeleteCount >= deleteLimit) {
+      await _prepareAndSendLogs(userId, newStoredReadCount, newStoredWriteCount, newStoredDeleteCount);
     }
   }
 
   // Prepare logs before sending to Firestore
-  static Future<void> _prepareAndSendLogs(String userId, int reads, int writes) async {
+  static Future<void> _prepareAndSendLogs(String userId, int reads, int writes, int deletes) async {
     if (_isSendingLogs) {
       return;  // Avoid duplicate log sending
     }
@@ -82,6 +91,7 @@ class Accounting {
     final logData = {
       'dbReads': reads,
       'dbWrites': writes,
+      'dbDelete': deletes
     };
 
     try {
@@ -115,6 +125,7 @@ class Accounting {
   static Future<void> _clearStorage(String userId) async {
     await _storage.delete(key: 'dbReads');
     await _storage.delete(key: 'dbWrites');
+    await _storage.delete(key: 'dbDelete');
     print('User $userId: Cleared stored operations after reaching the threshold.');
   }
 

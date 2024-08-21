@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
@@ -22,6 +24,8 @@ import '../models/daily_teacher_schedule.dart';
 import '../models/grades_model.dart';
 import '../models/homework_model.dart';
 import '../services/auth_services.dart';
+import '../services/log_balance_service.dart';
+import '../services/school_service.dart';
 import '../services/teacher_schedule.dart';
 import 'hw_creating_page.dart';
 
@@ -35,12 +39,15 @@ class Main_Page extends StatefulWidget {
 class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  SchoolService schoolService = SchoolService();
+  LogBalanceService logBalanceService = LogBalanceService();
   List<Map<String, dynamic>> homework = [];
   List<Map<String, dynamic>> attendance = [];
   List<Map<String, dynamic>> events = [];
   List<Map<String, dynamic>> grades = [];
   List<Map<String, dynamic>> allGrades = [];
   Map<String, double> absencePercentageMap = {};
+
 
   List<Class> classes = [];
   List<Subject> subjects = [];
@@ -52,6 +59,7 @@ class _MainPageState extends State<Main_Page> {
   List<DailyTeacherSchedule> teachSchedule = [];
 
   String userStatus = ''; // Nullable type
+  String schoolId = '';
 
   bool isLoading = true;
   bool isDataLoading = true;
@@ -71,7 +79,8 @@ class _MainPageState extends State<Main_Page> {
 
         if (userDoc.exists) {
           final data = userDoc.data() as Map<String, dynamic>?;
-          if (mounted) { // Check if the widget is still mounted
+          if (mounted) {
+            // Check if the widget is still mounted
             setState(() {
               userStatus = data?['status'];
             });
@@ -83,9 +92,12 @@ class _MainPageState extends State<Main_Page> {
     }
   }
 
-
   Future<void> _getHomework() async {
     homework = await HomeworkModel().fetchHomework();
+  }
+
+  Future<void> _getSchoolId() async {
+    schoolId = (await schoolService.getCurrentUserSchoolId())!;
   }
 
   Future<void> _getSubjects() async {
@@ -102,7 +114,8 @@ class _MainPageState extends State<Main_Page> {
   }
 
   Future<void> _getAttendancePerc() async {
-    absencePercentageMap = await AttendanceCalc().calculateAbsencePercentagePerSubject();
+    absencePercentageMap =
+        await AttendanceCalc().calculateAbsencePercentagePerSubject();
   }
 
   Future<void> _getAttendance() async {
@@ -124,7 +137,6 @@ class _MainPageState extends State<Main_Page> {
   Future<void> _getAllGrades() async {
     allGrades = await GradesModel().getSubjectGrades();
   }
-
 
   Future<void> _getWeeklySchedule() async {
     final DateTime now = DateTime.now();
@@ -187,13 +199,25 @@ class _MainPageState extends State<Main_Page> {
   @override
   void initState() {
     super.initState();
-    _loadData().then((_) {
-      if (mounted) {
-        setState(() {
-          if (!isDataLoading) {
-            isLoading = false;
+
+    // Fetch the school ID first
+    _getSchoolId().then((_) {
+      if (schoolId.isNotEmpty) {
+        // After fetching the school ID, proceed with calling the process logs function and loading data
+        logBalanceService.callProcessLogsFunction(schoolId);
+        _loadData().then((_) {
+          if (mounted) {
+            setState(() {
+              if (!isDataLoading) {
+                isLoading = false;
+              }
+            });
           }
         });
+      } else {
+        // Handle the case where schoolId is not available or empty
+        print("School ID is not available.");
+        // You can set an error state or handle it according to your app's logic
       }
     });
   }
@@ -204,18 +228,18 @@ class _MainPageState extends State<Main_Page> {
     return Scaffold(
       floatingActionButton: !isLoading && userStatus == 'teacher'
           ? FloatingActionButton(
-        isExtended: true,
-        onPressed: () {
-          _showBottomSheet(context);
-        },
-        backgroundColor: const Color(0xFFB7B7FF),
-        elevation: 0,
-        child: const Icon(
-          Icons.add_rounded,
-          color: Colors.white,
-          size: 30,
-        ),
-      )
+              isExtended: true,
+              onPressed: () {
+                _showBottomSheet(context);
+              },
+              backgroundColor: const Color(0xFFB7B7FF),
+              elevation: 0,
+              child: const Icon(
+                Icons.add_rounded,
+                color: Colors.white,
+                size: 30,
+              ),
+            )
           : null,
       backgroundColor: const Color(0xFFF3F2F8),
       key: _scaffoldKey,
@@ -248,32 +272,32 @@ class _MainPageState extends State<Main_Page> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        child: Column(
-          children: [
-            WeeklySchedule(
-              schedule: userStatus == 'teacher' ? teachSchedule : schedule,
-              userStatus: userStatus,
-            ),
-            if (userStatus == 'teacher')
-              const History()
-            else
-              ContentColumn(
+              child: Column(
                 children: [
-                  RecentGrades(grades: grades, allGrades: allGrades),
-                  RecentHomework(homework: homework),
-                  Events(events: events),
-                  Attendace(
-                      attendance: attendance,
-                      attendanceCount: attendanceCount,
-                      absencePercentageMap: absencePercentageMap),
+                  WeeklySchedule(
+                    schedule:
+                        userStatus == 'teacher' ? teachSchedule : schedule,
+                    userStatus: userStatus,
+                  ),
+                  if (userStatus == 'teacher')
+                    const History()
+                  else
+                    ContentColumn(
+                      children: [
+                        RecentGrades(grades: grades, allGrades: allGrades),
+                        RecentHomework(homework: homework),
+                        Events(events: events),
+                        Attendace(
+                            attendance: attendance,
+                            attendanceCount: attendanceCount,
+                            absencePercentageMap: absencePercentageMap),
+                      ],
+                    ),
                 ],
               ),
-          ],
-        ),
-      ),
+            ),
     );
   }
-
 
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -316,7 +340,11 @@ class _MainPageState extends State<Main_Page> {
                   Navigator.of(context).pop(); // Close the bottom sheet
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HwCreatingPage(classes: classes, subjects: subjects, teacherName: teacherName)),
+                    MaterialPageRoute(
+                        builder: (context) => HwCreatingPage(
+                            classes: classes,
+                            subjects: subjects,
+                            teacherName: teacherName)),
                   );
                 },
               ),
@@ -327,7 +355,11 @@ class _MainPageState extends State<Main_Page> {
                   Navigator.of(context).pop(); // Close the bottom sheet
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => GradeCreatingPage(students: students, subjects: subjects, teacherName: teacherName)),
+                    MaterialPageRoute(
+                        builder: (context) => GradeCreatingPage(
+                            students: students,
+                            subjects: subjects,
+                            teacherName: teacherName)),
                   );
                 },
               ),
@@ -341,7 +373,6 @@ class _MainPageState extends State<Main_Page> {
                 title: const Text('Make an announcement'),
                 onTap: () {},
               ),
-
             ],
           );
         });
