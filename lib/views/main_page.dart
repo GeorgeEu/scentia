@@ -48,7 +48,6 @@ class _MainPageState extends State<Main_Page> {
   List<Map<String, dynamic>> allGrades = [];
   Map<String, double> absencePercentageMap = {};
 
-
   List<Class> classes = [];
   List<Subject> subjects = [];
   List<Student> students = [];
@@ -164,6 +163,7 @@ class _MainPageState extends State<Main_Page> {
 
     // Based on userStatus, fetch other data
     await Future.wait([
+      if (userStatus == 'owner') ...[],
       if (userStatus == 'teacher') ...[
         _getStudentsAndClasses(),
         _getTeacherName(),
@@ -222,7 +222,6 @@ class _MainPageState extends State<Main_Page> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -272,28 +271,54 @@ class _MainPageState extends State<Main_Page> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              child: Column(
-                children: [
-                  WeeklySchedule(
-                    schedule:
-                        userStatus == 'teacher' ? teachSchedule : schedule,
-                    userStatus: userStatus,
-                  ),
-                  if (userStatus == 'teacher')
-                    const History()
-                  else
-                    ContentColumn(
-                      children: [
-                        RecentGrades(grades: grades, allGrades: allGrades),
-                        RecentHomework(homework: homework),
-                        Events(events: events),
-                        Attendace(
+              child: Builder(
+                builder: (context) {
+                  switch (userStatus) {
+                    case 'teacher':
+                      return ContentColumn(
+                        children: [
+                          WeeklySchedule(
+                            schedule: teachSchedule,
+                            userStatus: userStatus,
+                          ),
+                          const History(),
+                          // Add any other teacher-specific widgets here
+                        ],
+                      );
+
+                    case 'student':
+                      return ContentColumn(
+                        children: [
+                          WeeklySchedule(
+                            schedule: schedule,
+                            userStatus: userStatus,
+                          ),
+                          RecentGrades(grades: grades, allGrades: allGrades),
+                          RecentHomework(homework: homework),
+                          Events(events: events),
+                          Attendace(
                             attendance: attendance,
                             attendanceCount: attendanceCount,
-                            absencePercentageMap: absencePercentageMap),
-                      ],
-                    ),
-                ],
+                            absencePercentageMap: absencePercentageMap,
+                          ),
+                          // Add any other student-specific widgets here
+                        ],
+                      );
+
+                    case 'owner':
+                      return ContentColumn(
+                        children: [
+                          // Add owner-specific widgets here, or an empty container if not needed
+                          Container(),
+                        ],
+                      );
+
+                    default:
+                      return const Center(
+                        child: Text('Unknown user status'),
+                      );
+                  }
+                },
               ),
             ),
     );
