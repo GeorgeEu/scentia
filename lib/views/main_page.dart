@@ -24,7 +24,7 @@ import '../models/daily_teacher_schedule.dart';
 import '../models/grades_model.dart';
 import '../models/homework_model.dart';
 import '../services/auth_services.dart';
-import '../services/log_balance_service.dart';
+import '../services/cloud_functions.dart';
 import '../services/school_service.dart';
 import '../services/teacher_schedule.dart';
 import 'hw_creating_page.dart';
@@ -40,7 +40,7 @@ class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   SchoolService schoolService = SchoolService();
-  LogBalanceService logBalanceService = LogBalanceService();
+  CloudFunctions cloudFunctions = CloudFunctions();
   List<Map<String, dynamic>> homework = [];
   List<Map<String, dynamic>> attendance = [];
   List<Map<String, dynamic>> events = [];
@@ -204,7 +204,7 @@ class _MainPageState extends State<Main_Page> {
     _getSchoolId().then((_) {
       if (schoolId.isNotEmpty) {
         // After fetching the school ID, proceed with calling the process logs function and loading data
-        logBalanceService.callProcessLogsFunction(schoolId);
+        cloudFunctions.getLogs(schoolId);
         _loadData().then((_) {
           if (mounted) {
             setState(() {
