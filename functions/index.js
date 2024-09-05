@@ -13,5 +13,5 @@ exports.getLogs = functions.https.onRequest(getLogs);
 
 // Schedule the getWeeklyWork function to run every week
 exports.getWeeklyWork = functions.pubsub
-    .schedule("every 24 hours")
+    .schedule("every 2 minutes")
     .onRun(getWeeklyWork);
