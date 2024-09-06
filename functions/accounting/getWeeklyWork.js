@@ -3,68 +3,72 @@ const admin = require("firebase-admin");
 const getWeeklyWork = async (context) => {
   try {
     const db = admin.firestore();
-    const collections = await db.listCollections();
-    let totalSizeInBytes = 0;
 
-    for (const collection of collections) {
-      let collectionSizeInBytes = 0;
-      const snapshot = await collection.get();
+    // Define the stored data and pricing
+    const storedDataInMB = 0.13; // Predefined stored amount in MB
+    const costPerMB = 0.00036; // Pricing per MB in dollars
 
-      for (const doc of snapshot.docs) {
-        const data = doc.data();
-        let docSizeInBytes = 0;
+    // Calculate the total storage cost
+    const storageCost = storedDataInMB * costPerMB;
+    console.log(`Stored data: ${storedDataInMB} MB`);
+    console.log(`Storage cost: $${storageCost}`);
 
-        // Document metadata (Firestore uses around 32 bytes of metadata per document)
-        const docIdSize = Buffer.byteLength(doc.id, "utf8");
-        const metadataSize = 32; // Overhead for metadata (creation time, update time, etc.)
-        docSizeInBytes += docIdSize + metadataSize;
+    let lastDoc = null; // Keep track of the last document for pagination
+    const batchSize = 500; // Number of documents to fetch in each iteration
+    let processedUsers = 0;
 
-        for (const [key, value] of Object.entries(data)) {
-          const keySize = Buffer.byteLength(key, "utf8");
-          let valueSize = 0;
+    do {
+      // Fetch a batch of users (documents)
+      let query = db.collection("scentia").orderBy("__name__").limit(batchSize);
+      if (lastDoc) {
+        query = query.startAfter(lastDoc);
+      }
+      const snapshot = await query.get();
 
-          switch (typeof value) {
-            case "string":
-              valueSize = Buffer.byteLength(value, "utf8");
-              break;
-            case "number":
-              valueSize = Buffer.byteLength(value.toString(), "utf8");
-              break;
-            case "boolean":
-              valueSize = Buffer.byteLength(value.toString(), "utf8");
-              break;
-            case "object":
-              if (value instanceof admin.firestore.Timestamp) {
-                valueSize = 8;
-              } else if (Array.isArray(value)) {
-                valueSize = Buffer.byteLength(JSON.stringify(value), "utf8");
-              } else if (value !== null) {
-                valueSize = Buffer.byteLength(JSON.stringify(value), "utf8");
-              }
-              break;
-            default:
-              console.warn(`Unhandled data type for key "${key}": ${typeof value}`);
-          }
-
-          docSizeInBytes += keySize + valueSize;
-        }
-
-        collectionSizeInBytes += docSizeInBytes;
+      if (snapshot.size === 0) {
+        break;
       }
 
-      const collectionSizeInMB = collectionSizeInBytes / (1024 * 1024);
-      totalSizeInBytes += collectionSizeInBytes;
+      processedUsers += snapshot.size;
 
-      // Log the full collection size without rounding
-      console.log(`Collection ${collection.id} size: ${collectionSizeInMB} MB`);
-    }
+      // Iterate over each user document
+      for (const doc of snapshot.docs) {
+        const userId = doc.id;
+        const currentBalance = doc.data().balance || 0;
+        const costPerUser = storageCost / snapshot.size; // Divide the cost evenly among users
 
-    const totalSizeInMB = totalSizeInBytes / (1024 * 1024);
-    console.log(`Total Firestore size: ${totalSizeInMB} MB`);
+        // Perform a transaction for each user to update the balance
+        await db.runTransaction(async (transaction) => {
+          const userDocRef = db.collection("scentia").doc(userId);
+
+          // Get the current balance inside the transaction to ensure consistency
+          const userDoc = await transaction.get(userDocRef);
+          if (!userDoc.exists) {
+            console.log(`User with ID ${userId} does not exist.`);
+            return;
+          }
+
+          const currentBalanceInTransaction = currentBalance;
+          const newBalance = currentBalanceInTransaction - costPerUser;
+
+          // Update the balance in the transaction
+          transaction.update(userDocRef, {balance: newBalance});
+        });
+
+        console.log(`Updated balance for user ID: ${userId}`);
+      }
+
+      // Set the last document (for pagination)
+      lastDoc = snapshot.docs[snapshot.docs.length - 1];
+
+      console.log(`Processed ${processedUsers} users so far...`);
+    } while (lastDoc); // Continue paginating until all users are processed
+
+    console.log(`Successfully updated balances for ${processedUsers} users.`);
 
     return null;
   } catch (error) {
-    console.error("Error calculating Firestore size:", error);
+    console.error("Error processing balances:", error);
   }
 };
 
