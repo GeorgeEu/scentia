@@ -28,7 +28,7 @@ class _FullEventsState extends State<FullEvents> {
               showEventBottomSheet(
                 context,
                 event['name'],
-                event['address'],
+                event['organizer'],
                 event['desc'],
                 event['imageUrl'],
                 event['date'],
@@ -80,7 +80,7 @@ class _FullEventsState extends State<FullEvents> {
                             ),
                           ),
                           Text(
-                            event['address'],
+                            event['organizer'],
                             style: TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: 16,
@@ -109,7 +109,7 @@ class _FullEventsState extends State<FullEvents> {
     );
   }
 
-  void showEventBottomSheet(BuildContext context, String name, String address, String desc, String imageUrl, String formattedDate) {
+  void showEventBottomSheet(BuildContext context, String name, String organizer, String desc, String imageUrl, String formattedDate) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -182,7 +182,7 @@ class _FullEventsState extends State<FullEvents> {
                   Padding(
                     padding: const EdgeInsets.only(left: 16, bottom: 8),
                     child: Text(
-                      address,
+                      organizer,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 18,

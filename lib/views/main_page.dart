@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
 import 'package:scientia/services/grade_creation_service.dart';
+import 'package:scientia/services/history_service.dart';
 import 'package:scientia/utils/accounting.dart';
 import 'package:scientia/views/grade_creating_page.dart';
 import 'package:scientia/widgets/attendance/attendace.dart';
@@ -27,6 +28,7 @@ import '../services/auth_services.dart';
 import '../services/cloud_functions.dart';
 import '../services/school_service.dart';
 import '../services/teacher_schedule.dart';
+import 'event_creating_page.dart';
 import 'hw_creating_page.dart';
 
 class Main_Page extends StatefulWidget {
@@ -46,6 +48,7 @@ class _MainPageState extends State<Main_Page> {
   List<Map<String, dynamic>> events = [];
   List<Map<String, dynamic>> grades = [];
   List<Map<String, dynamic>> allGrades = [];
+  List<Map<String, dynamic>> history = [];
   Map<String, double> absencePercentageMap = {};
 
   List<Class> classes = [];
@@ -93,6 +96,10 @@ class _MainPageState extends State<Main_Page> {
 
   Future<void> _getHomework() async {
     homework = await HomeworkModel().fetchHomework();
+  }
+
+  Future<void> _getHistory() async {
+    history = await HistoryService().getCombinedHistory(teacherName);
   }
 
   Future<void> _getSchoolId() async {
@@ -154,6 +161,7 @@ class _MainPageState extends State<Main_Page> {
   Future<void> _loadData() async {
     // Fetch user status first
     await _fetchUserStatus();
+    await _getTeacherName();
 
     // Check if userStatus is properly set
     if (userStatus.isEmpty) {
@@ -166,7 +174,7 @@ class _MainPageState extends State<Main_Page> {
       if (userStatus == 'owner') ...[],
       if (userStatus == 'teacher') ...[
         _getStudentsAndClasses(),
-        _getTeacherName(),
+        _getHistory(),
         _getSubjects(),
         _getWeeklyTeacherSchedule(),
       ],
@@ -281,7 +289,7 @@ class _MainPageState extends State<Main_Page> {
                             schedule: teachSchedule,
                             userStatus: userStatus,
                           ),
-                          const History(),
+                          History(history: history, classes: classes,),
                           // Add any other teacher-specific widgets here
                         ],
                       );
@@ -390,8 +398,16 @@ class _MainPageState extends State<Main_Page> {
               ),
               ListTile(
                 leading: const Icon(Icons.mail_rounded),
-                title: const Text('Send a message'),
-                onTap: () {},
+                title: const Text('Create the event'),
+                onTap: () {
+                  Navigator.of(context).pop(); // Close the bottom sheet
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EventCreatingPage(
+                            classes: classes, teacherName: teacherName)),
+                  );
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.announcement_rounded),

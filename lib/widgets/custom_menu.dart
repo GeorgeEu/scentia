@@ -9,6 +9,7 @@ class CustomDropdownMenu<T> extends StatelessWidget {
   final T? selectedItem;
   final double horizontalPadding;
   final TextEditingController controller;
+  final double widthWidget;
 
   CustomDropdownMenu({
     required this.title,
@@ -17,13 +18,14 @@ class CustomDropdownMenu<T> extends StatelessWidget {
     required this.itemTitleBuilder,
     required this.onSelected,
     this.selectedItem,
-    this.horizontalPadding = 16.0,
+    required this.horizontalPadding,
+    required this.widthWidget,
     required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width - (2 * horizontalPadding);
+    double width = widthWidget - (2 * horizontalPadding);
 
     return DropdownMenu<T>(
       width: width,

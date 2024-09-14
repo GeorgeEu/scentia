@@ -20,7 +20,7 @@ class StRow extends StatelessWidget {
         onTap: onPress,
         child: Container(
           padding: EdgeInsets.only(left: 16),
-          height: 48,
+          height: 52,
           child: Row(
             children: [
               stHeader,

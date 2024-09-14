@@ -4,7 +4,7 @@ import 'package:scientia/widgets/st_row.dart';
 import '../../views/events_page.dart';
 import '../st_chevron_right.dart';
 import '../st_header.dart';
-import 'package:flutter_svg/flutter_svg.dart';  // Ensure you have the flutter_svg package included in your pubspec.yaml file
+import 'package:flutter_svg/flutter_svg.dart'; // Ensure you have the flutter_svg package included in your pubspec.yaml file
 
 class Events extends StatefulWidget {
   final List<Map<String, dynamic>> events;
@@ -24,15 +24,13 @@ class _EventsState extends State<Events> {
           stHeader: StHeader(text: 'Events'),
           stChevronRight: StChevronRight(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => EventsPage(events: widget.events))
-              );
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EventsPage(events: widget.events)));
             },
           ),
           onPress: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EventsPage(events: widget.events))
-            );
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => EventsPage(events: widget.events)));
           },
         ),
         Padding(
@@ -44,110 +42,121 @@ class _EventsState extends State<Events> {
             ),
             child: widget.events.isNotEmpty
                 ? ListView.separated(
-              primary: false,
-              shrinkWrap: true,
-              itemCount: widget.events.length > 3 ? 3 : widget.events.length,
-              itemBuilder: (context, index) {
-                final event = widget.events[index];
-                return InkWell(
-                  onTap: () {
-                    showEventBottomSheet(
-                        context,
-                        event['name'],
-                        event['address'],
-                        event['desc'],
-                        event['imageUrl'],
-                        event['date']);
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: index == 0 ? 16.0 : 0.0, // Add padding only for the first item
-                      bottom: index == (widget.events.length > 3 ? 2 : widget.events.length - 1) ? 16.0 : 0.0, // Add padding only for the last item
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            width: 80,
-                            height: 80,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                event['imageUrl'],
-                                // Use the image URL from Firestore
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Text('Image not available'); // Error text if image fails to load
-                                },
-                              ),
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount:
+                        widget.events.length > 3 ? 3 : widget.events.length,
+                    itemBuilder: (context, index) {
+                      final event = widget.events[index];
+                      return InkWell(
+                        onTap: () {
+                          showEventBottomSheet(
+                              context,
+                              event['name'],
+                              event['desc'],
+                              event['imageUrl'],
+                              event['organizer'],
+                              event['date']);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: index == 0 ? 16.0 : 0.0,
+                            // Add padding only for the first item
+                            bottom: index ==
+                                    (widget.events.length > 3
+                                        ? 2
+                                        : widget.events.length - 1)
+                                ? 16.0
+                                : 0.0, // Add padding only for the last item
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  width: 80,
+                                  height: 80,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      event['imageUrl'],
+                                      // Use the image URL from Firestore
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Text(
+                                            'Image not available'); // Error text if image fails to load
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.only(left: 16),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          event['date'],
+                                          style: const TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.grey,
+                                              fontSize: 15),
+                                        ),
+                                        Text(
+                                          event['name'],
+                                          style: const TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18),
+                                        ),
+                                        Text(
+                                          event['organizer'],
+                                          style: const TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 16),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    event['date'],
-                                    style: const TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.grey,
-                                        fontSize: 15),
-                                  ),
-                                  Text(
-                                    event['name'],
-                                    style: const TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18),
-                                  ),
-                                  Text(
-                                    event['address'],
-                                    style: const TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Divider(
+                        thickness: 0.5,
+                        indent: 113,
+                      ); // Your separator widget
+                    },
+                  )
+                : SizedBox(
+                    height: 186,
+                    width: double.infinity,
+                    child: EmptyStateWidget(
+                      path: 'assets/platopys.png',
+                      size: 130,
+                      message: 'There are no events yet',
                     ),
                   ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const Divider(
-                  thickness: 0.5,
-                  indent: 113,
-                ); // Your separator widget
-              },
-            )
-                : SizedBox(
-              height: 186,
-              width: double.infinity,
-              child: EmptyStateWidget(
-                path: 'assets/platopys.png',
-                size: 130,
-                message: 'There are no events yet',
-              ),
-            ),
           ),
         ),
       ],
     );
   }
 
-  void showEventBottomSheet(BuildContext context, String name, String address,
-      String desc, String imageUrl, String formattedDate) {
+  void showEventBottomSheet(BuildContext context, String name,
+      String desc, String imageUrl, String organizer, String formattedDate) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -157,9 +166,11 @@ class _EventsState extends State<Events> {
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
           expand: false,
-          initialChildSize: 0.68,  // Adjust as needed
+          initialChildSize: 0.68,
+          // Adjust as needed
           minChildSize: 0.3,
-          maxChildSize: 0.9,  // Adjust as needed
+          maxChildSize: 0.9,
+          // Adjust as needed
           builder: (BuildContext context, ScrollController scrollController) {
             return SingleChildScrollView(
               controller: scrollController,
@@ -172,7 +183,7 @@ class _EventsState extends State<Events> {
                       padding: const EdgeInsets.only(top: 15.0, bottom: 20),
                       child: SvgPicture.asset(
                         'assets/drag-handle.svg', // Path to your SVG file
-                        width: 40,  // Adjust the size as needed
+                        width: 40, // Adjust the size as needed
                         height: 4,
                       ),
                     ),
@@ -181,14 +192,16 @@ class _EventsState extends State<Events> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
                       child: AspectRatio(
-                        aspectRatio: 16 / 10,  // or the aspect ratio of your image
+                        aspectRatio: 16 / 10,
+                        // or the aspect ratio of your image
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: Image.network(
                             imageUrl,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
-                              return Text('Image not available'); // Error text if image fails to load
+                              return Text(
+                                  'Image not available'); // Error text if image fails to load
                             },
                           ),
                         ),
@@ -211,25 +224,22 @@ class _EventsState extends State<Events> {
                     child: Text(
                       name,
                       style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 24),
+                          fontWeight: FontWeight.w600, fontSize: 24),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16, bottom: 8),
                     child: Text(
-                      address,
+                      organizer,
                       style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18),
+                          fontWeight: FontWeight.w500, fontSize: 18),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16, bottom: 8),
                     child: Text(
                       desc,
-                      style: const TextStyle(
-                          fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                 ],

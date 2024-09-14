@@ -38,11 +38,12 @@ class FirestoreData {
     return substitutions.docs;
   }
 
-  Future<List<DocumentSnapshot>> getEvents(DocumentReference uid) async {
+  Future<List<DocumentSnapshot>> getEvents(String classPath) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference classRef = firestore.doc(classPath);
     QuerySnapshot events = await firestore
         .collection('events')
-        .where('uid', isEqualTo: uid)
+        .where('class', isEqualTo: classRef)
         .get();
 
     // Log the read operation
@@ -195,5 +196,45 @@ class FirestoreData {
     await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, attendance.docs.length);
 
     return attendance.docs;
+  }
+
+  Future<List<DocumentSnapshot>> getHistoryEvents(String currentTeach) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot historyEvents = await firestore
+        .collection('events')
+        .where('organizer', isEqualTo: currentTeach)
+        .get();
+
+    // Log the read operation
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, historyEvents.docs.length);
+
+    return historyEvents.docs;
+  }
+
+  Future<List<DocumentSnapshot>> getHistoryHomework(String currentTeach) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot historyHomework = await firestore
+        .collection('homework')
+        .where('teacher', isEqualTo: currentTeach)
+        .get();
+
+    // Log the read operation
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, historyHomework.docs.length);
+
+    return historyHomework.docs;
+  }
+
+  Future<List<DocumentSnapshot>> getHistoryGrades(String currentTeach) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot historyGrades = await firestore
+        .collection('grades')
+        .where('teacher', isEqualTo: currentTeach)
+        .get();
+
+    // Log the read operation
+    await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, historyGrades.docs.length);
+
+    return historyGrades.docs;
   }
 }

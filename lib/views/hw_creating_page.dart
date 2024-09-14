@@ -50,6 +50,7 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
         'subject': FirebaseFirestore.instance.doc(_selectedSubject!),
         'task': _taskController.text,
         'teacher': _teacherName,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
       };
 
       try {
@@ -106,6 +107,8 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32, top: 24),
                         child: CustomDropdownMenu<Class>(
+                          widthWidget: MediaQuery.of(context).size.width,
+                          horizontalPadding: 16,
                           label: const Text('Class'),
                           title: 'Select Class',
                           controller: _classController,
@@ -119,7 +122,9 @@ class _HwCreatingPageState extends State<HwCreatingPage> {
                         ),
                       ),
                       CustomDropdownMenu<Subject>(
+                        widthWidget: MediaQuery.of(context).size.width,
                         controller: _subjectController,
+                        horizontalPadding: 16,
                         label: Text('Subject'),
                         title: 'Select Subject',
                         items: widget.subjects,
