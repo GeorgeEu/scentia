@@ -250,7 +250,7 @@ class _MainPageState extends State<Main_Page> {
           : null,
       backgroundColor: const Color(0xFFF3F2F8),
       key: _scaffoldKey,
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFA4A4FF),
@@ -289,7 +289,7 @@ class _MainPageState extends State<Main_Page> {
                             schedule: teachSchedule,
                             userStatus: userStatus,
                           ),
-                          History(history: history, classes: classes,),
+                          History(history: history, classes: classes, subjects: subjects),
                           // Add any other teacher-specific widgets here
                         ],
                       );

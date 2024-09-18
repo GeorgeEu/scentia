@@ -8,14 +8,16 @@ import 'package:scientia/widgets/st_dialog.dart';
 import 'package:scientia/widgets/st_header.dart';
 import 'package:scientia/widgets/st_row.dart';
 import 'package:scientia/widgets/empty_state_widget.dart';
-
 import '../services/grade_creation_service.dart';
 
 class History extends StatelessWidget {
   final List<Map<String, dynamic>> history;
   final List<Class> classes;
+  final List<Subject> subjects;
 
-  const History({super.key, required this.history, required this.classes});
+  const History({super.key, required this.history,
+  required this.classes,
+  required this.subjects});
 
   @override
   Widget build(BuildContext context) {
@@ -182,31 +184,38 @@ class History extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.more_horiz_outlined, size: 24, color: Colors.black,), // Edit button icon
+                                    icon: Icon(Icons.more_horiz_outlined, size: 24, color: Colors.black), // Edit button icon
                                     padding: EdgeInsets.zero, // Zero padding
                                     onPressed: () async {
                                       List<Class> classList = classes;
-                                      // Initialize the controllers with the current event data
+
+                                      DateTime currentDate = (item['date'] as Timestamp).toDate(); // Get the current date
                                       TextEditingController nameController = TextEditingController(text: item['name']);
                                       String selectedClassName = item['class'];
+                                      String? currentImageUrl = item['imageUrl'];
                                       TextEditingController descController = TextEditingController(text: item['desc']);
 
                                       // Show the update dialog
                                       StDialog.showEventUpdateDialog(
                                         context,
-                                        nameController: nameController, // Pass the initialized controller
-                                        classList: classList,
+                                        nameController: nameController,
                                         descController: descController,
-                                        selectedClassName: selectedClassName,
-                                        onSave: (String selectedClassId) async {
-                                          final updateService = UpdateServices(); // Ensure you have the correct service
+                                        currentDate: currentDate, // Pass the current date
+                                        classList: classList, // Pass the list of classes
+                                        selectedClassName: selectedClassName, // Pass the currently selected class name
+                                        currentImageUrl: currentImageUrl, // Pass the current image URL
+                                        onSave: (String selectedClassId, String? imageUrl, DateTime? updatedDate) async {
+                                          final updateService = UpdateServices();
+
                                           try {
-                                            // Use the values from the controllers to update Firestore
+                                            // Convert updatedDate or currentDate to Timestamp before saving
                                             await updateService.updateEvent(
                                               item['id'], // Document ID for the event
-                                              nameController.text, // Updated name from the controller
-                                              selectedClassId, // Updated class from the controller
-                                              descController.text, // Updated description from the controller
+                                              nameController.text, // Updated name
+                                              selectedClassId, // Updated class ID
+                                              descController.text, // Updated description
+                                              imageUrl, // Use the new image URL if available, or the current one
+                                              Timestamp.fromDate(updatedDate ?? currentDate), // Convert DateTime to Timestamp
                                             );
                                             print('Event updated successfully');
                                           } catch (e) {
@@ -215,7 +224,10 @@ class History extends StatelessWidget {
                                         },
                                       );
                                     },
-                                  ),
+                                  )
+
+
+                                  ,
                                 ],
                               ),
                             ],
@@ -328,6 +340,7 @@ class History extends StatelessWidget {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Homework Icon (similar to event image)
                               Padding(
                                 padding: const EdgeInsets.only(right: 14),
                                 child: Container(
@@ -349,41 +362,29 @@ class History extends StatelessWidget {
                                   ),
                                 ),
                               ),
+
+                              // Homework Details
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 6),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                item['subject'] ?? 'No subject',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    height: 1),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              item['subject'] ?? 'No subject',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                height: 1,
                                               ),
+                                              overflow: TextOverflow.ellipsis, // Prevent overflow
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 16, right: 14),
-                                              child: Text(
-                                                DateFormat('MMM d').format(date),
-                                                // Format the date
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                    height: 1),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Padding(
@@ -393,29 +394,44 @@ class History extends StatelessWidget {
                                           children: [
                                             TextSpan(
                                               text: 'To: ',
-                                              style: TextStyle(fontSize: 14, height: 1, color: Colors.grey), // Style for "To"
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                height: 1,
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                             TextSpan(
-                                              text: item['class'], // Class value in normal color
-                                              style: TextStyle(fontSize: 14, height: 1, color: Colors.black), // Normal color
+                                              text: item['class'] ?? 'No class',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                height: 1,
+                                                color: Colors.black,
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
                                     ),
-
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 6),
                                       child: RichText(
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: 'Created: ', // "Created" in grey
-                                              style: TextStyle(fontSize: 14, height: 1, color: Colors.grey),
+                                              text: 'Created: ',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                height: 1,
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                             TextSpan(
-                                              text: DateFormat('MMM d, yyyy').format(createdAt), // Rest of the text in normal color
-                                              style: TextStyle(fontSize: 14, height: 1, color: Colors.black),
+                                              text: DateFormat('MMM d, yyyy').format(createdAt),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                height: 1,
+                                                color: Colors.black,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -424,15 +440,74 @@ class History extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.only(right: 14),
                                       child: Text(
-                                        item['task'],
-                                        style:
-                                            TextStyle(fontSize: 14, height: 1.1),
-                                        maxLines: 1, // Limit to 1 line
+                                        item['task'] ?? 'No task',
+                                        style: TextStyle(fontSize: 14, height: 1.1),
+                                        maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ],
                                 ),
+                              ),
+
+                              // Column with date and icon button (similar to event structure)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 14, left: 14, top: 4, bottom: 10),
+                                    child: Text(
+                                      DateFormat('MMM d').format(date),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        height: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.more_horiz_outlined, size: 24, color: Colors.black),
+                                    padding: EdgeInsets.zero, // Zero padding
+                                    onPressed: () async {
+                                      List<Class> classList = classes;
+                                      List<Subject> subjectList = subjects;
+
+                                      DateTime currentDate = (item['date'] as Timestamp).toDate(); // Get the current date
+                                      TextEditingController taskController = TextEditingController(text: item['task']);
+                                      String selectedClassName = item['class'];
+                                      String selectedSubjectName = item['subject'];
+
+                                      // Show the update dialog for homework
+                                      StDialog.showHomeworkUpdateDialog(
+                                        context,
+                                        taskController: taskController,
+                                        currentDate: currentDate, // Pass the current date
+                                        classList: classList, // Pass the list of classes
+                                        subjectList: subjectList, // Pass the list of subjects
+                                        selectedClassName: selectedClassName, // Pass the currently selected class name
+                                        selectedSubjectName: selectedSubjectName, // Pass the currently selected subject name
+                                        onHwSave: (String selectedClassId, String selectedSubjectId, DateTime? updatedDate) async {
+                                          final updateService = UpdateServices();
+
+                                          try {
+                                            // Convert updatedDate or currentDate to Timestamp before saving
+                                            await updateService.updateHomework(
+                                                item['id'], // Document ID for the homework
+                                                selectedSubjectId,
+                                                selectedClassId,
+                                                taskController.text,
+                                                Timestamp.fromDate(updatedDate ?? currentDate) // Date
+                                            );
+
+                                            print('Homework updated successfully');
+                                          } catch (e) {
+                                            print('Error updating homework: $e');
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           );

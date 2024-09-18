@@ -8,8 +8,8 @@ class HistoryService {
   // Fetch and prepare homework data
   Future<List<Map<String, dynamic>>> getHomeworkHistory(String teacherName) async {
     List<DocumentSnapshot> homeworkDocs = await data.getHistoryHomework(teacherName);
-    List<Future<Map<String, dynamic>>> homeworkFutures = homeworkDocs.map((task) async {
-      var homeworkData = task.data() as Map<String, dynamic>;
+    List<Future<Map<String, dynamic>>> homeworkFutures = homeworkDocs.map((homework) async {
+      var homeworkData = homework.data() as Map<String, dynamic>;
 
       DocumentSnapshot subjectDoc = await data.getDoc(homeworkData['subject']);
       DocumentSnapshot classDoc = await data.getDoc(homeworkData['class']);
@@ -17,6 +17,7 @@ class HistoryService {
       String subjectName = subjectDoc['name'];
 
       return {
+        'id': homework.id,
         'type': 'homework',
         'task': homeworkData['task'],
         'subject': subjectName,

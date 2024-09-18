@@ -34,7 +34,22 @@ class CloudStorage {
     return null;
   }
 
-  // Upload resized image to Firebase Storage
+  // Check if the file already exists in Firebase Storage
+  Future<bool> _fileExists(String filePath) async {
+    try {
+      // Try to get the metadata of the file
+      await _storage.ref().child(filePath).getMetadata();
+      return true; // File exists
+    } catch (e) {
+      if (e is FirebaseException && e.code == 'object-not-found') {
+        return false; // File does not exist
+      }
+      print('Error checking if file exists: $e');
+      return false; // Default to false on error
+    }
+  }
+
+  // Upload resized image to Firebase Storage only if it doesn't already exist
   Future<String?> uploadResizedImage(File image, double resizePercentage) async {
     try {
       // Resize the image by the specified percentage
@@ -53,9 +68,17 @@ class CloudStorage {
 
       // Create a unique file name for the image
       final String fileName = path.basename(image.path);  // Use the same name as the original image
-      final Reference storageRef = _storage.ref().child('$schoolId/$fileName');
+      final String filePath = '$schoolId/$fileName';
+
+      // Check if the file already exists
+      bool exists = await _fileExists(filePath);
+      if (exists) {
+        print("Image already exists in Firebase Storage.");
+        return _storage.ref().child(filePath).getDownloadURL(); // Return the existing file's URL
+      }
 
       // Upload the resized image to Firebase Storage
+      final Reference storageRef = _storage.ref().child(filePath);
       UploadTask uploadTask = storageRef.putData(resizedImageBytes);
 
       // Wait for the upload to complete and get the download URL
