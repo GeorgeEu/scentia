@@ -14,9 +14,11 @@ class History extends StatelessWidget {
   final List<Map<String, dynamic>> history;
   final List<Class> classes;
   final List<Subject> subjects;
+  final List<Student> students;
 
   const History({super.key, required this.history,
   required this.classes,
+  required this.students,
   required this.subjects});
 
   @override
@@ -236,6 +238,7 @@ class History extends StatelessWidget {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Grade Display Box
                               Padding(
                                 padding: const EdgeInsets.only(right: 14),
                                 child: Container(
@@ -248,8 +251,7 @@ class History extends StatelessWidget {
                                   child: Center(
                                     // Display the grade inside the container
                                     child: Text(
-                                      item['grade']
-                                          .toString(), // Display the grade
+                                      item['grade'].toString(), // Display the grade
                                       style: TextStyle(
                                         fontSize: 24,
                                         color: Colors.white,
@@ -259,41 +261,29 @@ class History extends StatelessWidget {
                                   ),
                                 ),
                               ),
+
+                              // Grade Details Column
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 6),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                item['subject'] ?? 'No subject',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    height: 1),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              item['subject'] ?? 'No subject',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                height: 1,
                                               ),
+                                              overflow: TextOverflow.ellipsis, // Prevent overflow
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 14, right: 14),
-                                              child: Text(
-                                                DateFormat('MMM d').format(date),
-                                                // Format the date
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey,
-                                                    height: 1),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Padding(
@@ -306,14 +296,13 @@ class History extends StatelessWidget {
                                               style: TextStyle(fontSize: 14, height: 1, color: Colors.grey), // Style for "To"
                                             ),
                                             TextSpan(
-                                              text: item['user'], // Class value in normal color
-                                              style: TextStyle(fontSize: 14, height: 1, color: Colors.black), // Normal color
+                                              text: item['user'] ?? 'No user', // User value
+                                              style: TextStyle(fontSize: 14, height: 1, color: Colors.black),
                                             ),
                                           ],
                                         ),
                                       ),
                                     ),
-
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 6),
                                       child: RichText(
@@ -324,7 +313,7 @@ class History extends StatelessWidget {
                                               style: TextStyle(fontSize: 14, height: 1, color: Colors.grey),
                                             ),
                                             TextSpan(
-                                              text: DateFormat('MMM d, yyyy').format(createdAt), // Rest of the text in normal color
+                                              text: DateFormat('MMM d, yyyy').format(createdAt), // Format the createdAt date
                                               style: TextStyle(fontSize: 14, height: 1, color: Colors.black),
                                             ),
                                           ],
@@ -333,6 +322,67 @@ class History extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                              ),
+
+                              // Column for date and icon button
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 14, left: 14, top: 4, bottom: 10),
+                                    child: Text(
+                                      DateFormat('MMM d').format(date),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        height: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.more_horiz_outlined, size: 24, color: Colors.black),
+                                    padding: EdgeInsets.zero, // Zero padding
+                                    onPressed: () async {
+                                      List<Student> studentList = students; // Assuming students is the list of users
+                                      List<Subject> subjectList = subjects; // Assuming subjects is the list of subjects
+
+                                      DateTime currentDate = (item['date'] as Timestamp).toDate(); // Get the current date
+                                      TextEditingController gradeController = TextEditingController(text: item['grade'].toString());
+                                      String selectedStudentName = item['user']; // Fetch the user
+                                      String selectedSubjectName = item['subject']; // Fetch the subject
+
+                                      // Show the update dialog for grade
+                                      StDialog.showGradeUpdateDialog(
+                                        context,
+                                        gradeController: gradeController,
+                                        currentDate: currentDate, // Pass the current date
+                                        studentList: studentList, // Pass the list of students
+                                        subjectList: subjectList, // Pass the list of subjects
+                                        selectedStudentName: selectedStudentName, // Pass the currently selected user name
+                                        selectedSubjectName: selectedSubjectName, // Pass the currently selected subject name
+                                        onSave: (String selectedStudentId, String selectedSubjectId, int? selectedGrade, DateTime? updatedDate) async {
+                                          final updateService = UpdateServices();
+
+                                          try {
+                                            // Convert updatedDate or currentDate to Timestamp before saving
+                                            await updateService.updateGrade(
+                                              item['id'], // Document ID for the grade
+                                              selectedStudentId, // Updated student ID
+                                              selectedSubjectId, // Updated subject ID
+                                              selectedGrade ?? int.parse(item['grade'].toString()), // Updated grade as int
+                                              Timestamp.fromDate(updatedDate ?? currentDate), // Convert DateTime to Timestamp
+                                            );
+                                            ;
+
+                                            print('Grade updated successfully');
+                                          } catch (e) {
+                                            print('Error updating grade: $e');
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           );

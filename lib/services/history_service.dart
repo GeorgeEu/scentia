@@ -43,6 +43,7 @@ class HistoryService {
       DocumentSnapshot userDoc = await data.getDoc(gradeData['uid']);
       String userName = userDoc['name'];
       gradeDataList.add({
+        'id': grade.id,
         'type': 'grade',
         'grade': gradeData['grade'],
         'subject': subjectName,

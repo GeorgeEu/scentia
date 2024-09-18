@@ -395,4 +395,163 @@ class StDialog {
       },
     );
   }
+
+  static Future<void> showGradeUpdateDialog(
+      BuildContext context, {
+        required TextEditingController gradeController,
+        required DateTime currentDate, // Current date as DateTime
+        required List<Student> studentList, // List of students
+        required List<Subject> subjectList, // List of subjects
+        required String selectedStudentName, // Currently selected student name
+        required String selectedSubjectName, // Currently selected subject name
+        required Function(String selectedStudentId, String selectedSubjectId, int? selectedGrade, DateTime? updatedDate) onSave, // Function to save the event
+      }) async {
+    DateTime? _selectedDate = currentDate;
+    int? _selectedGrade;
+
+    // Function to pick a new date
+    Future<void> _pickDate(BuildContext context, StateSetter setState) async {
+      final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate ?? DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+      if (pickedDate != null && pickedDate != _selectedDate) {
+        setState(() {
+          _selectedDate = pickedDate; // Update the selected date
+        });
+      }
+    }
+
+    TextEditingController studentController =
+    TextEditingController(text: selectedStudentName);
+    String? selectedStudentId = studentList
+        .firstWhere((studentItem) => studentItem.name == selectedStudentName,
+        orElse: () => studentList.first)
+        .id;
+
+    TextEditingController subjectController =
+    TextEditingController(text: selectedSubjectName);
+    String? selectedSubjectId = subjectList
+        .firstWhere((subjectItem) => subjectItem.name == selectedSubjectName,
+        orElse: () => subjectList.first)
+        .id;
+
+    // Dropdown entries for grades
+    final List<DropdownMenuEntry<int>> gradeDropdownEntries = List.generate(
+      6,
+          (index) => DropdownMenuEntry(
+        value: 5 + index, // Grade values from 5 to 10
+        label: (5 + index).toString(), // Display the grade as text
+      ),
+    );
+
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing by tapping outside
+      builder: (context) {
+        return Dialog(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Ensures the dialog is only as big as needed
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      title: Text(_selectedDate == null
+                          ? 'Select Date'
+                          : 'Date: ${DateFormat('MMM d, yyyy').format(_selectedDate!)}'),
+                      trailing: Icon(Icons.calendar_today),
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () => _pickDate(context, setState), // Open Date Picker
+                    ),
+                    // Student Dropdown
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 22),
+                      child: CustomDropdownMenu<Student>(
+                        widthWidget: MediaQuery.of(context).size.width,
+                        horizontalPadding: 16,
+                        title: 'Student',
+                        label: Text('Select Student'),
+                        controller: studentController,
+                        items: studentList,
+                        selectedItem: studentList.firstWhere(
+                                (studentItem) => studentItem.name == selectedStudentName),
+                        itemTitleBuilder: (studentItem) => studentItem.name,
+                        onSelected: (Student selected) {
+                          selectedStudentId = selected.id;
+                          studentController.text = selected.name;
+                        },
+                      ),
+                    ),
+                    // Subject Dropdown
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 22),
+                      child: CustomDropdownMenu<Subject>(
+                        widthWidget: MediaQuery.of(context).size.width,
+                        horizontalPadding: 16,
+                        title: 'Subject',
+                        label: Text('Select Subject'),
+                        controller: subjectController,
+                        items: subjectList,
+                        selectedItem: subjectList.firstWhere(
+                                (subjectItem) => subjectItem.name == selectedSubjectName),
+                        itemTitleBuilder: (subjectItem) => subjectItem.name,
+                        onSelected: (Subject selected) {
+                          selectedSubjectId = selected.id;
+                          subjectController.text = selected.name;
+                        },
+                      ),
+                    ),
+                    // Grade Dropdown
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 22),
+                      child: DropdownMenu<int>(
+                        controller: gradeController,
+                        dropdownMenuEntries: gradeDropdownEntries,
+                        initialSelection: _selectedGrade,
+                        label: Text('Grade'),
+                        onSelected: (int? newValue) {
+                          setState(() {
+                            _selectedGrade = newValue; // Update the selected grade
+                          });
+                        },
+                      ),
+                    ),
+                    // Save and Cancel Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close dialog
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Pass the selected values to onSave when the user clicks save
+                            onSave(
+                                selectedStudentId!,
+                                selectedSubjectId!,
+                                _selectedGrade,
+                                _selectedDate);
+                            Navigator.of(context).pop(); // Close the dialog
+                          },
+                          child: Text('Save'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 }

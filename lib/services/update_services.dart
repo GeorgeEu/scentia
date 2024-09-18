@@ -51,4 +51,25 @@ class UpdateServices {
       throw Exception('Failed to update homework');
     }
   }
+
+  Future<void> updateGrade(String documentId, String studentReferencePath, String subjectReferencePath, int grade, Timestamp date) async {
+    try {
+      Map<String, dynamic> updatedData = {
+        'grade': grade, // Store grade as an int
+        'student': FirebaseFirestore.instance.doc(studentReferencePath),
+        'subject': FirebaseFirestore.instance.doc(subjectReferencePath),
+        'date': date,
+      };
+
+      await FirebaseFirestore.instance
+          .collection('grades')
+          .doc(documentId)
+          .update(updatedData);
+
+      print('Grade updated successfully');
+    } catch (e) {
+      print('Error updating grade: $e');
+      throw Exception('Failed to update grade');
+    }
+  }
 }

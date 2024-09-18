@@ -289,7 +289,7 @@ class _MainPageState extends State<Main_Page> {
                             schedule: teachSchedule,
                             userStatus: userStatus,
                           ),
-                          History(history: history, classes: classes, subjects: subjects),
+                          History(history: history, classes: classes, subjects: subjects, students: students),
                           // Add any other teacher-specific widgets here
                         ],
                       );
