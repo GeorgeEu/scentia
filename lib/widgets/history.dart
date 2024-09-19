@@ -33,20 +33,30 @@ class History extends StatelessWidget {
           stChevronRight: StChevronRight(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => HistoryPage()),
+                MaterialPageRoute(builder: (context) => HistoryPage(
+                  history: history,
+                  classes: classes,
+                  students: students,
+                  subjects: subjects,
+                )),
               );
             },
           ),
           onPress: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => HistoryPage()),
+              MaterialPageRoute(builder: (context) => HistoryPage(
+                history: history,
+                classes: classes,
+                students: students,
+                subjects: subjects,
+              )),
             );
           },
         ),
 
         // Padding for the history container
         Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 32),
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 50),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
@@ -63,6 +73,7 @@ class History extends StatelessWidget {
                     separatorBuilder: (context, index) => Divider(
                       thickness: 0.5,
                       height: 24,
+                      indent: 96,
                     ),
                     itemBuilder: (context, index) {
                       final item = history[index];
@@ -186,7 +197,7 @@ class History extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.more_horiz_outlined, size: 24, color: Colors.black), // Edit button icon
+                                    icon: Icon(Icons.info_outline_rounded, size: 24, color: Colors.black), // Edit button icon
                                     padding: EdgeInsets.zero, // Zero padding
                                     onPressed: () async {
                                       List<Class> classList = classes;
@@ -340,7 +351,7 @@ class History extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.more_horiz_outlined, size: 24, color: Colors.black),
+                                    icon: Icon(Icons.info_outline_rounded, size: 24, color: Colors.black),
                                     padding: EdgeInsets.zero, // Zero padding
                                     onPressed: () async {
                                       List<Student> studentList = students; // Assuming students is the list of users
@@ -516,7 +527,7 @@ class History extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.more_horiz_outlined, size: 24, color: Colors.black),
+                                    icon: Icon(Icons.info_outline_rounded, size: 24, color: Colors.black),
                                     padding: EdgeInsets.zero, // Zero padding
                                     onPressed: () async {
                                       List<Class> classList = classes;

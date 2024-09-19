@@ -56,8 +56,8 @@ class UpdateServices {
     try {
       Map<String, dynamic> updatedData = {
         'grade': grade, // Store grade as an int
-        'student': FirebaseFirestore.instance.doc(studentReferencePath),
-        'subject': FirebaseFirestore.instance.doc(subjectReferencePath),
+        'uid': FirebaseFirestore.instance.doc(studentReferencePath),
+        'sid': FirebaseFirestore.instance.doc(subjectReferencePath),
         'date': date,
       };
 
