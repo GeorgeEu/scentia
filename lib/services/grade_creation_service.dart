@@ -14,6 +14,10 @@ class GradeCreationService {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .doc('/users/$currentUserId/account/permission')
           .get();
+
+      // Count the user document read
+      await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1); // 1 document read
+
       DocumentReference schoolRef = userDoc.get('school');
 
       // Fetch classes for the school
@@ -21,7 +25,8 @@ class GradeCreationService {
           .collection('${schoolRef.path}/classes')
           .get();
 
-      await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, classSnapshot.docs.length);
+      // Count the number of documents read for classes
+      await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, classSnapshot.docs.length); // Multiple documents read
 
       // Create a list of Class objects
       List<Class> classList = classSnapshot.docs.map((doc) {
@@ -39,18 +44,29 @@ class GradeCreationService {
     }
   }
 
+
   // Fetch students for a given class and return them as a list of Student objects
   Future<List<Student>> fetchStudentsForClasses(List<Class> classes) async {
     try {
       List<Student> allStudents = [];
 
       for (var classItem in classes) {
+        // Fetch class document
         DocumentSnapshot classDoc = await FirebaseFirestore.instance.doc(classItem.id).get();
-        List<dynamic> studentRefs = classDoc.get('students') ?? [];
-        //await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, studentRefs.length);
 
+        // Count the class document read
+        await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1); // 1 document read for the class
+
+        // Fetch the list of student references from the class document
+        List<dynamic> studentRefs = classDoc.get('students') ?? [];
+
+        // Loop through each student reference
         for (var studentRef in studentRefs) {
           DocumentSnapshot studentDoc = await FirestoreData().getDoc(studentRef);
+
+          // Count the student document read
+          await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 1); // 1 document read for each student
+
           allStudents.add(Student(
             id: studentDoc.reference.path,
             name: studentDoc.get('name'),
@@ -64,6 +80,7 @@ class GradeCreationService {
       return [];
     }
   }
+
 
 
   // Fetch subjects (if needed for other menus)

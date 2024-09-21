@@ -5,6 +5,7 @@ import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
 import 'package:scientia/services/grade_creation_service.dart';
 import 'package:scientia/services/history_service.dart';
+import 'package:scientia/services/owner_balance.dart';
 import 'package:scientia/utils/accounting.dart';
 import 'package:scientia/views/grade_creating_page.dart';
 import 'package:scientia/widgets/attendance/attendace.dart';
@@ -14,6 +15,7 @@ import 'package:scientia/widgets/grades/recent_grades.dart';
 import 'package:scientia/services/schedule_service.dart';
 import 'package:scientia/widgets/history.dart';
 import 'package:scientia/widgets/homework/recent_homework.dart';
+import 'package:scientia/widgets/owner_balance_widget.dart';
 import 'package:scientia/widgets/schedule/weakly_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/widgets/navigation_drawer.dart';
@@ -50,6 +52,7 @@ class _MainPageState extends State<Main_Page> {
   List<Map<String, dynamic>> allGrades = [];
   List<Map<String, dynamic>> history = [];
   Map<String, double> absencePercentageMap = {};
+  int ownerBalance = 0;
 
   List<Class> classes = [];
   List<Subject> subjects = [];
@@ -100,6 +103,10 @@ class _MainPageState extends State<Main_Page> {
 
   Future<void> _getHistory() async {
     history = await HistoryService().getCombinedHistory(teacherName);
+  }
+
+  Future<void> _getOwnerBalance() async {
+    ownerBalance = (await OwnerBalance().getUserBalance())!;
   }
 
   Future<void> _getSchoolId() async {
@@ -171,7 +178,9 @@ class _MainPageState extends State<Main_Page> {
 
     // Based on userStatus, fetch other data
     await Future.wait([
-      if (userStatus == 'owner') ...[],
+      if (userStatus == 'owner') ...[
+        _getOwnerBalance()
+      ],
       if (userStatus == 'teacher') ...[
         _getStudentsAndClasses(),
         _getHistory(),
@@ -317,7 +326,7 @@ class _MainPageState extends State<Main_Page> {
                       return ContentColumn(
                         children: [
                           // Add owner-specific widgets here, or an empty container if not needed
-                          Container(),
+                          OwnerBalanceWidget(balance: ownerBalance)
                         ],
                       );
 
