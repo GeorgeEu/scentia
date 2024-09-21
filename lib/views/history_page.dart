@@ -5,6 +5,8 @@ import 'package:scientia/widgets/empty_state_page.dart';
 
 import '../services/grade_creation_service.dart';
 import '../services/update_services.dart';
+import '../utils/accounting.dart';
+import '../widgets/search_delegator.dart';
 import '../widgets/st_dialog.dart';
 
 class HistoryPage extends StatelessWidget {
@@ -28,11 +30,19 @@ class HistoryPage extends StatelessWidget {
         backgroundColor: Color(0xFFA4A4FF),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search_rounded, color: Colors.white),
+            icon: Icon(Icons.search_rounded, color: Colors.white),
             onPressed: () {
-              // showSearch(context: context, delegate: );
+              showSearch(
+                context: context,
+                delegate: SearchDelegator(
+                  history: history,
+                  classes: classes,
+                  subjects: subjects,
+                  students: students,
+                ),
+              );
             },
-          )
+          ),
         ],
         leading: IconButton(
             icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -86,10 +96,8 @@ class HistoryPage extends StatelessWidget {
                                   child: Image.network(
                                     item['imageUrl'],
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) {
-                                      return const Text(
-                                          'Image not available');
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Text('Image not available');
                                     },
                                   ),
                                 ),
@@ -137,8 +145,8 @@ class HistoryPage extends StatelessWidget {
                                           style: TextStyle(
                                               fontSize: 14,
                                               height: 1,
-                                              color: Colors
-                                                  .black), // Normal color
+                                              color:
+                                                  Colors.black), // Normal color
                                         ),
                                       ],
                                     ),
@@ -174,8 +182,7 @@ class HistoryPage extends StatelessWidget {
                                   padding: const EdgeInsets.only(right: 14),
                                   child: Text(
                                     item['desc'],
-                                    style:
-                                        TextStyle(fontSize: 14, height: 1.1),
+                                    style: TextStyle(fontSize: 14, height: 1.1),
                                     maxLines: 1, // Limit to 1 line
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -210,13 +217,11 @@ class HistoryPage extends StatelessWidget {
                                       (item['date'] as Timestamp)
                                           .toDate(); // Get the current date
                                   TextEditingController nameController =
-                                      TextEditingController(
-                                          text: item['name']);
+                                      TextEditingController(text: item['name']);
                                   String selectedClassName = item['class'];
                                   String? currentImageUrl = item['imageUrl'];
                                   TextEditingController descController =
-                                      TextEditingController(
-                                          text: item['desc']);
+                                      TextEditingController(text: item['desc']);
 
                                   // Show the update dialog
                                   StDialog.showEventUpdateDialog(
@@ -250,6 +255,8 @@ class HistoryPage extends StatelessWidget {
                                           Timestamp.fromDate(updatedDate ??
                                               currentDate), // Convert DateTime to Timestamp
                                         );
+                                        await Accounting.detectAndStoreOperation(
+                                            DatabaseOperation.dbWrite, 1);
                                         print('Event updated successfully');
                                       } catch (e) {
                                         print('Error updating event: $e');
@@ -279,8 +286,7 @@ class HistoryPage extends StatelessWidget {
                               child: Center(
                                 // Display the grade inside the container
                                 child: Text(
-                                  item['grade']
-                                      .toString(), // Display the grade
+                                  item['grade'].toString(), // Display the grade
                                   style: TextStyle(
                                     fontSize: 24,
                                     color: Colors.white,
@@ -443,7 +449,8 @@ class HistoryPage extends StatelessWidget {
                                           Timestamp.fromDate(updatedDate ??
                                               currentDate), // Convert DateTime to Timestamp
                                         );
-                                        ;
+                                        await Accounting.detectAndStoreOperation(
+                                            DatabaseOperation.dbWrite, 1);
 
                                         print('Grade updated successfully');
                                       } catch (e) {
@@ -565,8 +572,7 @@ class HistoryPage extends StatelessWidget {
                                   padding: const EdgeInsets.only(right: 14),
                                   child: Text(
                                     item['task'] ?? 'No task',
-                                    style:
-                                        TextStyle(fontSize: 14, height: 1.1),
+                                    style: TextStyle(fontSize: 14, height: 1.1),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -603,11 +609,9 @@ class HistoryPage extends StatelessWidget {
                                       (item['date'] as Timestamp)
                                           .toDate(); // Get the current date
                                   TextEditingController taskController =
-                                      TextEditingController(
-                                          text: item['task']);
+                                      TextEditingController(text: item['task']);
                                   String selectedClassName = item['class'];
-                                  String selectedSubjectName =
-                                      item['subject'];
+                                  String selectedSubjectName = item['subject'];
 
                                   // Show the update dialog for homework
                                   StDialog.showHomeworkUpdateDialog(
@@ -639,9 +643,10 @@ class HistoryPage extends StatelessWidget {
                                             Timestamp.fromDate(updatedDate ??
                                                 currentDate) // Date
                                             );
+                                        await Accounting.detectAndStoreOperation(
+                                            DatabaseOperation.dbWrite, 1);
 
-                                        print(
-                                            'Homework updated successfully');
+                                        print('Homework updated successfully');
                                       } catch (e) {
                                         print('Error updating homework: $e');
                                       }

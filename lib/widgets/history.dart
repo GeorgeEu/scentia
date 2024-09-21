@@ -9,6 +9,7 @@ import 'package:scientia/widgets/st_header.dart';
 import 'package:scientia/widgets/st_row.dart';
 import 'package:scientia/widgets/empty_state_widget.dart';
 import '../services/grade_creation_service.dart';
+import '../utils/accounting.dart';
 
 class History extends StatelessWidget {
   final List<Map<String, dynamic>> history;
@@ -230,6 +231,8 @@ class History extends StatelessWidget {
                                               imageUrl, // Use the new image URL if available, or the current one
                                               Timestamp.fromDate(updatedDate ?? currentDate), // Convert DateTime to Timestamp
                                             );
+                                            await Accounting.detectAndStoreOperation(
+                                                DatabaseOperation.dbWrite, 1);
                                             print('Event updated successfully');
                                           } catch (e) {
                                             print('Error updating event: $e');
@@ -383,7 +386,8 @@ class History extends StatelessWidget {
                                               selectedGrade ?? int.parse(item['grade'].toString()), // Updated grade as int
                                               Timestamp.fromDate(updatedDate ?? currentDate), // Convert DateTime to Timestamp
                                             );
-                                            ;
+                                            await Accounting.detectAndStoreOperation(
+                                                DatabaseOperation.dbWrite, 1);
 
                                             print('Grade updated successfully');
                                           } catch (e) {
@@ -559,8 +563,10 @@ class History extends StatelessWidget {
                                                 taskController.text,
                                                 Timestamp.fromDate(updatedDate ?? currentDate) // Date
                                             );
+                                            await Accounting.detectAndStoreOperation(
+                                                DatabaseOperation.dbWrite, 1);
 
-                                            print('Homework updated successfully');
+                                            print('Homework updated successfully and logs are saved');
                                           } catch (e) {
                                             print('Error updating homework: $e');
                                           }
