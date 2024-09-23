@@ -27,6 +27,7 @@ module.exports = async (request, response) => {
       const pricingRef = admin.firestore().
           collection("accounting").doc("pricing");
 
+
       // Fetch the pricing document within the transaction
       const pricingDoc = await transaction.get(pricingRef);
 
@@ -48,6 +49,10 @@ module.exports = async (request, response) => {
 
       const ownerRef = schoolData.owner; // Assuming 'owner' is a DocumentReference
       const ownerId = ownerRef.id;
+
+      const transactionsDocRef = admin.firestore().
+          collection("transactions").doc(ownerId);
+      const transactionsDoc = await transaction.get(transactionsDocRef);
 
       console.log("School Owner ID:", ownerId);
 
@@ -119,18 +124,39 @@ module.exports = async (request, response) => {
       const callTimeCost = 0.00003;
       const additionalCosts = invokeCost + callTimeCost;
 
+      const finalCost = totalCost + additionalCosts;
+
       // Subtract the total cost of logs and additional costs from the owner's balance
-      const newBalance = balance -
-            totalCost -
-            additionalCosts;
+      const newBalance = balance - finalCost;
       transaction.update(ownerBalanceDocRef, {balance: newBalance});
 
+
+      const timestamp = Date.now().toString(); // Use the timestamp as the document ID
+      const priceMap = {price: finalCost};
+
       console.log(`Owner's new balance after additional costs: ${newBalance}`);
+
+      if (!transactionsDoc.exists) {
+        // Create the transactions document with 'ups' and 'downs' collections
+        console.log(`No transaction document found for owner ${ownerId}, creating one...`);
+        transaction.set(transactionsDocRef, {}); // Create the parent document, no await here
+
+        // Add the 'downs' collection and store the map with timestamp as document ID
+        const downsRef = transactionsDocRef.collection("downs").doc(timestamp);
+        transaction.set(downsRef, priceMap); // No await here
+      } else {
+        // Store the price in the 'downs' collection if the document already exists
+        const downsRef = transactionsDocRef.collection("downs").doc(timestamp);
+        transaction.set(downsRef, priceMap); // No await here
+      }
+
+      console.log(`Stored total cost in 'downs' ${ownerId}: ${priceMap.price}`);
 
       // Delete the logs after processing
       transaction.delete(userLogsDocRef);
 
       console.log(`Logs deleted for user ID: ${uid}`);
+
 
       // Return the pricing data and total cost from the transaction
       return {dbDelete: dbDeletePrice,
