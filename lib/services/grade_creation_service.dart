@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import '../utils/accounting.dart';
 import 'auth_services.dart';
 import 'firestore_data.dart';
@@ -149,4 +150,18 @@ class Subject {
   final String name;
 
   Subject({required this.id, required this.name});
+}
+
+class Lesson {
+  TimeOfDay startTime;
+  TimeOfDay endTime;
+
+  Lesson({required this.startTime, required this.endTime});
+}
+
+class Day {
+  String dayName;
+  List<Lesson> lessons;
+
+  Day({required this.dayName, required this.lessons});
 }

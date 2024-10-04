@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:scientia/widgets/st_chevron_right.dart';
+import 'package:scientia/widgets/st_header.dart';
+import 'package:scientia/widgets/st_row.dart';
+
+import '../services/grade_creation_service.dart';
+import '../views/lesson_spot_widget.dart';
 
 class OwnerBalanceWidget extends StatelessWidget {
+  final List<Class> classes;
   final int balance;
-  const OwnerBalanceWidget({super.key, required this.balance});
+  const OwnerBalanceWidget({super.key, required this.balance, required this.classes});
 
   @override
   Widget build(BuildContext context) {

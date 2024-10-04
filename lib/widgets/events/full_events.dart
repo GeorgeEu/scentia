@@ -98,6 +98,7 @@ class _FullEventsState extends State<FullEvents> {
         separatorBuilder: (context, index) {
           return Divider(
             thickness: 0.5,
+            indent: 96,
           ); // Your separator widget
         },
       )

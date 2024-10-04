@@ -22,6 +22,27 @@ class Formater {
     }
   }
 
+  static String longWeekDayToShort(String fullDay) {
+    switch (fullDay.toLowerCase()) {
+      case 'monday':
+        return 'MON';
+      case 'tuesday':
+        return 'TUE';
+      case 'wednesday':
+        return 'WED';
+      case 'thursday':
+        return 'THU';
+      case 'friday':
+        return 'FRI';
+      case 'saturday':
+        return 'SAT';
+      case 'sunday':
+        return 'SUN';
+      default:
+        return fullDay; // Return the full day if not found
+    }
+  }
+
   static dynamic gradeToColor(int grade) {
     switch (grade) {
       case 0:
@@ -60,6 +81,12 @@ class Formater {
     } else {
       return Colors.grey;
     }
+  }
+
+  static String formatTimeOfDay(TimeOfDay time) {
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes'; // e.g., "09:00"
   }
 
 

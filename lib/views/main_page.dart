@@ -32,6 +32,7 @@ import '../services/school_service.dart';
 import '../services/teacher_schedule.dart';
 import 'event_creating_page.dart';
 import 'hw_creating_page.dart';
+import 'multi_step_form.dart';
 
 class Main_Page extends StatefulWidget {
   const Main_Page({super.key});
@@ -68,6 +69,7 @@ class _MainPageState extends State<Main_Page> {
 
   bool isLoading = true;
   bool isDataLoading = true;
+  bool _isFormCompleted = false;
 
   Future<void> _fetchUserStatus() async {
     String? userId = AuthService.getCurrentUserId();
@@ -179,7 +181,9 @@ class _MainPageState extends State<Main_Page> {
     // Based on userStatus, fetch other data
     await Future.wait([
       if (userStatus == 'owner') ...[
-        _getOwnerBalance()
+        _getStudentsAndClasses(),
+        _getOwnerBalance(),
+        _getSubjects(),
       ],
       if (userStatus == 'teacher') ...[
         _getStudentsAndClasses(),
@@ -241,6 +245,13 @@ class _MainPageState extends State<Main_Page> {
 
   @override
   Widget build(BuildContext context) {
+    if (userStatus == 'owner' && !_isFormCompleted) {
+      return MultiStepForm(onFormCompleted: (completed) {
+        setState(() {
+          _isFormCompleted = completed;
+        });
+      });
+    }
     return Scaffold(
       floatingActionButton: !isLoading && userStatus == 'teacher'
           ? FloatingActionButton(
@@ -260,7 +271,9 @@ class _MainPageState extends State<Main_Page> {
       backgroundColor: const Color(0xFFF3F2F8),
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+      appBar: isLoading
+          ? null // Hide the AppBar when loading
+          : AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xFFA4A4FF),
         leading: IconButton(
@@ -273,18 +286,22 @@ class _MainPageState extends State<Main_Page> {
         title: const Text(
           "11A, American International School Progress",
           style: TextStyle(
-              fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+              fontSize: 18,
+              color: Colors.white,
+              fontWeight: FontWeight.w600),
         ),
       ),
-      drawer: MyDrawer(
-        userStatus: userStatus,
-        attendance: attendance,
-        homework: homework,
-        grades: grades,
-        absencePercentageMap: absencePercentageMap,
-        allGrades: allGrades,
-        events: events,
-      ),
+      drawer: isLoading
+          ? null // Hide the Drawer when loading
+          : MyDrawer(
+              userStatus: userStatus,
+              attendance: attendance,
+              homework: homework,
+              grades: grades,
+              absencePercentageMap: absencePercentageMap,
+              allGrades: allGrades,
+              events: events,
+            ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -298,7 +315,11 @@ class _MainPageState extends State<Main_Page> {
                             schedule: teachSchedule,
                             userStatus: userStatus,
                           ),
-                          History(history: history, classes: classes, subjects: subjects, students: students),
+                          History(
+                              history: history,
+                              classes: classes,
+                              subjects: subjects,
+                              students: students),
                           // Add any other teacher-specific widgets here
                         ],
                       );
@@ -326,7 +347,8 @@ class _MainPageState extends State<Main_Page> {
                       return ContentColumn(
                         children: [
                           // Add owner-specific widgets here, or an empty container if not needed
-                          OwnerBalanceWidget(balance: ownerBalance)
+                          OwnerBalanceWidget(
+                              balance: ownerBalance, classes: classes)
                         ],
                       );
 
