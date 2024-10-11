@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../utils/accounting.dart';
 import 'auth_services.dart';
 
@@ -10,7 +9,7 @@ class SchoolService {
     try {
       // Get the current user's UID
       String? userId = AuthService.getCurrentUserId();
-      //print("Current user ID: $userId");
+
       if (userId == null) {
         print("User not logged in.");
         return null; // User not logged in
@@ -22,31 +21,36 @@ class SchoolService {
           .doc(userId)
           .collection('account')
           .doc('permission');
-      //print("Permission document reference created: ${permissionDocRef.path}");
 
       // Get the permission document
       DocumentSnapshot permissionDoc = await permissionDocRef.get();
-      //print("Permission document snapshot: ${permissionDoc.exists ? 'Exists' : 'Does not exist'}");
+
+      // Check if the permission document exists for the user
+      if (!permissionDoc.exists) {
+        print("Permission document does not exist for user: $userId");
+        return null; // Stop further processing if no permission document exists
+      }
 
       // Accounting operation
       await Accounting.detectAndStoreOperation(DatabaseOperation.dbRead, 3);
-      //print("Accounting operation recorded.");
 
-      // Check if the document exists and has the 'school' field
-      if (permissionDoc.exists && permissionDoc.data() != null) {
-        DocumentReference? schoolRef = permissionDoc.get('school');
-        //print("School reference: ${schoolRef?.path}");
+      // Cast the document data to a Map<String, dynamic> to access it safely
+      Map<String, dynamic>? data = permissionDoc.data() as Map<String, dynamic>?;
+
+      // Check if the document has data and a 'school' field
+      if (data != null && data.containsKey('school')) {
+        DocumentReference? schoolRef = data['school'] as DocumentReference?;
         if (schoolRef != null) {
-          //print("Returning school ID: ${schoolRef.id}");
           return schoolRef.id; // Return the school document ID
         } else {
           print("School reference is null.");
+          return null;
         }
       } else {
-        print("Permission document does not exist or has no data.");
+        print("'school' field does not exist in the permission document.");
+        return null;
       }
 
-      return null; // If no school reference is found
     } catch (e) {
       print("Error getting school ID: $e");
       return null; // Return null in case of any errors

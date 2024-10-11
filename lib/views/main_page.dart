@@ -20,6 +20,7 @@ import 'package:scientia/widgets/schedule/weakly_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/widgets/navigation_drawer.dart';
 import 'package:scientia/services/firestore_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/attendance_model.dart';
 import '../models/daily_schedule.dart';
@@ -69,7 +70,8 @@ class _MainPageState extends State<Main_Page> {
 
   bool isLoading = true;
   bool isDataLoading = true;
-  bool _isFormCompleted = false;
+  bool? _isFormCompleted;
+
 
   Future<void> _fetchUserStatus() async {
     String? userId = AuthService.getCurrentUserId();
@@ -108,11 +110,22 @@ class _MainPageState extends State<Main_Page> {
   }
 
   Future<void> _getOwnerBalance() async {
-    ownerBalance = (await OwnerBalance().getUserBalance())!;
+    int? balance = await OwnerBalance().getUserBalance();
+    if (balance != null) {
+      ownerBalance = balance;
+    } else {
+      ownerBalance = 0; // Or handle it as needed
+    }
   }
 
+
   Future<void> _getSchoolId() async {
-    schoolId = (await schoolService.getCurrentUserSchoolId())!;
+    String? id = await schoolService.getCurrentUserSchoolId();
+    if (id != null && id.isNotEmpty) {
+      schoolId = id;
+    } else {
+      return;
+    }
   }
 
   Future<void> _getSubjects() async {
@@ -167,14 +180,93 @@ class _MainPageState extends State<Main_Page> {
     teachSchedule = await teacherSchedule.getWeeklyTeacherSchedule();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _checkFormCompletionStatus();
+  }
+
+  void _checkFormCompletionStatus() async {
+    String? userId = AuthService.getCurrentUserId();
+    if (userId != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool formCompleted = prefs.getBool('form_completed_$userId') ?? false;
+      if (mounted) {
+        setState(() {
+          _isFormCompleted = formCompleted;
+        });
+
+        // Start data loading if form is completed
+        if (_isFormCompleted!) {
+          _startDataLoading();
+        }
+      }
+    } else {
+      // Handle the case where userId is null
+      // For now, you can set _isFormCompleted to false or wait until userId is available
+      if (mounted) {
+        setState(() {
+          _isFormCompleted = false;
+        });
+      }
+    }
+  }
+
+
+
+  void _onFormCompleted(bool completed) async {
+    String? userId = AuthService.getCurrentUserId();
+    if (userId != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('form_completed_$userId', completed);
+
+      if (mounted) {
+        setState(() {
+          _isFormCompleted = completed;
+        });
+
+        if (completed) {
+          // Start data loading when form is completed
+          _startDataLoading();
+        }
+      }
+    } else {
+      // Handle the case where userId is null
+      // You might prompt the user to log in
+    }
+  }
+
+
+  void _startDataLoading() {
+    _getSchoolId().then((_) {
+      if (schoolId.isNotEmpty) {
+        cloudFunctions.getLogs(schoolId);
+        _loadData();
+      } else {
+        print("School ID is not available.");
+      }
+    });
+  }
+
   Future<void> _loadData() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+        isDataLoading = true;
+      });
+    }
+
     // Fetch user status first
     await _fetchUserStatus();
-    await _getTeacherName();
-
     // Check if userStatus is properly set
     if (userStatus.isEmpty) {
       print("User status is not set.");
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          isDataLoading = false;
+        });
+      }
       return; // Or handle the case where userStatus is not available
     }
 
@@ -182,11 +274,13 @@ class _MainPageState extends State<Main_Page> {
     await Future.wait([
       if (userStatus == 'owner') ...[
         _getStudentsAndClasses(),
+        _getTeacherName(),
         _getOwnerBalance(),
         _getSubjects(),
       ],
       if (userStatus == 'teacher') ...[
         _getStudentsAndClasses(),
+        _getTeacherName(),
         _getHistory(),
         _getSubjects(),
         _getWeeklyTeacherSchedule(),
@@ -210,159 +304,137 @@ class _MainPageState extends State<Main_Page> {
     if (mounted) {
       setState(() {
         isDataLoading = false;
-        if (!isDataLoading) {
-          isLoading = true;
-        }
+        isLoading = false;
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Fetch the school ID first
-    _getSchoolId().then((_) {
-      if (schoolId.isNotEmpty) {
-        // After fetching the school ID, proceed with calling the process logs function and loading data
-        cloudFunctions.getLogs(schoolId);
-        _loadData().then((_) {
-          if (mounted) {
-            setState(() {
-              if (!isDataLoading) {
-                isLoading = false;
-              }
-            });
-          }
-        });
-      } else {
-        // Handle the case where schoolId is not available or empty
-        print("School ID is not available.");
-        // You can set an error state or handle it according to your app's logic
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (userStatus == 'owner' && !_isFormCompleted) {
-      return MultiStepForm(onFormCompleted: (completed) {
-        setState(() {
-          _isFormCompleted = completed;
-        });
-      });
-    }
-    return Scaffold(
-      floatingActionButton: !isLoading && userStatus == 'teacher'
-          ? FloatingActionButton(
-              isExtended: true,
-              onPressed: () {
-                _showBottomSheet(context);
-              },
-              backgroundColor: const Color(0xFFB7B7FF),
-              elevation: 0,
-              child: const Icon(
-                Icons.add_rounded,
+    if (_isFormCompleted == null) {
+      // Still checking form completion status
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: null,
+      );
+    } else if (!_isFormCompleted!) {
+      // Form is not completed
+      return MultiStepForm(onFormCompleted: _onFormCompleted);
+    } else {
+      return Scaffold(
+        floatingActionButton: !isLoading && userStatus == 'teacher'
+            ? FloatingActionButton(
+          isExtended: true,
+          onPressed: () {
+            _showBottomSheet(context);
+          },
+          backgroundColor: const Color(0xFFB7B7FF),
+          elevation: 0,
+          child: const Icon(
+            Icons.add_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
+        )
+            : null,
+        backgroundColor: const Color(0xFFF3F2F8),
+        key: _scaffoldKey,
+        resizeToAvoidBottomInset: false,
+        appBar: isLoading
+            ? null // Hide the AppBar when loading
+            : AppBar(
+          surfaceTintColor: Colors.transparent,
+          titleSpacing: 0,
+          backgroundColor: const Color(0xFFA4A4FF),
+          leading: IconButton(
+            icon: const Icon(Icons.menu_rounded),
+            color: Colors.white,
+            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+            tooltip: MaterialLocalizations
+                .of(context)
+                .openAppDrawerTooltip,
+          ),
+          elevation: 0,
+          title: const Text(
+            "11A, American International School Progress",
+            style: TextStyle(
+                fontSize: 18,
                 color: Colors.white,
-                size: 30,
-              ),
-            )
-          : null,
-      backgroundColor: const Color(0xFFF3F2F8),
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
-      appBar: isLoading
-          ? null // Hide the AppBar when loading
-          : AppBar(
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: const Color(0xFFA4A4FF),
-        leading: IconButton(
-          icon: const Icon(Icons.menu_rounded),
-          color: Colors.white,
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                fontWeight: FontWeight.w600),
+          ),
         ),
-        elevation: 0,
-        title: const Text(
-          "11A, American International School Progress",
-          style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.w600),
+        drawer: isLoading
+            ? null // Hide the Drawer when loading
+            : MyDrawer(
+          userStatus: userStatus,
+          attendance: attendance,
+          homework: homework,
+          grades: grades,
+          absencePercentageMap: absencePercentageMap,
+          allGrades: allGrades,
+          events: events, balance: ownerBalance,
         ),
-      ),
-      drawer: isLoading
-          ? null // Hide the Drawer when loading
-          : MyDrawer(
-              userStatus: userStatus,
-              attendance: attendance,
-              homework: homework,
-              grades: grades,
-              absencePercentageMap: absencePercentageMap,
-              allGrades: allGrades,
-              events: events,
-            ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Builder(
-                builder: (context) {
-                  switch (userStatus) {
-                    case 'teacher':
-                      return ContentColumn(
-                        children: [
-                          WeeklySchedule(
-                            schedule: teachSchedule,
-                            userStatus: userStatus,
-                          ),
-                          History(
-                              history: history,
-                              classes: classes,
-                              subjects: subjects,
-                              students: students),
-                          // Add any other teacher-specific widgets here
-                        ],
-                      );
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+          child: Builder(
+            builder: (context) {
+              switch (userStatus) {
+                case 'teacher':
+                  return ContentColumn(
+                    children: [
+                      WeeklySchedule(
+                        schedule: teachSchedule,
+                        userStatus: userStatus,
+                      ),
+                      History(
+                          history: history,
+                          classes: classes,
+                          subjects: subjects,
+                          students: students),
+                      // Add any other teacher-specific widgets here
+                    ],
+                  );
 
-                    case 'student':
-                      return ContentColumn(
-                        children: [
-                          WeeklySchedule(
-                            schedule: schedule,
-                            userStatus: userStatus,
-                          ),
-                          RecentGrades(grades: grades, allGrades: allGrades),
-                          RecentHomework(homework: homework),
-                          Events(events: events),
-                          Attendace(
-                            attendance: attendance,
-                            attendanceCount: attendanceCount,
-                            absencePercentageMap: absencePercentageMap,
-                          ),
-                          // Add any other student-specific widgets here
-                        ],
-                      );
+                case 'student':
+                  return ContentColumn(
+                    children: [
+                      WeeklySchedule(
+                        schedule: schedule,
+                        userStatus: userStatus,
+                      ),
+                      RecentGrades(grades: grades, allGrades: allGrades),
+                      RecentHomework(homework: homework),
+                      Events(events: events),
+                      Attendace(
+                        attendance: attendance,
+                        attendanceCount: attendanceCount,
+                        absencePercentageMap: absencePercentageMap,
+                      ),
+                      // Add any other student-specific widgets here
+                    ],
+                  );
 
-                    case 'owner':
-                      return ContentColumn(
-                        children: [
-                          // Add owner-specific widgets here, or an empty container if not needed
-                          OwnerBalanceWidget(
-                              balance: ownerBalance, classes: classes)
-                        ],
-                      );
+                case 'owner':
+                  return ContentColumn(
+                    children: [
+                      // Add owner-specific widgets here, or an empty container if not needed
+                      OwnerBalanceWidget(
+                          balance: ownerBalance)
+                    ],
+                  );
 
-                    default:
-                      return const Center(
-                        child: Text('Unknown user status'),
-                      );
-                  }
-                },
-              ),
-            ),
-    );
+                default:
+                  return const Center(
+                    child: Text('Unknown user status'),
+                  );
+              }
+            },
+          ),
+        ),
+      );
+    }
   }
-
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,

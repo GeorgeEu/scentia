@@ -41,4 +41,36 @@ class CloudFunctions {
       throw Exception('Failed to fetch logs');
     }
   }
+
+  Future<void> createInstitution(String schoolName) async {
+    // Ensure the user is not null
+    if (user == null) {
+      throw Exception('User is not signed in');
+    }
+
+    // Get the ID token for the current user
+    final String? idToken = await user?.getIdToken();
+
+    // Define the URL for the Cloud Function
+    final url = Uri.parse('https://us-central1-scentia-396314.cloudfunctions.net/createInstitution');
+
+    // Send a POST request to the Cloud Function
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'token': idToken,  // User ID token
+        'schoolName': schoolName,  // School name from input
+      }),
+    );
+
+    // Check the response status code
+    if (response.statusCode == 200) {
+      print('Institution created successfully');
+    } else {
+      throw Exception('Failed to create institution');
+    }
+  }
 }

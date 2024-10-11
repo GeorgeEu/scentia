@@ -7,7 +7,6 @@ class LessonSpotService {
 
   // Function to save the lesson spots to Firebase
   Future<void> saveLessonSpots(
-      String selectedClassName,
       Map<String, List<Map<String, TimeOfDay>>> lessonsPerDay,
       ) async {
     try {
@@ -27,15 +26,8 @@ class LessonSpotService {
       // Ensure the school document exists
       await schoolDocRef.set(<String, dynamic>{}, SetOptions(merge: true));
 
-      // Step 3: Reference to the class document
-      DocumentReference classDocRef =
-      schoolDocRef.collection('classes').doc(selectedClassName);
-
-      // Ensure the class document exists
-      await classDocRef.set(<String, dynamic>{}, SetOptions(merge: true));
-
-      // Step 4: Reference to the 'days' collection inside the class document
-      CollectionReference daysCollectionRef = classDocRef.collection('days');
+      // Step 3: Reference to the 'days' collection directly under the school document
+      CollectionReference daysCollectionRef = schoolDocRef.collection('days');
 
       // Iterate over the lessonsPerDay map
       int dayIndex = 1; // Used for day document IDs (1, 2, 3, etc.)
@@ -45,13 +37,12 @@ class LessonSpotService {
         List<Map<String, TimeOfDay>> lessons = entry.value;
 
         // Save the day document with the day abbreviation
-        DocumentReference dayDocRef =
-        daysCollectionRef.doc(dayIndex.toString());
+        DocumentReference dayDocRef = daysCollectionRef.doc(dayIndex.toString());
         await dayDocRef.set({
           'name': abbreviatedDay, // 'name' is a String key
         });
 
-        // Step 5: Create the 'slots' sub-collection for time slots if there are lessons
+        // Step 4: Create the 'slots' sub-collection for time slots if there are lessons
         if (lessons.isNotEmpty) {
           CollectionReference slotsCollectionRef = dayDocRef.collection('slots');
           int slotIndex = 1;

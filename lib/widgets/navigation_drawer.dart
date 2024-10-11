@@ -7,6 +7,7 @@ import 'package:scientia/views/exams_page.dart';
 import 'package:scientia/views/settings_page.dart';
 import 'package:flutter/material.dart'; // Make sure this is the correct path to your GoogleSignInApi
 import 'package:scientia/services/auth_services.dart';
+import 'package:scientia/widgets/owner_balance_widget.dart';
 import '../views/grades_page.dart';
 import '../views/homework_page.dart';
 import '../views/schedule_page.dart';
@@ -18,6 +19,7 @@ class MyDrawer extends StatefulWidget {
   final List<Map<String, dynamic>> allGrades;
   final List<Map<String, dynamic>> attendance;
   final List<Map<String, dynamic>> events;
+  final int balance;
   final String userStatus;
   Map<String, double> absencePercentageMap = {};
 
@@ -25,6 +27,7 @@ class MyDrawer extends StatefulWidget {
       {super.key,
       required this.grades,
       required this.allGrades,
+      required this.balance,
       required this.events,
       required this.absencePercentageMap,
       required this.homework,
@@ -58,7 +61,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 decoration: const BoxDecoration(
                   color: Color(0xFFA4A4FF),
                 ),
-                padding: const EdgeInsets.fromLTRB(16, 16, 0, 8),
+                padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -77,14 +80,14 @@ class _MyDrawerState extends State<MyDrawer> {
                             Text(
                               user.displayName!,
                               style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white),
                             ),
                             Text(
                               user.email!,
                               style: const TextStyle(
-                                  fontSize: 14, color: Colors.white70),
+                                  fontSize: 12, color: Colors.white70),
                             ),
                           ],
                         ),
