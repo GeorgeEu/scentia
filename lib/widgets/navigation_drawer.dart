@@ -21,7 +21,7 @@ class MyDrawer extends StatefulWidget {
   final List<Map<String, dynamic>> events;
   final int balance;
   final String userStatus;
-  Map<String, double> absencePercentageMap = {};
+  final Map<String, double> absencePercentageMap;
 
   MyDrawer(
       {super.key,
@@ -39,9 +39,10 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!;
+
     return Drawer(
       backgroundColor: const Color(0xFFF7F7FA),
       shape: const RoundedRectangleBorder(
@@ -165,7 +166,12 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const SettingsPage()));
+                  builder: (context) => SettingsPage(
+                    balance: widget.balance,
+                    userImage: user.photoURL!,
+                    userName: user.displayName!,
+                    userEmail: user.email!,
+                  )));
             },
           ),
           ListTile(

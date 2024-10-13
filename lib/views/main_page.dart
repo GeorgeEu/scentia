@@ -419,8 +419,7 @@ class _MainPageState extends State<Main_Page> {
                   return ContentColumn(
                     children: [
                       // Add owner-specific widgets here, or an empty container if not needed
-                      OwnerBalanceWidget(
-                          balance: ownerBalance)
+                      Container()
                     ],
                   );
 

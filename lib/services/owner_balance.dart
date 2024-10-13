@@ -15,10 +15,16 @@ class OwnerBalance {
           // Cast the document data to a Map<String, dynamic> before accessing fields
           Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
           if (data != null) {
-            double? balance = data['balance'] as double?;
-            if (balance != null) {
-              // Multiply by 1000 and round to the nearest whole number
+            // Handle both int and double types
+            dynamic balanceValue = data['balance'];
+            if (balanceValue is int) {
+              // If it's an int, convert it to double
+              double balance = balanceValue.toDouble();
               int roundedBalance = (balance * 1000).round();
+              return roundedBalance;
+            } else if (balanceValue is double) {
+              // If it's already a double, handle it directly
+              int roundedBalance = (balanceValue * 1000).round();
               return roundedBalance;
             }
           }
