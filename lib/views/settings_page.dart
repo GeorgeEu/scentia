@@ -10,12 +10,14 @@ class SettingsPage extends StatefulWidget {
   final int balance;
   final String userName;
   final String userEmail;
+  final List<Map<String, dynamic>> offers;
 
   const SettingsPage(
       {Key? key,
       required this.userImage,
       required this.balance,
       required this.userName,
+      required this.offers,
       required this.userEmail})
       : super(key: key);
 
@@ -232,7 +234,10 @@ class _SettingsState extends State<SettingsPage> {
                         transitionDuration: Duration(milliseconds: 150),
                         reverseTransitionDuration: Duration(milliseconds: 100),
                         pageBuilder: (context, animation, secondaryAnimation)
-                        => BalancePage(balance: widget.balance), // Your BalancePage
+                        => BalancePage(
+                          balance: widget.balance,
+                          offers: widget.offers,
+                        ), // Your BalancePage
                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
                           const begin = Offset(1.0, 0.0);  // Slide in from the right
                           const end = Offset.zero;

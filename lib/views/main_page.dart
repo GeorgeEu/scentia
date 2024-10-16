@@ -5,6 +5,7 @@ import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
 import 'package:scientia/services/grade_creation_service.dart';
 import 'package:scientia/services/history_service.dart';
+import 'package:scientia/services/offers_service.dart';
 import 'package:scientia/services/owner_balance.dart';
 import 'package:scientia/utils/accounting.dart';
 import 'package:scientia/views/grade_creating_page.dart';
@@ -53,6 +54,7 @@ class _MainPageState extends State<Main_Page> {
   List<Map<String, dynamic>> grades = [];
   List<Map<String, dynamic>> allGrades = [];
   List<Map<String, dynamic>> history = [];
+  List<Map<String, dynamic>> offers = [];
   Map<String, double> absencePercentageMap = {};
   int ownerBalance = 0;
 
@@ -152,6 +154,10 @@ class _MainPageState extends State<Main_Page> {
 
   Future<void> _getAttendanceCount() async {
     attendanceCount = await AttendanceModel().fetchAttendanceCounts();
+  }
+
+  Future<void> _getOffers() async {
+    offers = await OffersService().getUsdOffers();
   }
 
   Future<void> _getEvents() async {
@@ -274,6 +280,7 @@ class _MainPageState extends State<Main_Page> {
     await Future.wait([
       if (userStatus == 'owner') ...[
         _getStudentsAndClasses(),
+        _getOffers(),
         _getTeacherName(),
         _getOwnerBalance(),
         _getSubjects(),
@@ -366,6 +373,7 @@ class _MainPageState extends State<Main_Page> {
         drawer: isLoading
             ? null // Hide the Drawer when loading
             : MyDrawer(
+          offers: offers,
           userStatus: userStatus,
           attendance: attendance,
           homework: homework,

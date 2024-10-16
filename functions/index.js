@@ -6,11 +6,13 @@ admin.initializeApp();
 
 // Import functions from the accounting directory
 const getLogs = require("./accounting/getLogs");
+const processTokens = require("./accounting/processTokens");
 const getWeeklyWork = require("./accounting/getWeeklyWork");
 const createInstitution = require("./accounting/createInstitution");
 
 // Export the functions
 exports.getLogs = functions.https.onRequest(getLogs);
+exports.processTokens = functions.https.onRequest(processTokens);
 exports.createInstitution = functions.https.onRequest(createInstitution);
 
 // Schedule the getWeeklyWork function to run every week

@@ -19,6 +19,7 @@ class MyDrawer extends StatefulWidget {
   final List<Map<String, dynamic>> allGrades;
   final List<Map<String, dynamic>> attendance;
   final List<Map<String, dynamic>> events;
+  final List<Map<String, dynamic>> offers;
   final int balance;
   final String userStatus;
   final Map<String, double> absencePercentageMap;
@@ -27,6 +28,7 @@ class MyDrawer extends StatefulWidget {
       {super.key,
       required this.grades,
       required this.allGrades,
+      required this.offers,
       required this.balance,
       required this.events,
       required this.absencePercentageMap,
@@ -167,6 +169,7 @@ class _MyDrawerState extends State<MyDrawer> {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => SettingsPage(
+                    offers: widget.offers,
                     balance: widget.balance,
                     userImage: user.photoURL!,
                     userName: user.displayName!,

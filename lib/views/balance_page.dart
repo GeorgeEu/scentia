@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:scientia/views/offers_widget.dart';
 
 class BalancePage extends StatelessWidget {
   final int balance;
-  const BalancePage({super.key, required this.balance});
+  final List<Map<String, dynamic>> offers;
+  const BalancePage({super.key, required this.balance, required this.offers});
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +39,10 @@ class BalancePage extends StatelessWidget {
               child: Text(
                 'Scentia Tokens',
                 style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  height: 1,
-                  fontWeight: FontWeight.w600
-                ),
+                    color: Colors.black,
+                    fontSize: 24,
+                    height: 1,
+                    fontWeight: FontWeight.w600),
               ),
             ),
             Padding(
@@ -51,7 +52,8 @@ class BalancePage extends StatelessWidget {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Only pay for the services you use, whenever you need them. ',
+                      text:
+                      'Only pay for the services you use, whenever you need them. ',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 14,
@@ -71,7 +73,7 @@ class BalancePage extends StatelessWidget {
                       child: Icon(
                         Icons.info_outline,
                         color: Colors.blue.shade700,
-                        size: 14,  // Adjust the size as needed
+                        size: 14, // Adjust the size as needed
                       ),
                     ),
                   ],
@@ -84,15 +86,15 @@ class BalancePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),  // Adjust the radius as needed
+                    topLeft: Radius.circular(16), // Adjust the radius as needed
                     topRight: Radius.circular(16),
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.shade300, // Shadow color with some transparency
-                      spreadRadius: 0,  // Spread of the shadow
-                      blurRadius: 1,    // Softness of the shadow
-                      offset: Offset.zero,  // Negative offset to apply the shadow only at the top
+                      spreadRadius: 0, // Spread of the shadow
+                      blurRadius: 1, // Softness of the shadow
+                      offset: Offset.zero, // Negative offset to apply the shadow only at the top
                     ),
                   ],
                 ),
@@ -109,19 +111,15 @@ class BalancePage extends StatelessWidget {
                           child: Text(
                             balance.toString(),
                             style: TextStyle(
-                              fontSize: 24,
-                              height: 1,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600
-                            ),
+                                fontSize: 24,
+                                height: 1,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                         Text(
                           'τ',
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.grey
-                          ),
+                          style: TextStyle(fontSize: 24, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -129,35 +127,27 @@ class BalancePage extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 4, bottom: 16),
                       child: Text(
                         'your balance',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
-                          height: 1
-                        ),
+                        style: TextStyle(fontSize: 13, color: Colors.grey, height: 1),
                       ),
                     ),
                     Container(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _showBottomSheet(context); // Call the method here
+                        },
                         style: ButtonStyle(
-                          overlayColor:
-                          WidgetStateProperty.all(Colors.blue.shade700),
+                          overlayColor: WidgetStateProperty.all(Colors.blue.shade700),
                           backgroundColor: WidgetStateProperty.all(Colors.blue),
-                          // Change background color to grey
                           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8), // Set border radius to 8
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          padding: WidgetStateProperty.all(EdgeInsets.only(
-                            top: 16.0,    // Top padding
-                            bottom: 16.0, // Bottom padding
-                          )),
+                          padding: WidgetStateProperty.all(
+                              EdgeInsets.symmetric(vertical: 16.0)),
                           alignment: Alignment.center,
-                          // Align the content to the center
                           elevation: WidgetStateProperty.all(0.1),
-
                         ),
                         child: Text(
                           'Buy Tokens',
@@ -172,6 +162,64 @@ class BalancePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
+              child: Text(
+                'Choose package',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.blue.shade600
+                ),
+              ),
+            ),
+            OffersWidget(offers: offers),
+            Padding(
+              padding: const EdgeInsets.only(left: 40, right: 40, top: 16, bottom: 24),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text:
+                      'By proceeding and purchasing Tokens, you agree with the',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ' Terms and Conditions.',
+                      style: TextStyle(
+                        color: Colors.blue.shade700,
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 }
