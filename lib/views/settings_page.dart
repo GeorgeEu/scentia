@@ -11,15 +11,17 @@ class SettingsPage extends StatefulWidget {
   final String userName;
   final String userEmail;
   final List<Map<String, dynamic>> offers;
+  final String userStatus; // Add userStatus property
 
-  const SettingsPage(
-      {Key? key,
-      required this.userImage,
-      required this.balance,
-      required this.userName,
-      required this.offers,
-      required this.userEmail})
-      : super(key: key);
+  const SettingsPage({
+    Key? key,
+    required this.userImage,
+    required this.balance,
+    required this.userName,
+    required this.offers,
+    required this.userEmail,
+    required this.userStatus, // Pass userStatus in constructor
+  }) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsState();
@@ -85,10 +87,10 @@ class _SettingsState extends State<SettingsPage> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.shade300, // Shadow color with some transparency
-                  spreadRadius: 0,  // Spread of the shadow
-                  blurRadius: 1,    // Softness of the shadow
-                  offset: Offset.zero,  // Horizontal and vertical offset of the shadow
+                  color: Colors.grey.shade300,
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset.zero,
                 ),
               ],
             ),
@@ -133,9 +135,7 @@ class _SettingsState extends State<SettingsPage> {
               ],
             ),
           ),
-          SizedBox(
-            height: 16,
-          ),
+          SizedBox(height: 16),
           Container(
             width: double.infinity,
             padding: EdgeInsets.only(top: 24),
@@ -143,10 +143,10 @@ class _SettingsState extends State<SettingsPage> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.shade300, // Shadow color with some transparency
-                  spreadRadius: 0,  // Spread of the shadow
-                  blurRadius: 1,    // Softness of the shadow
-                  offset: Offset.zero,  // Horizontal and vertical offset of the shadow
+                  color: Colors.grey.shade300,
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset.zero,
                 ),
               ],
             ),
@@ -169,11 +169,11 @@ class _SettingsState extends State<SettingsPage> {
                   ),
                 ),
                 CustomRow(
+                  padding: EdgeInsets.only(left: 24),
                   onTap: null,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 22
-                      ),
+                      padding: const EdgeInsets.only(right: 22),
                       child: Icon(
                         Icons.language,
                         color: Colors.grey,
@@ -183,11 +183,10 @@ class _SettingsState extends State<SettingsPage> {
                     Text(
                       'Language',
                       style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black,
-                        height: 1
-                      ),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black,
+                          height: 1),
                     ),
                     Spacer(),
                     Padding(
@@ -195,11 +194,10 @@ class _SettingsState extends State<SettingsPage> {
                       child: Text(
                         'English',
                         style: TextStyle(
-                          color: Colors.lightBlue,
-                          fontWeight: FontWeight.w400,
-                          height: 1,
-                          fontSize: 18
-                        ),
+                            color: Colors.lightBlue,
+                            fontWeight: FontWeight.w400,
+                            height: 1,
+                            fontSize: 18),
                       ),
                     )
                   ],
@@ -207,107 +205,84 @@ class _SettingsState extends State<SettingsPage> {
               ],
             ),
           ),
-          SizedBox(
-            height: 16,
-          ),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade300, // Shadow color with some transparency
-                  spreadRadius: 0,  // Spread of the shadow
-                  blurRadius: 1,    // Softness of the shadow
-                  offset: Offset.zero,  // Horizontal and vertical offset of the shadow
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                CustomRow(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        transitionDuration: Duration(milliseconds: 150),
-                        reverseTransitionDuration: Duration(milliseconds: 100),
-                        pageBuilder: (context, animation, secondaryAnimation)
-                        => BalancePage(
-                          balance: widget.balance,
-                          offers: widget.offers,
-                        ), // Your BalancePage
-                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(1.0, 0.0);  // Slide in from the right
-                          const end = Offset.zero;
-                          const curve = Curves.ease;
+          SizedBox(height: 16),
+          if (widget.userStatus == "owner") // Only show "My Tokens" if user is owner
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    spreadRadius: 0,
+                    blurRadius: 1,
+                    offset: Offset.zero,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CustomRow(
+                    padding: EdgeInsets.only(left: 24),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          transitionDuration: Duration(milliseconds: 150),
+                          reverseTransitionDuration:
+                          Duration(milliseconds: 100),
+                          pageBuilder: (context, animation, secondaryAnimation) =>
+                              BalancePage(
+                                balance: widget.balance,
+                                offers: widget.offers,
+                              ),
+                          transitionsBuilder: (context, animation,
+                              secondaryAnimation, child) {
+                            const begin = Offset(1.0, 0.0);
+                            const end = Offset.zero;
+                            const curve = Curves.ease;
 
-                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                          var offsetAnimation = animation.drive(tween);
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            var offsetAnimation = animation.drive(tween);
 
-                          return SlideTransition(
-                            position: offsetAnimation,
-                            child: child,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 26, left: 4),
-                      child: Text(
-                        'τ',
-                        style: TextStyle(
-                            fontSize: 32,
-                            color: Colors.grey
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 26, left: 4),
+                        child: Text(
+                          'τ',
+                          style: TextStyle(fontSize: 32, color: Colors.grey),
                         ),
                       ),
-                    ),
-                    Text(
-                      'My Tokens',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black,
-                        height: 1,
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  height: 0,
-                  thickness: 0.5,
-                  indent: 72,
-                  color: Colors.grey.shade300,
-                ),
-                CustomRow(
-                  onTap: null,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 22
-                      ),
-                      child: Icon(
-                        Icons.history_rounded,
-                        color: Colors.grey,
-                        size: 26,
-                      ),
-                    ),
-                    Text(
-                      'Transaction History',
-                      style: TextStyle(
+                      Text(
+                        'My Tokens',
+                        style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.normal,
                           color: Colors.black,
-                          height: 1
+                          height: 1,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  Divider(
+                    height: 0,
+                    thickness: 0.5,
+                    indent: 72,
+                    color: Colors.grey.shade300,
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

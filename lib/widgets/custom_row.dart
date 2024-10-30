@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class CustomRow extends StatelessWidget {
   final List<Widget> children;
   final VoidCallback? onTap;
+  final EdgeInsets padding;
 
-  CustomRow({required this.children, this.onTap});
+  CustomRow({required this.children, this.onTap, required this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class CustomRow extends StatelessWidget {
         onTap: onTap,
         splashColor: Colors.grey.shade300, // Customize the splash color
         child: Container(
-          padding: EdgeInsets.only(left: 24),
+          padding: padding,
           height: 52.0,  // Set the height to 52 pixels
           width: double.infinity,
           color: Colors.transparent,  // Keep container transparent if needed

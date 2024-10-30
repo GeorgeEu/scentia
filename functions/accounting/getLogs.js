@@ -24,9 +24,9 @@ module.exports = async (request, response) => {
     // Start a Firestore transaction
     const result = await admin.firestore().runTransaction(async (transaction) => {
       // Reference to the pricing document
-      const pricingRef = admin.firestore().
-          collection("accounting").doc("pricing");
-
+      const pricingRef = admin.firestore()
+          .collection("accounting")
+          .doc("pricing");
 
       // Fetch the pricing document within the transaction
       const pricingDoc = await transaction.get(pricingRef);
@@ -35,7 +35,9 @@ module.exports = async (request, response) => {
         throw new Error("Pricing document does not exist");
       }
 
-      const schoolDocRef = admin.firestore().collection("schools").doc(schoolId);
+      const schoolDocRef = admin.firestore()
+          .collection("schools")
+          .doc(schoolId);
       const schoolDoc = await transaction.get(schoolDocRef);
 
       if (!schoolDoc.exists) {
@@ -50,15 +52,16 @@ module.exports = async (request, response) => {
       const ownerRef = schoolData.owner; // Assuming 'owner' is a DocumentReference
       const ownerId = ownerRef.id;
 
-      const transactionsDocRef = admin.firestore().
-          collection("transactions").doc(ownerId);
-      const transactionsDoc = await transaction.get(transactionsDocRef);
+      const transactionsDocRef = admin.firestore()
+          .collection("transactions")
+          .doc(ownerId);
 
       console.log("School Owner ID:", ownerId);
 
       // Get the owner's balance from the 'scentia' collection
-      const ownerBalanceDocRef = admin.firestore().
-          collection("scentia").doc(ownerId);
+      const ownerBalanceDocRef = admin.firestore()
+          .collection("scentia")
+          .doc(ownerId);
       const ownerBalanceDoc = await transaction.get(ownerBalanceDocRef);
 
       if (!ownerBalanceDoc.exists) {
@@ -67,7 +70,7 @@ module.exports = async (request, response) => {
 
       const ownerBalanceData = ownerBalanceDoc.data();
       if (!ownerBalanceData || ownerBalanceData.balance === undefined) {
-        throw new Error(`Balance is owner ID error`);
+        throw new Error(`Balance is missing for owner ID ${ownerId}`);
       }
 
       const balance = ownerBalanceData.balance;
@@ -86,14 +89,17 @@ module.exports = async (request, response) => {
       console.log(`dbWrite: ${dbWritePrice}`);
 
       // Retrieve user logs
-      const userLogsDocRef = admin.firestore().
-          collection("logs").doc(uid);
+      const userLogsDocRef = admin.firestore()
+          .collection("logs")
+          .doc(uid);
       const userLogsDoc = await transaction.get(userLogsDocRef);
 
       // Combine checks for existence, data presence, and non-empty logs map
-      if (!userLogsDoc.exists ||
-            !userLogsDoc.data() ||
-            Object.keys(userLogsDoc.data()).length === 0) {
+      if (
+        !userLogsDoc.exists ||
+        !userLogsDoc.data() ||
+        Object.keys(userLogsDoc.data()).length === 0
+      ) {
         console.log(`No logs found or logs map is empty for user ${uid}`);
         return {message: "No logs found or logs map is empty for user."};
       }
@@ -113,7 +119,10 @@ module.exports = async (request, response) => {
                 dbWrite: ${dbWrite}`);
 
         // Calculate the cost for this log entry
-        const cost = (dbDelete * dbDeletePrice) + (dbRead * dbReadPrice) + (dbWrite * dbWritePrice);
+        const cost =
+          dbDelete * dbDeletePrice +
+          dbRead * dbReadPrice +
+          dbWrite * dbWritePrice;
         totalCost += cost;
       });
 
@@ -130,39 +139,43 @@ module.exports = async (request, response) => {
       const newBalance = balance - finalCost;
       transaction.update(ownerBalanceDocRef, {balance: newBalance});
 
-
-      const timestamp = Date.now().toString(); // Use the timestamp as the document ID
-      const priceMap = {price: finalCost};
+      const timestamp = Date.now(); // Use the timestamp as an integer
 
       console.log(`Owner's new balance after additional costs: ${newBalance}`);
 
-      if (!transactionsDoc.exists) {
-        // Create the transactions document with 'ups' and 'downs' collections
-        console.log(`No transaction document found for owner ${ownerId}, creating one...`);
-        transaction.set(transactionsDocRef, {}); // Create the parent document, no await here
+      // Create the transaction entry with 'time' and 'firestore' fields
+      const transactionEntry = {
+        time: timestamp, // Timestamp as integer
+        firestore: -finalCost, // Final cost with a minus sign
+      };
 
-        // Add the 'downs' collection and store the map with timestamp as document ID
-        const downsRef = transactionsDocRef.collection("downs").doc(timestamp);
-        transaction.set(downsRef, priceMap); // No await here
-      } else {
-        // Store the price in the 'downs' collection if the document already exists
-        const downsRef = transactionsDocRef.collection("downs").doc(timestamp);
-        transaction.set(downsRef, priceMap); // No await here
-      }
+      // Update the 'transactionsList' field in the 'transactions' document
+      transaction.set(
+          transactionsDocRef,
+          {
+            transactionsList: admin.firestore.FieldValue.arrayUnion(transactionEntry),
+          },
+          {merge: true},
+      );
 
-      console.log(`Stored total cost in 'downs' ${ownerId}: ${priceMap.price}`);
+      console.log(
+          `Added transaction to 'transactions' for owner ${ownerId}:`,
+          transactionEntry,
+      );
 
       // Delete the logs after processing
       transaction.delete(userLogsDocRef);
 
       console.log(`Logs deleted for user ID: ${uid}`);
 
-
       // Return the pricing data and total cost from the transaction
-      return {dbDelete: dbDeletePrice,
+      return {
+        dbDelete: dbDeletePrice,
         dbRead: dbReadPrice,
         dbWrite: dbWritePrice,
-        totalCost, newBalance};
+        totalCost,
+        newBalance,
+      };
     });
 
     // Use the result from the transaction to construct the response
@@ -174,12 +187,17 @@ module.exports = async (request, response) => {
         Owner's New Balance: ${result.newBalance}`;
 
     // Log final success message
-    console.log("Logs processed, balance updated, and logs deleted successfully.");
+    console.log(
+        "Logs processed, balance updated, and logs deleted successfully.",
+    );
 
     // Send the logs back as a response
     response.status(200).send({logs: logs});
   } catch (error) {
-    console.error("Error verifying ID token or processing request:", error.message);
+    console.error(
+        "Error verifying ID token or processing request:",
+        error.message,
+    );
     response.status(400).send("Invalid ID token or request: " + error.message);
   }
 };

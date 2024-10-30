@@ -6,7 +6,7 @@ class CloudFunctions {
   // Getting the current user
   final User? user = FirebaseAuth.instance.currentUser;
 
-  Future<int> processTokens(int tokensAmount) async {
+  Future<dynamic> processTokens(dynamic tokensAmount) async {
     // Ensure the user is not null
     if (user == null) {
       throw Exception('User is not signed in');

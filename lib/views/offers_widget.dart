@@ -50,14 +50,9 @@ class _OffersWidgetState extends State<OffersWidget> {
                   });
 
                   try {
-                    int tokensAmount = offer['tokens'];
+                    dynamic tokensAmount = offer['tokens'];
 
-                    // Ensure tokensAmount is an integer
-                    if (tokensAmount is! int) {
-                      tokensAmount = int.parse(tokensAmount.toString());
-                    }
-
-                    int newBalance = await _cloudFunctions.processTokens(tokensAmount);
+                    dynamic newBalance = await _cloudFunctions.processTokens(tokensAmount);
 
                     setState(() {
                       _isProcessing = false;
@@ -71,6 +66,7 @@ class _OffersWidgetState extends State<OffersWidget> {
                     setState(() {
                       _isProcessing = false;
                       _feedbackMessage = 'Error processing tokens: $e';
+                      print(_feedbackMessage);
                     });
 
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -111,7 +107,7 @@ class _OffersWidgetState extends State<OffersWidget> {
         if (_isProcessing)
           Positioned.fill(
             child: Container(
-              color: Colors.black54,
+              color: Colors.white,
               child: Center(
                 child: CircularProgressIndicator(),
               ),

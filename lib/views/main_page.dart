@@ -194,53 +194,47 @@ class _MainPageState extends State<Main_Page> {
 
   void _checkFormCompletionStatus() async {
     String? userId = AuthService.getCurrentUserId();
-    if (userId != null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool formCompleted = prefs.getBool('form_completed_$userId') ?? false;
-      if (mounted) {
-        setState(() {
-          _isFormCompleted = formCompleted;
-        });
 
-        // Start data loading if form is completed
-        if (_isFormCompleted!) {
-          _startDataLoading();
-        }
-      }
-    } else {
-      // Handle the case where userId is null
-      // For now, you can set _isFormCompleted to false or wait until userId is available
-      if (mounted) {
-        setState(() {
-          _isFormCompleted = false;
-        });
-      }
+    if (userId == null) {
+      _onFormCompleted(false);
+      return;
+    }
+
+    try {
+      CollectionReference accountCollection = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('account');
+
+      QuerySnapshot accountSnapshot = await accountCollection.limit(1).get();
+
+      bool formCompleted = accountSnapshot.docs.isNotEmpty;
+
+      _onFormCompleted(formCompleted);
+    } catch (e) {
+      print('Error checking form completion status: $e');
+      // Handle the error accordingly
     }
   }
 
 
 
-  void _onFormCompleted(bool completed) async {
-    String? userId = AuthService.getCurrentUserId();
-    if (userId != null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('form_completed_$userId', completed);
 
-      if (mounted) {
-        setState(() {
-          _isFormCompleted = completed;
-        });
 
-        if (completed) {
-          // Start data loading when form is completed
-          _startDataLoading();
-        }
-      }
+
+
+  void _onFormCompleted(bool completed) {
+    if (!mounted) return;
+
+    setState(() => _isFormCompleted = completed);
+
+    if (completed) {
+      // Start data loading when form is completed
+      _startDataLoading();
     } else {
-      // Handle the case where userId is null
-      // You might prompt the user to log in
     }
   }
+
 
 
   void _startDataLoading() {
@@ -264,6 +258,7 @@ class _MainPageState extends State<Main_Page> {
 
     // Fetch user status first
     await _fetchUserStatus();
+
     // Check if userStatus is properly set
     if (userStatus.isEmpty) {
       print("User status is not set.");
@@ -276,18 +271,21 @@ class _MainPageState extends State<Main_Page> {
       return; // Or handle the case where userStatus is not available
     }
 
+    // Ensure teacherName is fetched first if needed
+    if (userStatus == 'teacher' || userStatus == 'owner') {
+      await _getTeacherName();
+    }
+
     // Based on userStatus, fetch other data
     await Future.wait([
       if (userStatus == 'owner') ...[
         _getStudentsAndClasses(),
         _getOffers(),
-        _getTeacherName(),
         _getOwnerBalance(),
         _getSubjects(),
       ],
       if (userStatus == 'teacher') ...[
         _getStudentsAndClasses(),
-        _getTeacherName(),
         _getHistory(),
         _getSubjects(),
         _getWeeklyTeacherSchedule(),
@@ -315,6 +313,7 @@ class _MainPageState extends State<Main_Page> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
