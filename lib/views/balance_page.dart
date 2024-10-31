@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:scientia/views/crediting_funds.dart';
+import 'package:scientia/views/usage_history.dart';
 import 'package:scientia/views/offers_widget.dart';
 
 import '../widgets/custom_row.dart';

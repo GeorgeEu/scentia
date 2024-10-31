@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../services/transaction_history.dart'; // Import intl for date formatting
+import 'package:scientia/widgets/custom_row.dart';
+import '../services/transaction_history.dart';
 
 class UsageHistory extends StatelessWidget {
   const UsageHistory({super.key});
 
   String formatTimestamp(int timestamp) {
-    // Convert the timestamp to DateTime
     DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    // Format the date
-    return DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
+    DateTime today = DateTime.now();
+
+    if (date.year == today.year && date.month == today.month && date.day == today.day) {
+      return 'Today';
+    }
+    return DateFormat('MMM d, yyyy').format(date);
   }
 
   @override
@@ -26,7 +29,7 @@ class UsageHistory extends StatelessWidget {
               Navigator.pop(context);
             }),
         title: Text(
-          'Usage Hisory',
+          'Usage History',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.black,
@@ -34,15 +37,15 @@ class UsageHistory extends StatelessWidget {
           ),
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0.5), // Adjusts the height of the line
+          preferredSize: const Size.fromHeight(0.5),
           child: Container(
-            color: Colors.grey.shade300, // Gray color for the line
+            color: Colors.grey.shade300,
             height: 0.5,
           ),
         ),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: TransactionService().fetchUserTransactions(), // Fetch transactions
+        future: TransactionService().fetchAndProcessUserTransactions(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -56,27 +59,31 @@ class UsageHistory extends StatelessWidget {
             return ListView.separated(
               itemCount: transactions.length,
               separatorBuilder: (context, index) => Divider(
+                indent: 16,
                 color: Colors.grey.shade300,
-                height: 0.5,
+                thickness: 0.5,
+                height: 1,
               ),
               itemBuilder: (context, index) {
                 final transaction = transactions[index];
-                final firestore = transaction['firestore'];
+                final firestore = transaction['firestore'].toString();
                 final time = transaction['time'];
 
-                // Format the time field
                 final formattedTime = formatTimestamp(time);
 
-                return ListTile(
-                  leading: Icon(Icons.monetization_on_outlined, color: Colors.blue),
-                  title: Text(
-                    'Amount: $firestore',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  subtitle: Text(
-                    'Date: $formattedTime',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
+                return CustomRow(
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  children: [
+                    Text(
+                      formattedTime,
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Spacer(),
+                    Text(
+                      firestore,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ],
                 );
               },
             );
