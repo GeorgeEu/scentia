@@ -2,6 +2,12 @@ const admin = require("firebase-admin");
 
 module.exports = async (req, res) => {
   try {
+    // Constants for pricing
+    const Read = 0.0000012;
+    const Write = 0.0000036;
+    const Invoke = 0.00000086;
+    const CallTime = 0.00003;
+
     // Get the ID token and tokens from the request body
     const idToken = req.body.token;
     const tokens = req.body.tokens;
@@ -24,7 +30,10 @@ module.exports = async (req, res) => {
     // Fetch the user's current 'balance' field
     const userDoc = await userRef.get();
     const currentBalance = userDoc.exists ? userDoc.data().balance || 0 : 0;
-    const newBalance = currentBalance + convertedTokens;
+
+    // Calculate the cost for this transaction
+    const totalCost = (Read * 2) + (Write * 2) + Invoke + CallTime;
+    const newBalance = currentBalance + convertedTokens - totalCost;
 
     // Update or set the user's balance in the 'scentia' collection
     await userRef.set({balance: newBalance}, {merge: true});
@@ -50,6 +59,7 @@ module.exports = async (req, res) => {
     return res.status(200).send({
       message: "Tokens processed successfully and transaction recorded",
       newBalance: newBalance,
+      costDeducted: totalCost,
     });
   } catch (error) {
     console.error("Error processing tokens:", error);

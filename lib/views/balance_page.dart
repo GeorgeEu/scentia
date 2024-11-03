@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:scientia/views/crediting_funds.dart';
 import 'package:scientia/views/usage_history.dart';
 import 'package:scientia/views/offers_widget.dart';
 
@@ -166,7 +167,7 @@ class BalancePage extends StatelessWidget {
                                 transitionDuration: Duration(milliseconds: 150),
                                 reverseTransitionDuration: Duration(milliseconds: 100),
                                 pageBuilder: (context, animation, secondaryAnimation)
-                                => UsageHistory(), // Your BalancePage
+                                => CreditingFunds(), // Your BalancePage
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                   const begin = Offset(1.0, 0.0);  // Slide in from the right
                                   const end = Offset.zero;

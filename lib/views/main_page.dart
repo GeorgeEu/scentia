@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/models/events_model.dart';
 import 'package:scientia/services/attendance_calc.dart';
+import 'package:scientia/services/classes_spots_status.dart';
 import 'package:scientia/services/grade_creation_service.dart';
 import 'package:scientia/services/history_service.dart';
 import 'package:scientia/services/offers_service.dart';
@@ -21,6 +22,7 @@ import 'package:scientia/widgets/schedule/weakly_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:scientia/widgets/navigation_drawer.dart';
 import 'package:scientia/services/firestore_data.dart';
+import 'package:scientia/widgets/status_check_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/attendance_model.dart';
@@ -47,6 +49,7 @@ class _MainPageState extends State<Main_Page> {
   var data = FirestoreData();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   SchoolService schoolService = SchoolService();
+  ClassesSpotsStatusService classesSpotsService = ClassesSpotsStatusService();
   CloudFunctions cloudFunctions = CloudFunctions();
   List<Map<String, dynamic>> homework = [];
   List<Map<String, dynamic>> attendance = [];
@@ -66,9 +69,12 @@ class _MainPageState extends State<Main_Page> {
   Map<String, int> attendanceCount = {};
   List<DailySchedule> schedule = [];
   List<DailyTeacherSchedule> teachSchedule = [];
+  Map<String, bool> classesSpotsStatus = {};
 
   String userStatus = ''; // Nullable type
   String schoolId = '';
+  String schoolName = '';
+
 
   bool isLoading = true;
   bool isDataLoading = true;
@@ -125,6 +131,24 @@ class _MainPageState extends State<Main_Page> {
     String? id = await schoolService.getCurrentUserSchoolId();
     if (id != null && id.isNotEmpty) {
       schoolId = id;
+    } else {
+      return;
+    }
+  }
+
+  Future<void> _getSchoolName() async {
+    String? name = await schoolService.getCurrentUserSchoolName();
+    if (name != null && name.isNotEmpty) {
+      schoolName = name;
+    } else {
+      return;
+    }
+  }
+
+  Future<void> _getClassesSpotsStatus() async {
+    Map<String, bool> status = await classesSpotsService.checkStatus();
+    if (status.isNotEmpty) {
+      classesSpotsStatus= status;
     } else {
       return;
     }
@@ -241,6 +265,7 @@ class _MainPageState extends State<Main_Page> {
     _getSchoolId().then((_) {
       if (schoolId.isNotEmpty) {
         cloudFunctions.getLogs(schoolId);
+        _getSchoolName();
         _loadData();
       } else {
         print("School ID is not available.");
@@ -281,6 +306,7 @@ class _MainPageState extends State<Main_Page> {
       if (userStatus == 'owner') ...[
         _getStudentsAndClasses(),
         _getOffers(),
+        _getClassesSpotsStatus(),
         _getOwnerBalance(),
         _getSubjects(),
       ],
@@ -361,9 +387,9 @@ class _MainPageState extends State<Main_Page> {
                 .openAppDrawerTooltip,
           ),
           elevation: 0,
-          title: const Text(
-            "11A, American International School Progress",
-            style: TextStyle(
+          title: Text(
+            schoolName,
+            style: const TextStyle(
                 fontSize: 18,
                 color: Colors.white,
                 fontWeight: FontWeight.w600),
@@ -423,10 +449,15 @@ class _MainPageState extends State<Main_Page> {
                   );
 
                 case 'owner':
+                  bool classesExist = classesSpotsStatus['classesExist'] ?? false;
+                  bool lessonsExist = classesSpotsStatus['lessonsExist'] ?? false;
                   return ContentColumn(
                     children: [
                       // Add owner-specific widgets here, or an empty container if not needed
-                      Container()
+                      StatusCheckWidget(
+                        classesExist: classesExist,
+                        lessonsExist: lessonsExist,
+                      )
                     ],
                   );
 

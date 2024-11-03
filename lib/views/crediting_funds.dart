@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:scientia/widgets/custom_row.dart';
 import '../services/transaction_service.dart';
 
-class UsageHistory extends StatelessWidget {
-  const UsageHistory({super.key});
+class CreditingFunds extends StatelessWidget {
+  const CreditingFunds({super.key});
 
   String formatTimestamp(int timestamp) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
@@ -13,7 +13,7 @@ class UsageHistory extends StatelessWidget {
     if (date.year == today.year && date.month == today.month && date.day == today.day) {
       return 'Today';
     }
-    return DateFormat('MMM d, yyyy').format(date);
+    return DateFormat('MMMM d, hh:mm a').format(date);
   }
 
   @override
@@ -28,8 +28,8 @@ class UsageHistory extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text(
-          'Usage History',
+        title: const Text(
+          'Crediting Funds',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.black,
@@ -45,7 +45,7 @@ class UsageHistory extends StatelessWidget {
         ),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: TransactionService().fetchAndProcessUserTransactions(),
+        future: TransactionService().fetchPositiveTransactionsWithPrices(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

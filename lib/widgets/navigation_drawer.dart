@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:scientia/views/attendance_page.dart';
 import 'package:scientia/views/authentication_page.dart';
+import 'package:scientia/views/classes_test.dart';
 import 'package:scientia/views/events_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scientia/views/exams_page.dart';
@@ -297,6 +298,17 @@ class _MyDrawerState extends State<MyDrawer> {
                     userName: user.displayName!,
                     userEmail: user.email!,
                   )));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings_rounded),
+            title: const Text(
+              'Test',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ClassesTest()));
             },
           )
         ]);

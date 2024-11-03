@@ -92,4 +92,65 @@ class TransactionService {
       return [];
     }
   }
+
+  Future<List<Map<String, dynamic>>> fetchPositiveTransactionsWithPrices() async {
+    try {
+      // Get the current user ID
+      String? userId = AuthService.getCurrentUserId();
+      if (userId == null) {
+        throw Exception("User ID is null");
+      }
+
+      // Reference to the user's transactions document
+      DocumentSnapshot userTransactionsDoc =
+      await _firestore.collection('transactions').doc(userId).get();
+
+      // Check if the document exists and contains the 'transactionsList' field
+      if (userTransactionsDoc.exists &&
+          userTransactionsDoc.data() != null &&
+          (userTransactionsDoc.data() as Map<String, dynamic>)
+              .containsKey('transactionsList')) {
+        // Explicitly cast the transaction list to List<Map<String, dynamic>>
+        List<Map<String, dynamic>> transactionList = List<Map<String, dynamic>>.from(
+            (userTransactionsDoc.data() as Map<String, dynamic>)['transactionsList']);
+
+        // Filter only positive transactions
+        List<Map<String, dynamic>> processedPositiveTransactions = transactionList
+            .where((transaction) => transaction['firestore'] > 0)
+            .toList();
+
+        // Fetch 'usd' documents from 'accounting/offers'
+        QuerySnapshot usdDocuments = await _firestore
+            .collection('accounting')
+            .doc('offers')
+            .collection('usd')
+            .get();
+
+        // Create a map to store tokens and their corresponding prices
+        Map<int, double> tokensToPriceMap = {
+          for (var doc in usdDocuments.docs)
+            (doc['tokens'] as int): (doc['price'] as double)
+        };
+
+        // Replace tokens with corresponding prices in the positive transactions
+        processedPositiveTransactions = processedPositiveTransactions.map((transaction) {
+          int tokens = transaction['firestore'];
+          double? price = tokensToPriceMap[tokens];
+          return {
+            'firestore': price != null ? '\$$price' : '\$$tokens', // Use price if available, else tokens
+            'time': transaction['time']
+          };
+        }).toList();
+
+        processedPositiveTransactions.sort((a, b) => b['time'].compareTo(a['time']));
+
+        return processedPositiveTransactions;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching transactions with prices: $e");
+      return [];
+    }
+  }
 }
