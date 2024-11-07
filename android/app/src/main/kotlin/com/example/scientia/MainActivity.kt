@@ -1,4 +1,4 @@
-package com.example.card_test
+package com.example.scientia
 
 import io.flutter.embedding.android.FlutterActivity
 

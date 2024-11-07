@@ -67,6 +67,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'scentia-396314.appspot.com',
     androidClientId: '541209528339-4dvopt79n9kqsaoqtvek1i8cvn2v1ejr.apps.googleusercontent.com',
     iosClientId: '541209528339-c3htj43hd06s52ucl7fedmur6qano4j7.apps.googleusercontent.com',
-    iosBundleId: 'com.example.cardTest',
+    iosBundleId: 'com.example.scientia',
   );
 }

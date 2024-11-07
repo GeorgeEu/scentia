@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:scientia/models/expandable_text.dart';
 import 'package:scientia/widgets/empty_state_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -50,12 +50,7 @@ class HomeworkCard extends StatelessWidget {
                         fontSize: 14, color: Colors.grey, height: 1),
                   ),
                 ),
-                Linkify(
-                  onOpen: (link) async {
-                    if (!await launchUrl(Uri.parse(link.url))) {
-                      throw Exception('Could not launch ${link.url}');
-                    }
-                  },
+                ExpandableText(
                   text: homework[index]['task'],
                   linkStyle: const TextStyle(
                       color: Colors.blue, // Customize the link color if needed
@@ -65,7 +60,7 @@ class HomeworkCard extends StatelessWidget {
                     color: Colors.grey.shade700,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
-                  ),
+                  ), maxLines: 5,
                 ),
               ],
             );

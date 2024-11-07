@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "541209528339-t4ppvrq1ssjodcqmvbuhc1ltedmb3apf.apps.googleusercontent.com",
+          "client_id": "541209528339-htobfr92iirm1frkhu6b41ejtbs80417.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.scientia",
-            "certificate_hash": "159bb217018d231b8bb2dc6237fb576dc90f6c96"
+            "certificate_hash": "c14e88a43b4e9115702ffb778a2bb3500b7defae"
           }
         },
         {

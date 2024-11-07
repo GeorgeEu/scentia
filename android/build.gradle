@@ -1,19 +1,18 @@
 buildscript {
-    ext.kotlin_version = '1.8.22' // Update this to match the required Kotlin version
+    ext.kotlin_version = '1.9.0' // Updated Kotlin version
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4' // Check for the latest version
+        classpath 'com.android.tools.build:gradle:8.1.1' // Updated for compatibility with Gradle 8
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 allprojects {
-
-    tasks.withType(JavaCompile){
-        options.compilerArgs <<"-Xlint:deprecation"
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation"
     }
 
     repositories {
@@ -25,13 +24,9 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-
-
